@@ -1,0 +1,66 @@
+{
+  "name": "hateblog-frontend",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/sshd:1": {}
+  },
+  "postCreateCommand": "sudo corepack enable pnpm && pnpm install",
+  "forwardPorts": [
+    3000
+  ],
+  "portsAttributes": {
+    "3000": {
+      "label": "Vite Dev Server",
+      "onAutoForward": "notify"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "quickfix.biome": "explicit",
+          "source.organizeImports.biome": "explicit"
+        },
+        "editor.defaultFormatter": "biomejs.biome",
+        "[javascript]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[javascriptreact]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[jsonc]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[css]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "tailwindCSS.includeLanguages": {
+          "typescript": "javascript",
+          "typescriptreact": "javascript"
+        }
+      },
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "biomejs.biome",
+        "ms-vscode.vscode-json",
+        "christian-kohler.path-intellisense"
+      ]
+    }
+  },
+  "remoteUser": "node",
+  "remoteEnv": {
+    "SSH_AUTH_SOCK": "${localEnv:SSH_AUTH_SOCK}"
+  }
+}
