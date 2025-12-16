@@ -27,18 +27,18 @@
 
 ## Phase A: UI実装フェーズ（モックデータ使用）
 
-### Phase A-0: プロジェクトセットアップ（1-2日）
+### Phase A-0: プロジェクトセットアップ（1-2日）✅
 **目標**: 開発環境の構築とプロジェクト基盤の整備
 
 - [x] リポジトリ初期化
-- [ ] Vite + React 19 セットアップ
-- [ ] TanStack Router 導入（ルーティングのみ、Query は Phase B で）
-- [ ] Tailwind CSS, shadcn/ui セットアップ
-- [ ] Biome 設定
-- [ ] 開発用Dockerコンテナ作成
-- [ ] CI/CD パイプライン基礎設定（Lint/Format/Build）
+- [x] Vite + React 19 セットアップ
+- [x] TanStack Router 導入（ルーティングのみ、Query は Phase B で）
+- [x] Tailwind CSS, shadcn/ui セットアップ
+- [x] Biome 設定
+- [x] 開発用Dockerコンテナ作成
+- [x] CI/CD パイプライン基礎設定（Lint/Format/Build）
 
-**成果物**: 開発可能な環境、基本設定ファイル群
+**成果物**: 開発可能な環境、基本設定ファイル群 ✅
 
 ---
 

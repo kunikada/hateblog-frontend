@@ -39,3 +39,7 @@ coverage/
 *.tmp
 .cache/
 .temp/
+
+# Generated files
+src/api/gen/
+src/routeTree.gen.ts
