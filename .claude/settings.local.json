@@ -10,7 +10,13 @@
       "Bash(rm:*)",
       "Bash(npx @biomejs/biome check:*)",
       "Bash(curl:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(npx shadcn@latest init:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm biome check:*)"
     ],
     "deny": [],
     "ask": []
