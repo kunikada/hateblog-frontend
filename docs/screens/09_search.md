@@ -2,12 +2,16 @@
 
 ## 画面概要
 - **画面名**: 検索結果
-- **URL**: `/search`
+- **URL**: `/search/:search`
 - **URLパラメータ**:
-  - `q`: 検索キーワード（必須）
+  - `search`: 検索キーワード（必須、URLパスに含まれる）
   - `min_users`: 最低ブックマーク件数フィルタ（オプション、デフォルト: 5）
   - `page`: ページ番号（デフォルト: 1）
 - **目的**: キーワード検索結果を表示（タイトル・抜粋・タグを全文検索）
+
+### URL例
+- `/search/Go言語` - 「Go言語」の検索結果
+- `/search/React` - 「React」の検索結果
 
 ## レイアウト構成
 
@@ -47,7 +51,7 @@
 
 ## エントリーカード構成
 
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### 特記事項（検索結果専用）
 - タイトル・抜粋内の検索キーワードをハイライト表示
@@ -97,24 +101,24 @@ GET /api/v1/search?q={keyword}&min_users={number}&limit=25&offset=0
 ```
 
 ### クリック計測
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## インタラクション
 
 ### 再検索
 1. 検索フォームにキーワードを入力
 2. 検索ボタンをクリック
-3. URLパラメータ更新: `?q={keyword}`
+3. `/search/{keyword}` に遷移
 4. API再リクエスト
 
 ### 閾値フィルタ選択
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### エントリーカードクリック
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### ページネーション
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## キーワードハイライト処理
 
@@ -159,7 +163,7 @@ function highlightKeyword(text, keyword) {
 - テキスト色: #333（黒）
 
 ### エントリーカード
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## アクセシビリティ
 

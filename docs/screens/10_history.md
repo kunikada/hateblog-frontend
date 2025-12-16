@@ -40,7 +40,7 @@
 
 ## エントリーカード構成
 
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### 特記事項（閲覧履歴専用）
 - 閲覧日時表示を追加
@@ -156,7 +156,7 @@ function clearHistoryByPeriod(days) {
 3. リストから削除
 
 ### エントリーカードクリック
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## 状態管理
 
@@ -193,7 +193,7 @@ function clearHistoryByPeriod(days) {
 - 位置: エントリーカードの右上
 
 ### エントリーカード
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## アクセシビリティ
 

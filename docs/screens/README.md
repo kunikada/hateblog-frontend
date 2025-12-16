@@ -7,32 +7,42 @@ hateblogフロントエンドの画面設計書一覧です。各画面の詳細
 
 | No | 画面名 | パス | 設計書 | 説明 |
 |----|--------|------|--------|------|
-| 1 | トップページ | `/` | [01_top.md](./01_top.md) | サイトのトップページ。検索フォームとナビゲーションを提供 |
-| 2 | 新着順エントリー一覧 | `/entries/new` | [02_entries_new.md](./02_entries_new.md) | 新着順のエントリー一覧を表示 |
-| 3 | 人気順エントリー一覧 | `/entries/hot` | [03_entries_hot.md](./03_entries_hot.md) | 人気順（ブックマーク件数順）のエントリー一覧を表示 |
-| 4 | アーカイブ（年選択） | `/archive` | [04_archive_year.md](./04_archive_year.md) | 年単位のアーカイブ一覧を表示 |
-| 5 | アーカイブ（月選択） | `/archive/:year` | [05_archive_month.md](./05_archive_month.md) | 指定年の月別アーカイブを表示 |
-| 6 | アーカイブ（日選択） | `/archive/:year/:month` | [06_archive_day.md](./06_archive_day.md) | 指定年月の日別アーカイブを表示 |
-| 7 | 年次ランキング | `/rankings/:year` | [07_ranking_yearly.md](./07_ranking_yearly.md) | 年次「はてブ・オブ・ザ・イヤー」ランキング |
-| 8 | 月次ランキング | `/rankings/:year/:month` | [08_ranking_monthly.md](./08_ranking_monthly.md) | 月間ランキングTOP 100 |
-| 9 | 週次ランキング | `/rankings/:year/week/:week` | [09_ranking_weekly.md](./09_ranking_weekly.md) | 週間ランキングTOP 100 |
-| 10 | タグ別エントリー一覧 | `/tags/:tag` | [10_tag_entries.md](./10_tag_entries.md) | 指定タグに関連するエントリー一覧 |
-| 11 | 検索結果 | `/search` | [11_search.md](./11_search.md) | キーワード検索結果を表示 |
-| 12 | 閲覧履歴 | `/history` | [12_history.md](./12_history.md) | ユーザーの閲覧履歴を表示（localStorageベース） |
+| 1 | トップページ | `/` | [02_entries_hot.md](./02_entries_hot.md) | 人気順エントリー一覧と同じ内容。SSG化対応（詳細は[top-page-ssg-strategy.md](../top-page-ssg-strategy.md)参照） |
+| 2 | 人気順エントリー一覧 | `/entries/:date/hot` | [02_entries_hot.md](./02_entries_hot.md) | 指定日付の人気順エントリー一覧（例: `/entries/today/hot`, `/entries/year-ago/hot`, `/entries/20240115/hot`） |
+| 3 | 新着順エントリー一覧 | `/entries/:date/new` | [03_entries_new.md](./03_entries_new.md) | 指定日付の新着順エントリー一覧（例: `/entries/today/new`, `/entries/20240115/new`） |
+| 4 | 年次ランキング | `/rankings/:year` | [04_ranking_yearly.md](./04_ranking_yearly.md) | 年次「はてブ・オブ・ザ・イヤー」ランキング（例: `/rankings/2024`） |
+| 5 | 月次ランキング | `/rankings/:year/:month` | [05_ranking_monthly.md](./05_ranking_monthly.md) | 月間ランキングTOP 100（例: `/rankings/2024/12`） |
+| 6 | 週次ランキング | `/rankings/:year/week/:week` | [06_ranking_weekly.md](./06_ranking_weekly.md) | 週間ランキングTOP 100（例: `/rankings/2024/week/50`） |
+| 7 | アーカイブ | `/archive` | [07_archive.md](./07_archive.md) | 日別のエントリー件数を1ページで全表示 |
+| 8 | タグ別エントリー一覧 | `/tags/:tag` | [08_tag_entries.md](./08_tag_entries.md) | 指定タグに関連するエントリー一覧 |
+| 9 | 検索結果 | `/search/:search` | [09_search.md](./09_search.md) | キーワード検索結果を表示（GETベース） |
+| 10 | 閲覧履歴 | `/history` | [10_history.md](./10_history.md) | ユーザーの閲覧履歴を表示（localStorageベース） |
 
 ## 共通要素
 
 ### レイアウト
 - ヘッダー（ロゴ、グローバルナビゲーション、検索フォーム）
 - フッター（コピーライト、リンク）
+- サイドバー／タグセクション（表示中の画面で頻出するタグを表示）
 - ダークモード対応
 
 ### グローバルナビゲーション
-- 新着
-- 人気
-- アーカイブ
-- ランキング
-- 閲覧履歴
+各リンクのURLはシステム時刻に基づいて動的に生成されます。
+
+- 本日の人気エントリー → `/entries/{今日の日付}/hot`
+- 本日の新着エントリー → `/entries/{今日の日付}/new`
+- 1年前の人気エントリー → `/entries/{1年前の日付}/hot`
+- 先週のランキング → `/rankings/{該当年}/week/{先週の週番号}`
+- 今月のランキング → `/rankings/{該当年}/{今月}`
+- アーカイブ → `/archive`
+- 閲覧履歴 → `/history`
+
+例（2024年12月15日の場合）:
+- `/entries/20241215/hot`
+- `/entries/20241215/new`
+- `/entries/20231215/hot`
+- `/rankings/2024/week/49`
+- `/rankings/2024/12`
 
 ### エントリーカード共通要素
 - タイトル
@@ -49,15 +59,19 @@ hateblogフロントエンドの画面設計書一覧です。各画面の詳細
 ### フィルタ機能
 - はてなブックマーク件数閾値（5/10/50/100/500/1000 users）
 
-## 技術スタック（想定）
-- フレームワーク: React / Next.js / Vue.js など
-- スタイリング: Tailwind CSS / CSS Modules など
-- 状態管理: Context API / Zustand / Recoil など
-- API通信: Axios / Fetch API
-- ルーティング: React Router / Next.js Router など
+## 技術スタック
+- フレームワーク: React（Next.jsは使用しない）
+- UI コンポーネント: shadcn/ui
+- スタイリング: Tailwind CSS
+- データフェッチ: TanStack Query
+- ルーティング: TanStack Router
+- API通信: Axios / Fetch API（OpenAPIクライアント生成ライブラリに依存）
+- トップページ: SSG化対応（詳細は[top-page-ssg-strategy.md](../top-page-ssg-strategy.md)参照）
 
 ## デザインガイドライン
 - カラー: Hatebuブルー + モノクロベース
-- レスポンシブ対応: PC 2列 / SP 1列
-- カード型UI
+- レスポンシブ対応
+  - PC: リスト型表示
+  - タブレット: 2列カード表示
+  - スマホ: 1列カード表示
 - ダークモード対応

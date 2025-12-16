@@ -97,7 +97,7 @@ GET /api/v1/rankings/yearly?year={year}&limit={number}
 ```
 
 ### クリック計測
-エントリーカードクリック時は新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+エントリーカードクリック時は新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## インタラクション
 
@@ -110,10 +110,10 @@ GET /api/v1/rankings/yearly?year={year}&limit={number}
 - `/rankings/{year}/{month}` に遷移
 
 ### エントリーカードクリック
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### 共有アクション
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## 状態管理
 

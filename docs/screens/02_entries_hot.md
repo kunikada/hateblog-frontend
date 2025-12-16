@@ -2,12 +2,17 @@
 
 ## 画面概要
 - **画面名**: 人気順エントリー一覧
-- **URL**: `/entries/hot`
+- **URL**: `/entries/:date/hot`
 - **URLパラメータ**:
-  - `date`: 対象日付（YYYYMMDD形式、省略時は今日）
+  - `date`: 対象日付（YYYYMMDD形式、または `today`, `year-ago` などの特殊値）
   - `min_users`: 最低ブックマーク件数フィルタ（デフォルト: 10）
   - `page`: ページ番号（デフォルト: 1）
 - **目的**: 指定日付のエントリーを人気順（bookmark_count DESC, posted_at DESC）で表示
+
+### URL例
+- `/entries/today/hot` - 本日の人気エントリー
+- `/entries/year-ago/hot` - 1年前の人気エントリー
+- `/entries/20241215/hot` - 2024年12月15日の人気エントリー
 
 ## 新着順エントリー一覧との差分
 
@@ -55,7 +60,7 @@
 
 ## エントリーカード構成
 
-新着順エントリー一覧と同じ構成。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ構成。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### 特記事項
 - ブックマーク件数バッジをより目立たせる
@@ -78,24 +83,24 @@ GET /api/v1/entries/hot?date={YYYYMMDD}&min_users={number}&limit=25&offset=0
 - `offset`: オフセット（ページネーション用）
 
 #### レスポンス
-新着順エントリー一覧と同じフォーマット。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じフォーマット。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ソート順が異なる点に注意:
 - `bookmark_count DESC, posted_at DESC`
 
 ### クリック計測
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## インタラクション
 
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### 特記事項
 - デフォルトの閾値フィルタが「10 users」で初期選択される
 
 ## 状態管理
 
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### ローカルステート
 - 選択日付（date）
@@ -108,7 +113,7 @@ GET /api/v1/entries/hot?date={YYYYMMDD}&min_users={number}&limit=25&offset=0
 
 ## デザインガイドライン
 
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### ブックマーク件数バッジ（人気順専用拡張）
 - 100-499 users: ゴールド背景（#FFD700）
@@ -118,15 +123,15 @@ GET /api/v1/entries/hot?date={YYYYMMDD}&min_users={number}&limit=25&offset=0
 
 ## アクセシビリティ
 
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## パフォーマンス
 
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## エラーハンドリング
 
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## テスト観点
 
@@ -143,13 +148,13 @@ GET /api/v1/entries/hot?date={YYYYMMDD}&min_users={number}&limit=25&offset=0
 - [ ] 閾値フィルタを変更するとエントリーがフィルタされる
 - [ ] ソート順がブックマーク件数降順になっている
 - [ ] 同一ブックマーク件数の場合は投稿日時降順になっている
-- その他の機能テストは [02_entries_new.md](./02_entries_new.md) と同じ
+- その他の機能テストは [03_entries_new.md](./03_entries_new.md) と同じ
 
 ### レスポンシブテスト
-- 新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+- 新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### パフォーマンステスト
-- 新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+- 新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## 備考
 - 人気順エントリー一覧は新着順エントリー一覧のバリエーションであり、多くの実装を共通化できる

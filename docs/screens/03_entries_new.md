@@ -2,12 +2,16 @@
 
 ## 画面概要
 - **画面名**: 新着順エントリー一覧
-- **URL**: `/entries/new`
+- **URL**: `/entries/:date/new`
 - **URLパラメータ**:
-  - `date`: 対象日付（YYYYMMDD形式、省略時は今日）
+  - `date`: 対象日付（YYYYMMDD形式、または `today`, `year-ago` などの特殊値）
   - `min_users`: 最低ブックマーク件数フィルタ（デフォルト: 5）
   - `page`: ページ番号（デフォルト: 1）
 - **目的**: 指定日付のエントリーを新着順（posted_at DESC）で表示
+
+### URL例
+- `/entries/today/new` - 本日の新着エントリー
+- `/entries/20241215/new` - 2024年12月15日の新着エントリー
 
 ## レイアウト構成
 
@@ -119,7 +123,7 @@ Content-Type: application/json
 1. 日付選択カレンダーをクリック
 2. カレンダーモーダル表示
 3. 日付を選択
-4. `/entries/new?date={YYYYMMDD}` に遷移
+4. `/entries/{YYYYMMDD}/new` に遷移
 
 ### 前日/翌日ナビゲーション
 - 前日ボタン: 1日前の日付で再読み込み

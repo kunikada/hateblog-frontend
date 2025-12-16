@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hateblog - デザインモックアップ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'hatena-blue': '#008FDE',
+                        'hatena-blue-dark': '#0070B8',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* カスタムスタイル */
+        .entry-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .entry-card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* トップに戻るボタンのアニメーション */
+        #scroll-to-top {
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #scroll-to-top.hidden {
+            opacity: 0;
+            transform: translateY(100px);
+            pointer-events: none;
+        }
+
+        /* ローディングアニメーション */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        /* サイドバーのスライドアニメーション */
+        .sidebar-mobile {
+            transition: transform 0.3s ease-in-out;
+        }
+        .sidebar-mobile.closed {
+            transform: translateX(100%);
+        }
+        .sidebar-mobile.open {
+            transform: translateX(0);
+        }
+
+        /* オーバーレイのアニメーション */
+        .sidebar-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .sidebar-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors">
+    <!-- ヘッダー（ロゴとタイトル） -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-hatena-blue rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                        H
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Hateblog</h1>
+                </div>
+                <!-- 検索フォーム（PC） -->
+                <div class="hidden md:block flex-1 max-w-md ml-8">
+                    <input type="search" placeholder="キーワード検索..."
+                           class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-hatena-blue focus:border-transparent">
+                </div>
+                <!-- 右側のボタン群 -->
+                <div class="flex items-center gap-2">
+                    <!-- ダークモード切り替えボタン -->
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600">
+                        <span class="dark:hidden">🌙</span>
+                        <span class="hidden dark:inline">☀️</span>
+                    </button>
+                    <!-- メニューボタン（タブレット・スマホ） -->
+                    <button id="menu-toggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- 検索フォーム（モバイル） -->
+            <div class="md:hidden mt-3">
+                <input type="search" placeholder="キーワード検索..."
+                       class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+            </div>
+        </div>
+    </header>
+
+    <!-- グローバルナビゲーション（固定） -->
+    <nav class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-40 border-t border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 py-3">
+            <ul class="flex flex-wrap gap-2 text-sm">
+                <li><a href="#" class="px-3 py-1.5 rounded-md bg-hatena-blue text-white hover:bg-hatena-blue-dark">本日の人気</a></li>
+                <li><a href="#" class="px-3 py-1.5 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">本日の新着</a></li>
+                <li><a href="#" class="px-3 py-1.5 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">1年前の人気</a></li>
+                <li><a href="#" class="px-3 py-1.5 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">先週のランキング</a></li>
+                <li><a href="#" class="px-3 py-1.5 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">今月のランキング</a></li>
+                <li><a href="#" class="px-3 py-1.5 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">アーカイブ</a></li>
+                <li><a href="#" class="px-3 py-1.5 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">閲覧履歴</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="container mx-auto px-4 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- メインカラム -->
+            <div class="flex-1">
+                <!-- ページタイトルとフィルター -->
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">本日の人気エントリー</h2>
+
+                    <!-- はてブ数フィルター -->
+                    <div class="flex flex-wrap gap-2 items-center">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">フィルター:</span>
+                        <button class="px-3 py-1 rounded-md text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600">全て</button>
+                        <button class="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">5+ users</button>
+                        <button class="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">10+ users</button>
+                        <button class="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">50+ users</button>
+                        <button class="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">100+ users</button>
+                        <button class="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">500+ users</button>
+                        <button class="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">1000+ users</button>
+                    </div>
+                </div>
+
+                <!-- エントリーカード一覧（PC: リスト型） -->
+                <div class="space-y-4">
+                    <!-- エントリーカード 1 -->
+                    <article class="entry-card bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg p-5">
+                        <div class="flex gap-4">
+                            <!-- Favicon -->
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                            </div>
+
+                            <!-- コンテンツ -->
+                            <div class="flex-1 min-w-0">
+                                <!-- タイトル -->
+                                <h3 class="text-lg font-bold mb-2">
+                                    <a href="#" class="text-gray-900 dark:text-white hover:text-hatena-blue dark:hover:text-hatena-blue">
+                                        Next.js 15の新機能と移行ガイド - 完全版
+                                    </a>
+                                </h3>
+
+                                <!-- メタ情報 -->
+                                <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                    <span>2024-12-15 10:30</span>
+                                    <span class="flex items-center gap-1">
+                                        <span class="text-hatena-blue">★</span>
+                                        <strong class="text-hatena-blue font-bold">1,234</strong> users
+                                    </span>
+                                    <a href="#" class="text-hatena-blue hover:underline">ブックマークに追加</a>
+                                </div>
+
+                                <!-- 記事抜粋 -->
+                                <p class="text-gray-700 dark:text-gray-300 text-sm mb-3 line-clamp-2">
+                                    Next.js 15がリリースされました。この記事では、新機能の詳細と既存プロジェクトからの移行方法について解説します。App Routerの改善、Server Actionsの強化、パフォーマンス最適化など...
+                                </p>
+
+                                <!-- タグ -->
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">#JavaScript</span>
+                                    <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">#Next.js</span>
+                                    <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">#フロントエンド</span>
+                                </div>
+
+                                <!-- アクション -->
+                                <div class="flex flex-wrap gap-3 text-xs">
+                                    <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-hatena-blue">続きを読む →</a>
+                                    <button class="text-gray-600 dark:text-gray-400 hover:text-blue-500">Twitter</button>
+                                    <button class="text-gray-600 dark:text-gray-400 hover:text-blue-600">Facebook</button>
+                                    <button class="text-gray-600 dark:text-gray-400 hover:text-red-500">Pocket</button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- エントリーカード 2 -->
+                    <article class="entry-card bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg p-5">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-bold mb-2">
+                                    <a href="#" class="text-gray-900 dark:text-white hover:text-hatena-blue dark:hover:text-hatena-blue">
+                                        Rustで始めるシステムプログラミング入門
+                                    </a>
+                                </h3>
+                                <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                    <span>2024-12-15 09:15</span>
+                                    <span class="flex items-center gap-1">
+                                        <span class="text-hatena-blue">★</span>
+                                        <strong class="text-hatena-blue font-bold">892</strong> users
+                                    </span>
+                                    <a href="#" class="text-hatena-blue hover:underline">ブックマークに追加</a>
+                                </div>
+                                <p class="text-gray-700 dark:text-gray-300 text-sm mb-3 line-clamp-2">
+                                    Rustの基礎から実践的なシステムプログラミングまで、実例を交えて解説します。メモリ安全性、並行処理、エラーハンドリングなど、Rustの特徴的な機能を学びましょう...
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">#Rust</span>
+                                    <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">#プログラミング</span>
+                                    <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">#システム</span>
+                                </div>
+                                <div class="flex flex-wrap gap-3 text-xs">
+                                    <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-hatena-blue">続きを読む →</a>
+                                    <button class="text-gray-600 dark:text-gray-400 hover:text-blue-500">Twitter</button>
+                                    <button class="text-gray-600 dark:text-gray-400 hover:text-blue-600">Facebook</button>
+                                    <button class="text-gray-600 dark:text-gray-400 hover:text-red-500">Pocket</button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- エントリーカード 3 -->
+                    <article class="entry-card bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg p-5">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-bold mb-2">
+                                    <a href="#" class="text-gray-900 dark:text-white hover:text-hatena-blue dark:hover:text-hatena-blue">
+                                        クリーンアーキテクチャ実践ガイド 2024年版
+                                    </a>
+                                </h3>
+                                <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                    <span>2024-12-15 08:45</span>
+                                    <span class="flex items-center gap-1">
+                                        <span class="text-hatena-blue">★</span>
+                                        <strong class="text-hatena-blue font-bold">756</strong> users
+                                    </span>
+                                    <a href="#" class="text-hatena-blue hover:underline">ブックマークに追加</a>
+                                </div>
+                                <p class="text-gray-700 dark:text-gray-300 text-sm mb-3 line-clamp-2">
+                                    保守性の高いアプリケーション設計のためのクリーンアーキテクチャ。依存性逆転の原則、ドメイン駆動設計との組み合わせ、実装パターンなどを詳しく解説します...
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">#設計</span>
+                                    <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">#アーキテクチャ</span>
+                                    <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">#ソフトウェア開発</span>
+                                </div>
+                                <div class="flex flex-wrap gap-3 text-xs">
+                                    <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-hatena-blue">続きを読む →</a>
+                                    <button class="text-gray-600 dark:text-gray-400 hover:text-blue-500">Twitter</button>
+                                    <button class="text-gray-600 dark:text-gray-400 hover:text-blue-600">Facebook</button>
+                                    <button class="text-gray-600 dark:text-gray-400 hover:text-red-500">Pocket</button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- インフィニットスクロール ローディングインジケーター -->
+                <div id="loading-indicator" class="mt-8 flex justify-center items-center gap-3 py-4">
+                    <div class="w-8 h-8 border-4 border-hatena-blue border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-gray-600 dark:text-gray-400">読み込み中...</span>
+                </div>
+            </div>
+
+            <!-- サイドバー（PC表示） -->
+            <aside class="hidden lg:block w-80">
+                <!-- 人気タグ -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 mb-6">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">人気のタグ</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#JavaScript</a>
+                        <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#Python</a>
+                        <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#React</a>
+                        <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#AI</a>
+                        <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#機械学習</a>
+                        <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#設計</a>
+                        <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#AWS</a>
+                        <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#Docker</a>
+                        <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#セキュリティ</a>
+                        <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#データベース</a>
+                    </div>
+                </div>
+
+                <!-- 週間ランキング -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">週間ランキング</h3>
+                    <ol class="space-y-3">
+                        <li class="flex gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 bg-yellow-400 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                            <a href="#" class="text-sm text-gray-700 dark:text-gray-300 hover:text-hatena-blue line-clamp-2">GPT-5発表 - AIの新時代が始まる</a>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 bg-gray-400 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                            <a href="#" class="text-sm text-gray-700 dark:text-gray-300 hover:text-hatena-blue line-clamp-2">TypeScript 5.4の新機能完全ガイド</a>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 bg-orange-400 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                            <a href="#" class="text-sm text-gray-700 dark:text-gray-300 hover:text-hatena-blue line-clamp-2">初心者のためのDocker完全入門</a>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 bg-gray-300 text-gray-700 rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                            <a href="#" class="text-sm text-gray-700 dark:text-gray-300 hover:text-hatena-blue line-clamp-2">パフォーマンス改善テクニック集</a>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 bg-gray-300 text-gray-700 rounded-full flex items-center justify-center text-sm font-bold">5</span>
+                            <a href="#" class="text-sm text-gray-700 dark:text-gray-300 hover:text-hatena-blue line-clamp-2">Reactのベストプラクティス2024</a>
+                        </li>
+                    </ol>
+                    <a href="#" class="block mt-4 text-sm text-hatena-blue hover:underline text-center">もっと見る →</a>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- モバイル用サイドバーオーバーレイ -->
+    <div id="sidebar-overlay" class="sidebar-overlay hidden fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+
+    <!-- モバイル用サイドバー -->
+    <aside id="sidebar-mobile" class="sidebar-mobile closed fixed top-0 right-0 bottom-0 w-80 bg-gray-50 dark:bg-gray-900 z-50 overflow-y-auto lg:hidden">
+        <div class="p-4">
+            <!-- 閉じるボタン -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">メニュー</h2>
+                <button id="sidebar-close" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                    <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 人気タグ -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 mb-6">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">人気のタグ</h3>
+                <div class="flex flex-wrap gap-2">
+                    <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#JavaScript</a>
+                    <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#Python</a>
+                    <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#React</a>
+                    <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#AI</a>
+                    <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#機械学習</a>
+                    <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#設計</a>
+                    <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#AWS</a>
+                    <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#Docker</a>
+                    <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#セキュリティ</a>
+                    <a href="#" class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-hatena-blue hover:text-white transition-colors">#データベース</a>
+                </div>
+            </div>
+
+            <!-- 週間ランキング -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">週間ランキング</h3>
+                <ol class="space-y-3">
+                    <li class="flex gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 bg-yellow-400 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                        <a href="#" class="text-sm text-gray-700 dark:text-gray-300 hover:text-hatena-blue line-clamp-2">GPT-5発表 - AIの新時代が始まる</a>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 bg-gray-400 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                        <a href="#" class="text-sm text-gray-700 dark:text-gray-300 hover:text-hatena-blue line-clamp-2">TypeScript 5.4の新機能完全ガイド</a>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 bg-orange-400 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                        <a href="#" class="text-sm text-gray-700 dark:text-gray-300 hover:text-hatena-blue line-clamp-2">初心者のためのDocker完全入門</a>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 bg-gray-300 text-gray-700 rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                        <a href="#" class="text-sm text-gray-700 dark:text-gray-300 hover:text-hatena-blue line-clamp-2">パフォーマンス改善テクニック集</a>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 bg-gray-300 text-gray-700 rounded-full flex items-center justify-center text-sm font-bold">5</span>
+                        <a href="#" class="text-sm text-gray-700 dark:text-gray-300 hover:text-hatena-blue line-clamp-2">Reactのベストプラクティス2024</a>
+                    </li>
+                </ol>
+                <a href="#" class="block mt-4 text-sm text-hatena-blue hover:underline text-center">もっと見る →</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- フッター -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
+        <div class="container mx-auto px-4 py-6">
+            <p class="text-center text-sm text-gray-600 dark:text-gray-400">&copy; 2024 Hateblog. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- トップに戻るボタン -->
+    <button id="scroll-to-top" class="hidden fixed bottom-6 right-6 z-50 p-4 rounded-full bg-hatena-blue text-white shadow-lg hover:bg-hatena-blue-dark transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+        </svg>
+    </button>
+
+    <script>
+        // ダークモード切り替え
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        // 初期状態をローカルストレージから読み込み
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        });
+
+        // トップに戻るボタン
+        const scrollToTopBtn = document.getElementById('scroll-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollToTopBtn.classList.remove('hidden');
+            } else {
+                scrollToTopBtn.classList.add('hidden');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // インフィニットスクロールのデモ
+        const loadingIndicator = document.getElementById('loading-indicator');
+        let isLoading = false;
+
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.innerHeight + window.scrollY;
+            const pageHeight = document.documentElement.scrollHeight;
+
+            // ページ下部に近づいたら次のデータを読み込む（デモ）
+            if (scrollPosition >= pageHeight - 500 && !isLoading) {
+                isLoading = true;
+                loadingIndicator.style.display = 'flex';
+
+                // 実際のアプリでは、ここでAPIから次のデータを取得
+                setTimeout(() => {
+                    // デモなので単にローディングを非表示にする
+                    loadingIndicator.style.display = 'none';
+                    isLoading = false;
+                }, 1500);
+            }
+        });
+
+        // 初期状態でローディングインジケーターを非表示
+        loadingIndicator.style.display = 'none';
+
+        // モバイルサイドバーの開閉
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebarMobile = document.getElementById('sidebar-mobile');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const sidebarClose = document.getElementById('sidebar-close');
+
+        function openSidebar() {
+            sidebarMobile.classList.remove('closed');
+            sidebarMobile.classList.add('open');
+            sidebarOverlay.classList.remove('hidden');
+            // スクロールを無効化
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebarMobile.classList.remove('open');
+            sidebarMobile.classList.add('closed');
+            sidebarOverlay.classList.add('hidden');
+            // スクロールを有効化
+            document.body.style.overflow = '';
+        }
+
+        menuToggle.addEventListener('click', openSidebar);
+        sidebarClose.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // ESCキーで閉じる
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !sidebarMobile.classList.contains('closed')) {
+                closeSidebar();
+            }
+        });
+    </script>
+</body>
+</html>

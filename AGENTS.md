@@ -1,29 +1,29 @@
-# 作業ルール
+# Work Rules
 
-手戻りによる工数の増加を防ぐため、以下のルールに従って作業を進める
-応答は必ず日本語とする
+To avoid additional effort caused by rework, follow the rules below.
+All responses must be written in Japanese.
 
-## ドキュメント
+## Documents
 
-- 必要最低限の内容にする
-- 1つのファイルは500行程度までに収める
-- サンプルや事例を記載する必要があると判断したら確認する
-- 要点をまとめた文章とサンプルや事例のファイルは別にする
-- 記述する対象のファイルが正しいか、重複していないか確認する
+- Keep the content to the bare minimum required.
+- Keep each file to about 500 lines or fewer.
+- If you believe samples or examples are necessary, ask before adding them.
+- Separate summary text from any sample or example files.
+- Confirm that you are writing in the correct file and not duplicating content.
 
-## コーディング・編集
+## Coding and Editing
 
-- 実装や修正作業を行う前に方針を提示して同意を得る
-- 指示と違うことを行う場合は説明して同意を得る
-- 設定や方針を変更する場合は説明して同意を得る
-- 作業中に別の問題が見つかった場合はいったん確認する
-- プロジェクトによって判断に迷う場合は確認する
-- 作業中に作成した一時ファイルは必ず消す
-- 責務を考慮してディレクトリやファイルを構成する
-- JavaScriptでデバッグメッセージを追加するときはconsole.debugを使う
+- Present your approach and gain approval before implementing or modifying anything.
+- If you must do something different from the instructions, explain and get consent first.
+- When changing configurations or policies, explain and obtain consent.
+- If another issue is found while working, pause and confirm before proceeding.
+- Ask questions whenever project-specific judgment is unclear.
+- Delete any temporary files created during the work.
+- Structure directories and files with their responsibilities in mind.
+- When adding debug messages in JavaScript, use `console.debug`.
 
-## テスト・実行
+## Testing
 
-- 必要であればテストコードを作成する
-- テストを実行して結果を確認する
-- プロセスをkillするとエディタが終了する場合があるので事前に確認する
+- Create tests when necessary.
+- Run the tests and verify the results.
+- Killing a process may terminate the editor, so confirm beforehand.

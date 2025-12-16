@@ -47,7 +47,7 @@
 
 ## エントリーカード構成
 
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## API連携
 
@@ -98,21 +98,21 @@ GET /api/v1/tags
 全タグリストから該当タグを検索。
 
 ### クリック計測
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## インタラクション
 
 ### 閾値フィルタ選択
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### エントリーカードクリック
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ### タグクリック（関連タグ）
 - `/tags/{tag_name}` に遷移
 
 ### ページネーション
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## 状態管理
 
@@ -148,7 +148,7 @@ GET /api/v1/tags
 - ホバー時: 背景色をHatebuブルー、テキスト色を白
 
 ### エントリーカード
-新着順エントリー一覧と同じ。詳細は [02_entries_new.md](./02_entries_new.md) を参照。
+新着順エントリー一覧と同じ。詳細は [03_entries_new.md](./03_entries_new.md) を参照。
 
 ## アクセシビリティ
 
