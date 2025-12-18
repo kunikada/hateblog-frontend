@@ -16,7 +16,11 @@
       "Bash(pnpm add:*)",
       "Bash(pnpm typecheck:*)",
       "Bash(pnpm build:*)",
-      "Bash(pnpm biome check:*)"
+      "Bash(pnpm biome check:*)",
+      "Bash(cat:*)",
+      "Bash(pnpm tsc:*)",
+      "Bash(timeout 10 pnpm dev:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
+import { DateNavigation } from '@/components/entry/date-navigation'
 import { EntryCard } from '@/components/entry/entry-card'
 import { FilterBar } from '@/components/entry/filter-bar'
 import { SkeletonList } from '@/components/entry/skeleton-list'
@@ -11,8 +12,8 @@ type SearchParams = {
   date?: string
 }
 
-export const Route = createFileRoute('/')({
-  component: Index,
+export const Route = createFileRoute('/entries/past')({
+  component: PastEntries,
   validateSearch: (search: Record<string, unknown>): SearchParams => {
     return {
       date: typeof search.date === 'string' ? search.date : undefined,
@@ -20,13 +21,26 @@ export const Route = createFileRoute('/')({
   },
 })
 
-function Index() {
+function PastEntries() {
+  const search = Route.useSearch()
   const [selectedThreshold, setSelectedThreshold] = useState<number | null>(null)
   const [displayedCount, setDisplayedCount] = useState(10)
   const [isLoading, setIsLoading] = useState(false)
 
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const loadMoreStep = 10
+
+  // Get the date to display (1 year ago from today if not specified)
+  const getDisplayDate = (): Date => {
+    if (search.date) {
+      return new Date(search.date)
+    }
+    const oneYearAgo = new Date()
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+    return oneYearAgo
+  }
+
+  const displayDate = getDisplayDate()
 
   // Filter entries
   const filteredEntries = filterEntriesByBookmarkCount(mockEntries, selectedThreshold)
@@ -64,9 +78,16 @@ function Index() {
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Main Column */}
       <div className="flex-1">
-        {/* Page Title and Filter */}
+        {/* Page Title */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-4">本日の人気エントリー</h2>
+          <h2 className="text-2xl font-bold mb-4">1年前の人気エントリー</h2>
+
+          {/* Date Navigation */}
+          <div className="mb-4">
+            <DateNavigation date={displayDate} />
+          </div>
+
+          {/* Filter Bar */}
           <FilterBar
             selectedThreshold={selectedThreshold}
             onThresholdChange={handleThresholdChange}

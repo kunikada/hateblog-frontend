@@ -67,50 +67,32 @@ export function AppLayout({ children }: AppLayoutProps) {
               </Link>
             </li>
             <li>
-              <Link
-                to="/"
-                className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted"
-              >
+              <Link to="/" className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted">
                 本日の新着
               </Link>
             </li>
             <li>
-              <Link
-                to="/"
-                className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted"
-              >
+              <Link to="/" className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted">
                 1年前の人気
               </Link>
             </li>
             <li>
-              <Link
-                to="/"
-                className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted"
-              >
+              <Link to="/" className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted">
                 先週のランキング
               </Link>
             </li>
             <li>
-              <Link
-                to="/"
-                className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted"
-              >
+              <Link to="/" className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted">
                 今月のランキング
               </Link>
             </li>
             <li>
-              <Link
-                to="/"
-                className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted"
-              >
+              <Link to="/" className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted">
                 アーカイブ
               </Link>
             </li>
             <li>
-              <Link
-                to="/"
-                className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted"
-              >
+              <Link to="/" className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted">
                 閲覧履歴
               </Link>
             </li>

@@ -1,15 +1,16 @@
+import { Link } from '@tanstack/react-router'
 import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
 
 import { Button } from '@/components/ui/button'
 
 type DateNavigationProps = {
   date: Date
+  routePath?: '/' | '/entries/past'
 }
 
-export function DateNavigation({ date }: DateNavigationProps) {
+export function DateNavigation({ date, routePath = '/entries/past' }: DateNavigationProps) {
   const previousDay = new Date(date)
   previousDay.setDate(previousDay.getDate() - 1)
 
@@ -23,7 +24,7 @@ export function DateNavigation({ date }: DateNavigationProps) {
   return (
     <div className="flex items-center gap-2">
       <Button variant="outline" size="icon" asChild>
-        <Link to="/" search={{ date: formatDateForUrl(previousDay) }}>
+        <Link to={routePath} search={{ date: formatDateForUrl(previousDay) }}>
           <ChevronLeft className="h-4 w-4" />
           <span className="sr-only">前日</span>
         </Link>
@@ -36,7 +37,7 @@ export function DateNavigation({ date }: DateNavigationProps) {
       </div>
 
       <Button variant="outline" size="icon" asChild disabled={isToday}>
-        <Link to="/" search={{ date: formatDateForUrl(nextDay) }} disabled={isToday}>
+        <Link to={routePath} search={{ date: formatDateForUrl(nextDay) }} disabled={isToday}>
           <ChevronRight className="h-4 w-4" />
           <span className="sr-only">翌日</span>
         </Link>

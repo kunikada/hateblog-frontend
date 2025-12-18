@@ -7,20 +7,11 @@ import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { filterEntriesByBookmarkCount, mockEntries } from '@/mocks/entries'
 
-type SearchParams = {
-  date?: string
-}
-
-export const Route = createFileRoute('/')({
-  component: Index,
-  validateSearch: (search: Record<string, unknown>): SearchParams => {
-    return {
-      date: typeof search.date === 'string' ? search.date : undefined,
-    }
-  },
+export const Route = createFileRoute('/entries/new')({
+  component: NewEntries,
 })
 
-function Index() {
+function NewEntries() {
   const [selectedThreshold, setSelectedThreshold] = useState<number | null>(null)
   const [displayedCount, setDisplayedCount] = useState(10)
   const [isLoading, setIsLoading] = useState(false)
@@ -28,8 +19,13 @@ function Index() {
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const loadMoreStep = 10
 
+  // Sort entries by timestamp (newest first)
+  const sortedEntries = [...mockEntries].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+  )
+
   // Filter entries
-  const filteredEntries = filterEntriesByBookmarkCount(mockEntries, selectedThreshold)
+  const filteredEntries = filterEntriesByBookmarkCount(sortedEntries, selectedThreshold)
   const displayedEntries = filteredEntries.slice(0, displayedCount)
   const hasMore = displayedCount < filteredEntries.length
 
@@ -66,7 +62,7 @@ function Index() {
       <div className="flex-1">
         {/* Page Title and Filter */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-4">本日の人気エントリー</h2>
+          <h2 className="text-2xl font-bold mb-4">本日の新着エントリー</h2>
           <FilterBar
             selectedThreshold={selectedThreshold}
             onThresholdChange={handleThresholdChange}
