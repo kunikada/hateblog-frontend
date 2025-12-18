@@ -7,17 +7,8 @@ import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { filterEntriesByBookmarkCount, mockEntries } from '@/mocks/entries'
 
-type SearchParams = {
-  date?: string
-}
-
 export const Route = createFileRoute('/')({
   component: Index,
-  validateSearch: (search: Record<string, unknown>): SearchParams => {
-    return {
-      date: typeof search.date === 'string' ? search.date : undefined,
-    }
-  },
 })
 
 function Index() {

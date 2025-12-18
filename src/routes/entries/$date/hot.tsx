@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
+import { DateNavigation } from '@/components/entry/date-navigation'
 import { EntryCard } from '@/components/entry/entry-card'
 import { FilterBar } from '@/components/entry/filter-bar'
 import { SkeletonList } from '@/components/entry/skeleton-list'
@@ -7,11 +8,12 @@ import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { filterEntriesByBookmarkCount, mockEntries } from '@/mocks/entries'
 
-export const Route = createFileRoute('/entries/new')({
-  component: NewEntries,
+export const Route = createFileRoute('/entries/$date/hot')({
+  component: HotEntries,
 })
 
-function NewEntries() {
+function HotEntries() {
+  const { date } = Route.useParams()
   const [selectedThreshold, setSelectedThreshold] = useState<number | null>(null)
   const [displayedCount, setDisplayedCount] = useState(10)
   const [isLoading, setIsLoading] = useState(false)
@@ -19,13 +21,8 @@ function NewEntries() {
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const loadMoreStep = 10
 
-  // Sort entries by timestamp (newest first)
-  const sortedEntries = [...mockEntries].sort(
-    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-  )
-
   // Filter entries
-  const filteredEntries = filterEntriesByBookmarkCount(sortedEntries, selectedThreshold)
+  const filteredEntries = filterEntriesByBookmarkCount(mockEntries, selectedThreshold)
   const displayedEntries = filteredEntries.slice(0, displayedCount)
   const hasMore = displayedCount < filteredEntries.length
 
@@ -60,9 +57,16 @@ function NewEntries() {
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Main Column */}
       <div className="flex-1">
-        {/* Page Title and Filter */}
+        {/* Page Title */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-4">本日の新着エントリー</h2>
+          <h2 className="text-2xl font-bold mb-4">{date}の人気エントリー</h2>
+
+          {/* Date Navigation */}
+          <div className="mb-4">
+            <DateNavigation date={new Date(date)} routeType="hot" />
+          </div>
+
+          {/* Filter Bar */}
           <FilterBar
             selectedThreshold={selectedThreshold}
             onThresholdChange={handleThresholdChange}

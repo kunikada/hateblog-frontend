@@ -8,21 +8,12 @@ import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { filterEntriesByBookmarkCount, mockEntries } from '@/mocks/entries'
 
-type SearchParams = {
-  date?: string
-}
-
-export const Route = createFileRoute('/entries/past')({
-  component: PastEntries,
-  validateSearch: (search: Record<string, unknown>): SearchParams => {
-    return {
-      date: typeof search.date === 'string' ? search.date : undefined,
-    }
-  },
+export const Route = createFileRoute('/entries/$date/new')({
+  component: NewEntries,
 })
 
-function PastEntries() {
-  const search = Route.useSearch()
+function NewEntries() {
+  const { date } = Route.useParams()
   const [selectedThreshold, setSelectedThreshold] = useState<number | null>(null)
   const [displayedCount, setDisplayedCount] = useState(10)
   const [isLoading, setIsLoading] = useState(false)
@@ -30,20 +21,13 @@ function PastEntries() {
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const loadMoreStep = 10
 
-  // Get the date to display (1 year ago from today if not specified)
-  const getDisplayDate = (): Date => {
-    if (search.date) {
-      return new Date(search.date)
-    }
-    const oneYearAgo = new Date()
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
-    return oneYearAgo
-  }
-
-  const displayDate = getDisplayDate()
+  // Sort entries by timestamp (newest first)
+  const sortedEntries = [...mockEntries].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+  )
 
   // Filter entries
-  const filteredEntries = filterEntriesByBookmarkCount(mockEntries, selectedThreshold)
+  const filteredEntries = filterEntriesByBookmarkCount(sortedEntries, selectedThreshold)
   const displayedEntries = filteredEntries.slice(0, displayedCount)
   const hasMore = displayedCount < filteredEntries.length
 
@@ -80,11 +64,11 @@ function PastEntries() {
       <div className="flex-1">
         {/* Page Title */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-4">1年前の人気エントリー</h2>
+          <h2 className="text-2xl font-bold mb-4">{date}の新着エントリー</h2>
 
           {/* Date Navigation */}
           <div className="mb-4">
-            <DateNavigation date={displayDate} />
+            <DateNavigation date={new Date(date)} routeType="new" />
           </div>
 
           {/* Filter Bar */}
