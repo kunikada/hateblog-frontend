@@ -1,4 +1,4 @@
-import type { Entry } from '@/components/entry/entry-card'
+import type { Entry } from '@/components/common/entry-card'
 
 export type RankingEntry = Entry & {
   rank: number

@@ -1,4 +1,4 @@
-import { BookmarkIcon, Clock, ExternalLink, Share2 } from 'lucide-react'
+import { Calendar, ExternalLink, Share2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -32,65 +32,59 @@ export function EntryCard({ entry }: EntryCardProps) {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
   })
 
   const shareActions = [
     {
       name: 'Twitter',
       url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(entry.url)}&text=${encodeURIComponent(entry.title)}`,
-      color: 'hover:bg-blue-50 dark:hover:bg-blue-950',
+      color: 'hover:bg-info-50 dark:hover:bg-info-50/10',
     },
     {
       name: 'Facebook',
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(entry.url)}`,
-      color: 'hover:bg-blue-50 dark:hover:bg-blue-950',
+      color: 'hover:bg-info-50 dark:hover:bg-info-50/10',
     },
     {
       name: 'Pocket',
       url: `https://getpocket.com/edit?url=${encodeURIComponent(entry.url)}`,
-      color: 'hover:bg-red-50 dark:hover:bg-red-950',
+      color: 'hover:bg-error-50 dark:hover:bg-error-50/10',
     },
     {
       name: 'Instapaper',
       url: `https://www.instapaper.com/hello2?url=${encodeURIComponent(entry.url)}&title=${encodeURIComponent(entry.title)}`,
-      color: 'hover:bg-gray-50 dark:hover:bg-gray-950',
+      color: 'hover:bg-gray-100 dark:hover:bg-gray-800',
     },
     {
       name: 'Evernote',
       url: `https://www.evernote.com/clip.action?url=${encodeURIComponent(entry.url)}&title=${encodeURIComponent(entry.title)}`,
-      color: 'hover:bg-green-50 dark:hover:bg-green-950',
+      color: 'hover:bg-success-50 dark:hover:bg-success-50/10',
     },
   ]
 
   return (
     <article className="group rounded-lg border bg-card p-4 hover:shadow-md transition-shadow">
       <div className="flex flex-col gap-3">
-        {/* Header: Favicon, Domain, Timestamp */}
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          {entry.favicon ? (
-            <img src={entry.favicon} alt="" className="h-4 w-4 rounded-sm" loading="lazy" />
-          ) : (
-            <div className="h-4 w-4 rounded-sm bg-muted" />
-          )}
-          <span className="font-medium">{entry.domain}</span>
-          <span className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            {formattedDate}
-          </span>
-        </div>
-
-        {/* Title */}
+        {/* Title with Favicon */}
         <h3 className="font-semibold text-lg leading-tight">
           <a
             href={entry.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-[#00a4de] transition-colors flex items-start gap-1"
+            className="hover:text-hatebu-500 transition-colors flex items-start gap-2"
           >
+            {entry.favicon ? (
+              <img
+                src={entry.favicon}
+                alt=""
+                className="h-5 w-5 rounded-sm shrink-0 mt-0.5"
+                loading="lazy"
+              />
+            ) : (
+              <div className="h-5 w-5 rounded-sm bg-muted shrink-0 mt-0.5" />
+            )}
             <span className="flex-1">{entry.title}</span>
-            <ExternalLink className="h-4 w-4 flex-shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <ExternalLink className="h-4 w-4 shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
           </a>
         </h3>
 
@@ -110,19 +104,24 @@ export function EntryCard({ entry }: EntryCardProps) {
           </div>
         )}
 
-        {/* Footer: Bookmark Count, Share */}
-        <div className="flex items-center justify-between pt-2 border-t">
-          <div className="flex items-center gap-1 text-sm font-medium text-[#00a4de]">
-            <BookmarkIcon className="h-4 w-4 fill-current" />
-            <span>{entry.bookmarkCount.toLocaleString()} users</span>
+        {/* Footer: Bookmark Count, Domain, Timestamp, Share */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="font-medium text-hatebu-500">
+              {entry.bookmarkCount.toLocaleString()} users
+            </span>
+            <span className="font-medium">{entry.domain}</span>
+            <span className="flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              {formattedDate}
+            </span>
           </div>
 
           {/* Share Sheet */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="gap-1">
+              <Button variant="ghost" size="sm">
                 <Share2 className="h-4 w-4" />
-                共有
               </Button>
             </SheetTrigger>
             <SheetContent>

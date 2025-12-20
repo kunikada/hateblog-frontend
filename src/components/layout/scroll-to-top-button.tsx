@@ -23,7 +23,7 @@ export function ScrollToTopButton() {
     <Button
       onClick={scrollToTop}
       size="icon"
-      className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg bg-[#00a4de] hover:bg-[#0070b8]"
+      className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg bg-hatebu-500 hover:bg-hatebu-600"
     >
       <ArrowUp className="h-6 w-6" />
       <span className="sr-only">トップに戻る</span>

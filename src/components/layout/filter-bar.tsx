@@ -11,19 +11,17 @@ export function FilterBar({ selectedThreshold, onThresholdChange }: FilterBarPro
   return (
     <div className="flex flex-wrap gap-2 items-center">
       <span className="text-sm text-muted-foreground">フィルター:</span>
-      <Button
-        variant={selectedThreshold === null ? 'default' : 'outline'}
-        size="sm"
-        onClick={() => onThresholdChange(null)}
-      >
-        全て
-      </Button>
       {thresholds.map((threshold) => (
         <Button
           key={threshold}
           variant={selectedThreshold === threshold ? 'default' : 'outline'}
           size="sm"
           onClick={() => onThresholdChange(threshold)}
+          className={
+            selectedThreshold === threshold
+              ? 'min-w-28 bg-hatebu-500 text-white hover:bg-hatebu-600'
+              : 'min-w-28'
+          }
         >
           {threshold}+ users
         </Button>

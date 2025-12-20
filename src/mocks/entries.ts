@@ -1,4 +1,4 @@
-import type { Entry } from '@/components/entry/entry-card'
+import type { Entry } from '@/components/common/entry-card'
 
 export const mockEntries: Entry[] = [
   {
@@ -124,7 +124,10 @@ export const mockEntries: Entry[] = [
 ]
 
 // Filter entries by bookmark count threshold
-export function filterEntriesByBookmarkCount(entries: Entry[], threshold: number | null): Entry[] {
+export function filterEntriesByBookmarkCount<T extends Entry>(
+  entries: T[],
+  threshold: number | null,
+): T[] {
   if (threshold === null) return entries
   return entries.filter((entry) => entry.bookmarkCount >= threshold)
 }

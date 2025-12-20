@@ -16,6 +16,7 @@
     "openapi:generate": "openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o src/api/gen --additional-properties=supportsES6=true,withInterfaces=true,useSingleRequestParameter=true"
   },
   "dependencies": {
+    "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-slot": "^1.1.0",
@@ -35,6 +36,7 @@
     "@biomejs/biome": "^2.3.10",
     "@openapitools/openapi-generator-cli": "^2.15.3",
     "@redocly/cli": "^2.13.0",
+    "@tailwindcss/vite": "^4.1.18",
     "@tanstack/router-devtools": "^1.141.6",
     "@tanstack/router-vite-plugin": "^1.141.7",
     "@testing-library/jest-dom": "^6.4.8",

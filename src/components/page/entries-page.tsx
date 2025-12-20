@@ -1,26 +1,58 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { format } from 'date-fns'
+import { ja } from 'date-fns/locale'
 import { useEffect, useRef, useState } from 'react'
-import { EntryCard } from '@/components/common/entry-card'
+import { type Entry, EntryCard } from '@/components/common/entry-card'
 import { SkeletonList } from '@/components/common/skeleton-list'
 import { FilterBar } from '@/components/layout/filter-bar'
+import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
-import { filterEntriesByBookmarkCount, mockEntries } from '@/mocks/entries'
+import { filterEntriesByBookmarkCount } from '@/mocks/entries'
 
-export const Route = createFileRoute('/')({
-  component: Index,
-})
+interface EntriesPageProps {
+  date: string
+  title: string
+  routeType: 'hot' | 'new'
+  entries: Entry[]
+}
 
-function Index() {
-  const [selectedThreshold, setSelectedThreshold] = useState<number | null>(null)
+export function EntriesPage({ date, title, routeType, entries }: EntriesPageProps) {
+  const [selectedThreshold, setSelectedThreshold] = useState<number | null>(5)
   const [displayedCount, setDisplayedCount] = useState(10)
   const [isLoading, setIsLoading] = useState(false)
 
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const loadMoreStep = 10
 
+  // Parse and validate date (support both YYYY-MM-DD and YYYYMMDD formats)
+  const normalizedDate =
+    date.length === 8 && /^\d{8}$/.test(date)
+      ? `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`
+      : date
+  const parsedDate = new Date(normalizedDate)
+  if (Number.isNaN(parsedDate.getTime())) {
+    throw new Error(`Invalid date format: ${date}`)
+  }
+
+  // Calculate previous and next dates
+  const previousDay = new Date(parsedDate)
+  previousDay.setDate(previousDay.getDate() - 1)
+
+  const nextDay = new Date(parsedDate)
+  nextDay.setDate(nextDay.getDate() + 1)
+
+  const isToday = format(parsedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
+
+  const formatDateForUrl = (date: Date) => format(date, 'yyyy-MM-dd')
+
+  const getRoutePath = (dateStr: string) => {
+    if (routeType === 'hot') return `/entries/${dateStr}/hot`
+    if (routeType === 'new') return `/entries/${dateStr}/new`
+    return `/entries/${dateStr}/hot`
+  }
+
   // Filter entries
-  const filteredEntries = filterEntriesByBookmarkCount(mockEntries, selectedThreshold)
+  const filteredEntries = filterEntriesByBookmarkCount(entries, selectedThreshold)
   const displayedEntries = filteredEntries.slice(0, displayedCount)
   const hasMore = displayedCount < filteredEntries.length
 
@@ -55,13 +87,37 @@ function Index() {
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Main Column */}
       <div className="flex-1">
-        {/* Page Title and Filter */}
+        {/* Page Title and Date Navigation */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-4">本日の人気エントリー</h2>
+          <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+            <h2 className="text-2xl font-bold">
+              {format(parsedDate, 'yyyy年MM月dd日', { locale: ja })}の{title}
+            </h2>
+            <div className="ml-auto">
+              <Navigation
+                prev={{
+                  label: format(previousDay, 'yyyy年MM月dd日', { locale: ja }),
+                  path: getRoutePath(formatDateForUrl(previousDay)),
+                }}
+                next={{
+                  label: format(nextDay, 'yyyy年MM月dd日', { locale: ja }),
+                  path: getRoutePath(formatDateForUrl(nextDay)),
+                  disabled: isToday,
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Filter Bar */}
           <FilterBar
             selectedThreshold={selectedThreshold}
             onThresholdChange={handleThresholdChange}
           />
+        </div>
+
+        {/* Entry Count */}
+        <div className="mb-4 text-sm text-muted-foreground">
+          {filteredEntries.length}件のエントリー
         </div>
 
         {/* Entry Cards */}

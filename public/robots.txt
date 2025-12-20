@@ -1,0 +1,31 @@
+# Hateblog - Robots.txt
+
+# 一般的な検索エンジンクローラー向けの設定
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /search?
+Disallow: /*?*sort=
+Disallow: /*?*filter=
+
+# クロール速度の制限（秒単位）
+Crawl-delay: 1
+
+# サイトマップの場所（将来的に追加する場合）
+# Sitemap: https://example.com/sitemap.xml
+
+# 悪意のあるボット対策
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /

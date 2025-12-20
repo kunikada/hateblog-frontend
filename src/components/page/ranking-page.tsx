@@ -1,36 +1,36 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import { EntryCard } from '@/components/common/entry-card'
 import { SkeletonList } from '@/components/common/skeleton-list'
-import { FilterBar } from '@/components/layout/filter-bar'
+import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
-import { filterEntriesByBookmarkCount, mockEntries } from '@/mocks/entries'
+import type { RankingEntry } from '@/mocks/rankings'
 
-export const Route = createFileRoute('/')({
-  component: Index,
-})
+type RankingPageProps = {
+  title: string
+  entries: RankingEntry[]
+  prev?: {
+    label: string
+    path: string
+    disabled?: boolean
+  }
+  next?: {
+    label: string
+    path: string
+    disabled?: boolean
+  }
+}
 
-function Index() {
-  const [selectedThreshold, setSelectedThreshold] = useState<number | null>(null)
+export function RankingPage({ title, entries, prev, next }: RankingPageProps) {
   const [displayedCount, setDisplayedCount] = useState(10)
   const [isLoading, setIsLoading] = useState(false)
 
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const loadMoreStep = 10
 
-  // Filter entries
-  const filteredEntries = filterEntriesByBookmarkCount(mockEntries, selectedThreshold)
-  const displayedEntries = filteredEntries.slice(0, displayedCount)
-  const hasMore = displayedCount < filteredEntries.length
+  const displayedEntries = entries.slice(0, displayedCount)
+  const hasMore = displayedCount < entries.length
 
-  const handleThresholdChange = (threshold: number | null) => {
-    setSelectedThreshold(threshold)
-    setDisplayedCount(10)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  // Infinite scroll
   useEffect(() => {
     if (!loadMoreRef.current || !hasMore) return
 
@@ -53,50 +53,45 @@ function Index() {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
-      {/* Main Column */}
       <div className="flex-1">
-        {/* Page Title and Filter */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-4">本日の人気エントリー</h2>
-          <FilterBar
-            selectedThreshold={selectedThreshold}
-            onThresholdChange={handleThresholdChange}
-          />
+          <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+            <h2 className="text-2xl font-bold">{title}</h2>
+            <div className="ml-auto">
+              <Navigation prev={prev} next={next} />
+            </div>
+          </div>
         </div>
 
-        {/* Entry Cards */}
+        <div className="mb-4 text-sm text-muted-foreground">{entries.length}件のエントリー</div>
+
         <div className="space-y-4">
           {displayedEntries.map((entry) => (
             <EntryCard key={entry.id} entry={entry} />
           ))}
         </div>
 
-        {/* Load more trigger */}
         {hasMore && (
           <div ref={loadMoreRef} className="mt-8">
             {isLoading && <SkeletonList count={3} />}
           </div>
         )}
 
-        {/* End of list */}
-        {!hasMore && filteredEntries.length > 0 && (
+        {!hasMore && entries.length > 0 && (
           <div className="mt-8 text-center text-sm text-muted-foreground">
             すべてのエントリーを表示しました
           </div>
         )}
 
-        {/* No results */}
-        {filteredEntries.length === 0 && (
+        {entries.length === 0 && (
           <div className="mt-8 text-center text-sm text-muted-foreground">
             該当するエントリーがありません
           </div>
         )}
       </div>
 
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Scroll to Top Button */}
       <ScrollToTopButton />
     </div>
   )

@@ -13,9 +13,9 @@ export function Sidebar() {
   ]
 
   const weeklyRanking = [
-    { rank: 1, title: 'GPT-5発表 - AIの新時代が始まる', color: 'bg-yellow-400' },
+    { rank: 1, title: 'GPT-5発表 - AIの新時代が始まる', color: 'bg-warning-500' },
     { rank: 2, title: 'TypeScript 5.4の新機能完全ガイド', color: 'bg-gray-400' },
-    { rank: 3, title: '初心者のためのDocker完全入門', color: 'bg-orange-400' },
+    { rank: 3, title: '初心者のためのDocker完全入門', color: 'bg-hot-500' },
     { rank: 4, title: 'パフォーマンス改善テクニック集', color: 'bg-gray-300' },
     { rank: 5, title: 'Reactのベストプラクティス2024', color: 'bg-gray-300' },
   ]
@@ -30,7 +30,7 @@ export function Sidebar() {
             <button
               key={tag}
               type="button"
-              className="px-3 py-1.5 bg-muted rounded-full text-sm hover:bg-[#00a4de] hover:text-white transition-colors"
+              className="px-3 py-1.5 bg-muted rounded-full text-sm hover:bg-hatebu-500 hover:text-white transition-colors"
             >
               #{tag}
             </button>
@@ -49,7 +49,10 @@ export function Sidebar() {
               >
                 {item.rank}
               </span>
-              <button type="button" className="text-sm hover:text-[#00a4de] line-clamp-2 text-left">
+              <button
+                type="button"
+                className="text-sm hover:text-hatebu-500 line-clamp-2 text-left"
+              >
                 {item.title}
               </button>
             </li>
@@ -57,7 +60,7 @@ export function Sidebar() {
         </ol>
         <button
           type="button"
-          className="block mt-4 text-sm text-[#00a4de] hover:underline text-center w-full"
+          className="block mt-4 text-sm text-hatebu-500 hover:underline text-center w-full"
         >
           もっと見る →
         </button>

@@ -6,13 +6,13 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
 
   const toggleTheme = () => {
-    if (theme === 'light') {
-      setTheme('dark')
-    } else if (theme === 'dark') {
-      setTheme('system')
-    } else {
-      setTheme('light')
-    }
+    // systemの場合は、実際の表示テーマを取得
+    const currentTheme = theme === 'system'
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : theme
+
+    // light ⇄ dark のシンプルな切り替え
+    setTheme(currentTheme === 'light' ? 'dark' : 'light')
   }
 
   return (

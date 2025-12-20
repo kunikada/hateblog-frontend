@@ -20,8 +20,13 @@
       "Bash(cat:*)",
       "Bash(pnpm tsc:*)",
       "Bash(timeout 10 pnpm dev:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm list:*)",
+      "Bash(convert:*)",
+      "Bash(identify:*)",
+      "Bash(npx biome check:*)",
+      "Bash(grep:*)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": []

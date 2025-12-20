@@ -16,7 +16,7 @@ hateblogフロントエンドの画面設計書一覧です。各画面の詳細
 | 7 | アーカイブ | `/archive` | [07_archive.md](./07_archive.md) | 日別のエントリー件数を1ページで全表示 |
 | 8 | タグ別エントリー一覧 | `/tags/:tag` | [08_tag_entries.md](./08_tag_entries.md) | 指定タグに関連するエントリー一覧 |
 | 9 | 検索結果 | `/search/:search` | [09_search.md](./09_search.md) | キーワード検索結果を表示（GETベース） |
-| 10 | 閲覧履歴 | `/history` | [10_history.md](./10_history.md) | ユーザーの閲覧履歴を表示（localStorageベース） |
+| 10 | 閲覧履歴 | `/history/:date` | [10_history.md](./10_history.md) | ユーザーの閲覧履歴を日付単位で表示（localStorageベース） |
 
 ## 共通要素
 
@@ -35,7 +35,7 @@ hateblogフロントエンドの画面設計書一覧です。各画面の詳細
 - 先週のランキング → `/rankings/{該当年}/week/{先週の週番号}`
 - 今月のランキング → `/rankings/{該当年}/{今月}`
 - アーカイブ → `/archive`
-- 閲覧履歴 → `/history`
+- 閲覧履歴 → `/history/{今日の日付}`
 
 例（2024年12月15日の場合）:
 - `/entries/20241215/hot`
@@ -43,6 +43,7 @@ hateblogフロントエンドの画面設計書一覧です。各画面の詳細
 - `/entries/20231215/hot`
 - `/rankings/2024/week/49`
 - `/rankings/2024/12`
+- `/history/20241215`
 
 ### エントリーカード共通要素
 - タイトル

@@ -4,19 +4,94 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* はてなブックマークカラーパレット */
-  --color-hatebu-50: #e6f2ff;
-  --color-hatebu-100: #b3d9ff;
-  --color-hatebu-200: #80bfff;
-  --color-hatebu-300: #4da6ff;
-  --color-hatebu-400: #1a8cff;
-  --color-hatebu-500: #0073e6;
-  --color-hatebu-600: #005cb3;
-  --color-hatebu-700: #004580;
-  --color-hatebu-800: #002e4d;
-  --color-hatebu-900: #00171a;
+  /* ========================================
+     ブランドカラー - はてなブックマーク
+     ======================================== */
+  --color-hatebu-50: #e6f7fd;
+  --color-hatebu-100: #b3e7f9;
+  --color-hatebu-200: #80d7f5;
+  --color-hatebu-300: #4dc7f1;
+  --color-hatebu-400: #26b5ea;
+  --color-hatebu-500: #00a4de;  /* メインブランドカラー */
+  --color-hatebu-600: #0083b2;
+  --color-hatebu-700: #006286;
+  --color-hatebu-800: #004159;
+  --color-hatebu-900: #00212d;
 
-  /* ボーダーラジアス */
+  /* ========================================
+     アクセントカラー
+     ======================================== */
+  /* ホットエントリー（オレンジ） */
+  --color-hot-50: #fff3e6;
+  --color-hot-100: #ffe0b3;
+  --color-hot-200: #ffcc80;
+  --color-hot-300: #ffb84d;
+  --color-hot-400: #ffa41a;
+  --color-hot-500: #ff8c00;  /* メインホットカラー */
+  --color-hot-600: #cc7000;
+  --color-hot-700: #995400;
+  --color-hot-800: #663800;
+  --color-hot-900: #331c00;
+
+  /* 新着（グリーン） */
+  --color-new-50: #e6f9f2;
+  --color-new-100: #b3efd9;
+  --color-new-200: #80e6c0;
+  --color-new-300: #4ddca7;
+  --color-new-400: #1ad38e;
+  --color-new-500: #00c875;  /* メイン新着カラー */
+  --color-new-600: #00a05e;
+  --color-new-700: #007846;
+  --color-new-800: #00502f;
+  --color-new-900: #002817;
+
+  /* ========================================
+     セマンティックカラー
+     ======================================== */
+  /* 成功（グリーン） */
+  --color-success-50: #e8f5e9;
+  --color-success-500: #4caf50;
+  --color-success-700: #388e3c;
+
+  /* 警告（イエロー） */
+  --color-warning-50: #fff8e1;
+  --color-warning-100: #ffecb3;
+  --color-warning-200: #ffe082;
+  --color-warning-300: #ffd54f;
+  --color-warning-400: #ffca28;
+  --color-warning-500: #ffc107;
+  --color-warning-600: #ffb300;
+  --color-warning-700: #ffa000;
+  --color-warning-800: #ff8f00;
+  --color-warning-900: #ff6f00;
+
+  /* エラー（レッド） */
+  --color-error-50: #ffebee;
+  --color-error-500: #f44336;
+  --color-error-700: #d32f2f;
+
+  /* 情報（ブルー） */
+  --color-info-50: #e3f2fd;
+  --color-info-500: #2196f3;
+  --color-info-700: #1976d2;
+
+  /* ========================================
+     ニュートラルカラー（グレー）
+     ======================================== */
+  --color-gray-50: #fafafa;
+  --color-gray-100: #f5f5f5;
+  --color-gray-200: #eeeeee;
+  --color-gray-300: #e0e0e0;
+  --color-gray-400: #bdbdbd;
+  --color-gray-500: #9e9e9e;
+  --color-gray-600: #757575;
+  --color-gray-700: #616161;
+  --color-gray-800: #424242;
+  --color-gray-900: #212121;
+
+  /* ========================================
+     ボーダーラジアス
+     ======================================== */
   --radius: 0.5rem;
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
