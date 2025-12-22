@@ -7,6 +7,7 @@ import { FilterBar } from '@/components/layout/filter-bar'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
+import { useLocalStorage } from '@/hooks/use-local-storage'
 import { filterEntriesByBookmarkCount } from '@/mocks/entries'
 
 export type HistoryEntry = Entry & {
@@ -19,7 +20,10 @@ type HistoryPageProps = {
 }
 
 export function HistoryPage({ date, entries }: HistoryPageProps) {
-  const [selectedThreshold, setSelectedThreshold] = useState<number | null>(5)
+  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
+    'filter-threshold',
+    5,
+  )
 
   // Parse the date parameter
   const parsedDate = new Date(date)

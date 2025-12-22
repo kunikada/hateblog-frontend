@@ -7,6 +7,7 @@ import { FilterBar } from '@/components/layout/filter-bar'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
+import { useLocalStorage } from '@/hooks/use-local-storage'
 import { filterEntriesByBookmarkCount } from '@/mocks/entries'
 
 interface EntriesPageProps {
@@ -17,7 +18,10 @@ interface EntriesPageProps {
 }
 
 export function EntriesPage({ date, title, routeType, entries }: EntriesPageProps) {
-  const [selectedThreshold, setSelectedThreshold] = useState<number | null>(5)
+  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
+    'filter-threshold',
+    5,
+  )
   const [displayedCount, setDisplayedCount] = useState(10)
   const [isLoading, setIsLoading] = useState(false)
 

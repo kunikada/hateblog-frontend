@@ -5,6 +5,7 @@ import { EntryCard } from '@/components/common/entry-card'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
+import { useLocalStorage } from '@/hooks/use-local-storage'
 import { filterEntriesByBookmarkCount } from '@/mocks/entries'
 
 type SearchPageProps = {
@@ -50,7 +51,10 @@ function highlightKeywords(text: string, keywords: string[]): ReactElement {
 }
 
 export function SearchPage({ query, entries }: SearchPageProps) {
-  const [selectedThreshold, setSelectedThreshold] = useState<number | null>(null)
+  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
+    'filter-threshold',
+    5,
+  )
   const [displayedEntries, setDisplayedEntries] = useState<Entry[]>([])
   const [hasMore, setHasMore] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
