@@ -11,11 +11,11 @@ export function Footer() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            @_hateblog
+            hateblog
           </a>{' '}
           Powered by{' '}
           <a
-            href="http://b.hatena.ne.jp/"
+            href="https://b.hatena.ne.jp/"
             title="はてなブックマーク"
             className="hover:underline"
             target="_blank"
@@ -24,15 +24,15 @@ export function Footer() {
             はてなブックマーク
           </a>{' '}
           <span className="whitespace-nowrap">
-            Analytics powered by{' '}
+            /{' '}
             <a
-              href="http://developer.yahoo.co.jp/about"
+              href="https://developer.yahoo.co.jp/sitemap/"
               title="Web Services by Yahoo! JAPAN"
               className="hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Yahoo! JAPAN
+              Web Services by Yahoo! JAPAN
             </a>
           </span>
         </p>
