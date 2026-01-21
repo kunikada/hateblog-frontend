@@ -49,8 +49,8 @@ paths:
       parameters:
         - name: date
           in: query
-          description: 取得対象日付（YYYYMMDD形式）。未指定の場合は今日の日付。
-          required: false
+          description: 取得対象日付（YYYYMMDD形式）
+          required: true
           schema:
             type: string
             pattern: '^\d{8}$'
@@ -117,8 +117,8 @@ paths:
       parameters:
         - name: date
           in: query
-          description: 取得対象日付（YYYYMMDD形式）。未指定の場合は今日の日付。
-          required: false
+          description: 取得対象日付（YYYYMMDD形式）
+          required: true
           schema:
             type: string
             pattern: '^\d{8}$'
@@ -164,6 +164,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: サーバーエラー
           content:
@@ -183,11 +185,11 @@ paths:
       parameters:
         - name: min_users
           in: query
-          description: 最低ブックマーク件数フィルタ
+          description: 最低ブックマーク件数フィルタ（5, 10, 50, 100, 500, 1000）
           required: false
           schema:
             type: integer
-            minimum: 0
+            enum: [5, 10, 50, 100, 500, 1000]
             default: 5
             example: 5
       responses:
@@ -203,6 +205,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: サーバーエラー
           content:
@@ -252,6 +256,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: サーバーエラー
           content:
@@ -310,6 +316,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: サーバーエラー
           content:
@@ -368,6 +376,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: サーバーエラー
           content:
@@ -435,6 +445,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: タグが見つかりません
           content:
@@ -499,6 +511,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: サーバーエラー
           content:
@@ -548,6 +562,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: サーバーエラー
           content:
@@ -561,8 +577,10 @@ paths:
         - search
       summary: キーワード検索
       description: |
-        エントリーのタイトル・抜粋・タグをキーワード検索します。
+        エントリーのタイトル・抜粋・URLをキーワード検索します。
         全文検索（pg_bigm）を使用します。
+        半角/全角スペース区切りでAND検索します。
+        英数字のみの単語は単語境界で一致（大文字小文字は無視）。
       operationId: searchEntries
       parameters:
         - name: q
@@ -615,6 +633,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: サーバーエラー
           content:
@@ -650,6 +670,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: サーバーエラー
           content:
@@ -693,6 +715,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: サーバーエラー
           content:
@@ -771,19 +795,25 @@ components:
       in: header
       name: X-API-Key
       description: |
-        API認証キー。環境変数で設定されたキーと照合します。
-        ヘッダーに `X-API-Key: your-api-key` を含めてリクエストしてください。
+        API認証キー。データベースに登録されたキーと照合します。
+        ヘッダーに `X-API-Key-ID: your-api-key-id` と `X-API-Key: your-api-key` の両方を含めてリクエストしてください。
+
+        例:
+        ```
+        X-API-Key-ID: 9f8e7d6c-5b4a-3c2d-1e0f-123456789abc
+        X-API-Key: hb_live_1234567890abcdef1234567890abcdef
+        ```
 
   responses:
     UnauthorizedError:
-      description: 認証エラー - APIキーが無効または未提供
+      description: 認証エラー - APIキーまたはAPIキーIDが無効または未提供
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
           example:
             error: "UNAUTHORIZED"
-            message: "Invalid or missing API key"
+            message: "Missing API key or key ID"
 
   schemas:
     Entry:
@@ -841,15 +871,15 @@ components:
           example:
             - tag_id: "123e4567-e89b-12d3-a456-426614174000"
               tag_name: "Go"
-              score: 0.95
+              score: 95
             - tag_id: "223e4567-e89b-12d3-a456-426614174001"
               tag_name: "プログラミング"
-              score: 0.85
+              score: 85
         favicon_url:
           type: string
           format: uri
-          description: Favicon URL（Google Favicon API経由）
-          example: "https://www.google.com/s2/favicons?domain=example.com"
+          description: Favicon URL（FaviconプロキシAPI）
+          example: "/api/v1/favicons?domain=example.com"
         created_at:
           type: string
           format: date-time
@@ -880,12 +910,11 @@ components:
           description: タグ名
           example: "Go"
         score:
-          type: number
-          format: float
-          minimum: 0.0
-          maximum: 1.0
-          description: タグのスコア（Yahoo! キーフレーズ抽出APIから取得した重要度）
-          example: 0.95
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: タグのスコア（Yahoo! キーフレーズ抽出APIから取得した重要度、0〜100）
+          example: 95
 
     EntryListResponse:
       type: object
@@ -1192,12 +1221,6 @@ components:
           maxLength: 500
           description: キーの説明（オプション）
           example: "本番環境のフロントエンドアプリ用"
-        expires_at:
-          type: string
-          format: date-time
-          nullable: true
-          description: 有効期限（オプション、将来の拡張用）
-          example: "2026-12-31T23:59:59Z"
 
     ApiKeyResponse:
       type: object
@@ -1231,12 +1254,6 @@ components:
           format: date-time
           description: 作成日時
           example: "2025-01-05T10:00:00Z"
-        expires_at:
-          type: string
-          format: date-time
-          nullable: true
-          description: 有効期限
-          example: "2026-12-31T23:59:59Z"
 
     HealthResponse:
       type: object
