@@ -1,3 +1,4 @@
+- **API 型生成**：openapi-typescript で OpenAPI スキーマから TypeScript 型を生成。生成された `src/api/openapi.ts` を利用して、通信処理を `api/clients` 配下で実装する。
 # hateblog フロントエンドアーキテクチャ
 
 ## 技術スタック概要
@@ -16,12 +17,8 @@
 - **ローディング・エラー**：ルート `loader` で初期データをプリフェッチし、ページ内は `SkeletonList` と `RetryBoundary` を用意。クリック計測 API は `mutations` に乗せて失敗時はユーザー通知無しでロギングのみ。
 
 ## データ / API レイヤー
-- `openapi.yaml` から `pnpm openapi:generate`（仮）で `src/api/gen` を更新。生成物は直接編集せず、`src/api/clients/*Client.ts` を薄いラッパーとして用意してクエリキーやモデル変換を記述する。
-- TanStack Query のキーは `[resource, params]` 形式に統一し、アーカイブやランキングなど日付軸 API は `params` を正規化してキャッシュ衝突を防ぐ。
-- エラーはレスポンスコードを判定して `AppError` 型にマッピングし、UI で表示文言と再試行可否を制御。計測系 API は失敗時でもアプリ動作を阻害しないよう `onError` で `console.debug` ログに留める。
 - localStorage 履歴は `historyStore` モジュールに集約し、永続化フォーマット変更時のマイグレーションを `version` 付きで扱う。
-
-## UI / スタイリング戦略
+- `openapi.yaml` から `pnpm openapi:generate` で `src/api/openapi.ts` を更新。生成された型定義を用いて、`src/api/clients/*Client.ts` 内でクエリキーやモデル変換を記述する。
 - Tailwind の `@layer components` でレイアウト系ユーティリティ（カードグリッド、レスポンシブガターなど）を定義し、shadcn/ui の Button / Tabs / Dialog などを再エクスポートしてデザインシステムを単一点管理。
 - ダークモードは `ThemeProvider` が `data-theme` をルートに設定。モバイルではナビをシート表示、デスクトップでは水平タブを維持し、同じコンポーネントで振る舞いを制御する。
 - アイコンやタグチップなど繰り返し要素は `ui/entry-card/*` として分割し、アクセシビリティ対応（`aria-label` など）を共通化する。
