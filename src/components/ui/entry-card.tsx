@@ -63,10 +63,10 @@ export function EntryCard({ entry }: EntryCardProps) {
   ]
 
   return (
-    <article className="group rounded-lg border bg-card p-4 hover:shadow-md transition-shadow">
-      <div className="flex flex-col gap-3">
+    <article className="group rounded-lg border bg-card p-3 hover:shadow-md transition-shadow">
+      <div className="flex flex-col gap-2">
         {/* Title with Favicon */}
-        <h3 className="font-semibold text-lg leading-tight">
+        <h3 className="font-semibold text-base leading-tight">
           <a
             href={entry.url}
             target="_blank"
@@ -95,7 +95,7 @@ export function EntryCard({ entry }: EntryCardProps) {
 
         {/* Tags */}
         {entry.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-0.5">
             {entry.tags.map((tag) => (
               <Badge key={tag} variant="secondary" className="text-xs">
                 {tag}
@@ -106,7 +106,7 @@ export function EntryCard({ entry }: EntryCardProps) {
 
         {/* Footer: Bookmark Count, Domain, Timestamp, Share */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="font-medium text-hatebu-500">
               {entry.bookmarkCount.toLocaleString()} users
             </span>

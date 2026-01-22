@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { EntryCard } from '@/components/common/entry-card'
-import { SkeletonList } from '@/components/common/skeleton-list'
+import { EntryCard } from '@/components/ui/entry-card'
+import { SkeletonList } from '@/components/ui/skeleton-list'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
