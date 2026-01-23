@@ -45,6 +45,49 @@ hateblogフロントエンドの画面設計書一覧です。各画面の詳細
 - 1年前のエントリー
 - 注目のタグ
 
+## API認証
+
+### 概要
+APIへのアクセスにはAPIキーが必要です。APIキーはセッション単位で発行・管理されます。
+
+### APIキーの発行
+```
+POST /api/v1/api-keys
+```
+
+### 保存場所
+- `sessionStorage` に保存
+- キー名: `api-key`（例）
+
+### 認証フロー
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant SessionStorage
+    participant API
+
+    Client->>SessionStorage: APIキーを取得
+    alt APIキーが存在しない
+        Client->>API: POST /api/v1/api-keys
+        API-->>Client: APIキーを返却
+        Client->>SessionStorage: APIキーを保存
+    end
+    Client->>API: リクエスト（APIキー付与）
+    alt 401 Unauthorized
+        Client->>API: POST /api/v1/api-keys
+        API-->>Client: 新しいAPIキーを返却
+        Client->>SessionStorage: APIキーを保存
+        Client->>API: リクエスト再実行
+    end
+    API-->>Client: レスポンス
+```
+
+### 処理ルール
+1. APIリクエスト時、`sessionStorage` にAPIキーがなければ `POST /api/v1/api-keys` で発行
+2. APIが `401 Unauthorized` を返した場合、APIキーを再発行してリクエストを再実行
+3. APIキーはブラウザタブ（セッション）ごとに独立して管理
+
 ## API連携
 
 ### 新着エントリー
