@@ -9,25 +9,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-
-export type Entry = {
-  id: string
-  title: string
-  url: string
-  domain: string
-  favicon?: string
-  bookmarkCount: number
-  timestamp: string
-  tags: string[]
-  excerpt?: string
-  imageUrl?: string
-}
+import type { Entry } from '@/repositories/entries'
 
 type EntryCardProps = {
   entry: Entry
+  onTitleClick?: (entry: Entry) => void
 }
 
-export function EntryCard({ entry }: EntryCardProps) {
+export function EntryCard({ entry, onTitleClick }: EntryCardProps) {
   const formattedDate = new Date(entry.timestamp).toLocaleString('ja-JP', {
     year: 'numeric',
     month: '2-digit',
@@ -72,6 +61,7 @@ export function EntryCard({ entry }: EntryCardProps) {
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-hatebu-500 transition-colors flex items-start gap-2"
+            onClick={() => onTitleClick?.(entry)}
           >
             {entry.favicon ? (
               <img

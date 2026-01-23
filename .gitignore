@@ -44,3 +44,33 @@ coverage/
 # Generated files
 src/api/gen/
 src/routeTree.gen.ts
+
+# Vite
+.vite/
+
+# Testing artifacts
+.vitest/
+*.lcov
+
+# Node
+.node_modules/
+
+# Mac
+.AppleDouble
+.LSOverride
+*.icloud
+
+# Editor state
+.vscode/settings.json
+.vscode/launch.json
+
+# Development
+*.local.ts
+.env.test
+.env.production.local
+
+# System files
+__MACOSX/
+.Spotlight-V100
+.Trashes
+ehthumbs.db

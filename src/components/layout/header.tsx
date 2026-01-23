@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { PanelRight, Search } from 'lucide-react'
 import { useState } from 'react'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -8,11 +8,13 @@ import { MobileSidebar } from './mobile-sidebar'
 export function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const navigate = useNavigate()
 
   const handleSearch = () => {
-    if (searchQuery.trim()) {
-      console.log('検索:', searchQuery)
-      // TODO: 検索機能の実装
+    const query = searchQuery.trim()
+    if (query) {
+      navigate({ to: '/search', search: { q: query } })
+      setSearchQuery('')
     }
   }
 

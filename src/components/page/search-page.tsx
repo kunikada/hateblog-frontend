@@ -1,12 +1,12 @@
 import type { ReactElement } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { Entry } from '@/components/ui/entry-card'
-import { EntryCard } from '@/components/ui/entry-card'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
+import { EntryCard } from '@/components/ui/entry-card'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { filterEntriesByBookmarkCount } from '@/mocks/entries'
+import type { Entry } from '@/repositories/entries'
 
 type SearchPageProps = {
   query?: string

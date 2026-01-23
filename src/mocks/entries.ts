@@ -1,4 +1,4 @@
-import type { Entry } from '@/components/ui/entry-card'
+import type { Entry } from '@/repositories/entries'
 
 export const mockEntries: Entry[] = [
   {

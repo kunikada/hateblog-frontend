@@ -5,8 +5,8 @@ export function Footer() {
         <p className="text-center text-sm text-muted-foreground">
           © 2011{' '}
           <a
-            href="https://twitter.com/_hateblog/"
-            title="はてブログ on Twitter"
+            href="https://x.com/_hateblog/"
+            title="@_hateblog"
             className="hover:underline"
             target="_blank"
             rel="noopener noreferrer"

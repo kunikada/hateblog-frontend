@@ -1,14 +1,14 @@
 import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { Entry } from '@/components/ui/entry-card'
-import { EntryCard } from '@/components/ui/entry-card'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
+import { EntryCard } from '@/components/ui/entry-card'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { filterEntriesByBookmarkCount } from '@/mocks/entries'
+import type { Entry } from '@/repositories/entries'
 
 export type HistoryEntry = Entry & {
   viewedAt: string

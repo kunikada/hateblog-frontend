@@ -1,17 +1,15 @@
 import { Link } from '@tanstack/react-router'
-import { format, getISOWeek, getISOWeekYear, subWeeks } from 'date-fns'
+import { EntryDate } from '@/lib/entry-date'
 
 export function GlobalNav() {
-  const now = new Date()
-  const today = format(now, 'yyyy-MM-dd')
-  // Get last week for weekly ranking
-  const lastWeek = subWeeks(now, 1)
-  const lastWeekNumber = getISOWeek(lastWeek)
-  const lastWeekYear = getISOWeekYear(lastWeek)
+  const today = EntryDate.today()
+  const lastWeek = today.subtractWeeks(1)
 
-  // Get current year and month
-  const currentYear = format(now, 'yyyy')
-  const currentMonth = format(now, 'MM')
+  const todayParam = today.toYYYY_MM_DD()
+  const lastWeekNumber = lastWeek.getISOWeek()
+  const lastWeekYear = lastWeek.getISOWeekYear()
+  const currentYear = today.getYear()
+  const currentMonth = today.getMonth()
 
   return (
     <nav className="bg-card shadow-md sticky top-0 z-40">
@@ -28,7 +26,7 @@ export function GlobalNav() {
           <li>
             <Link
               to="/entries/$date/new"
-              params={{ date: today }}
+              params={{ date: todayParam }}
               className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
             >
               本日の新着順
@@ -63,7 +61,7 @@ export function GlobalNav() {
           <li>
             <Link
               to="/history/$date"
-              params={{ date: today }}
+              params={{ date: todayParam }}
               className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
             >
               閲覧履歴
