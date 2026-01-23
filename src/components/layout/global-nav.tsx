@@ -29,7 +29,7 @@ export function GlobalNav() {
             <Link
               to="/entries/$date/new"
               params={{ date: today }}
-              className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted min-w-35 text-center inline-block"
+              className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
             >
               本日の新着順
             </Link>
@@ -37,7 +37,7 @@ export function GlobalNav() {
           <li>
             <Link
               to="/archive"
-              className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted min-w-35 text-center inline-block"
+              className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
             >
               アーカイブ
             </Link>
@@ -46,7 +46,7 @@ export function GlobalNav() {
             <Link
               to="/rankings/$year/week/$week"
               params={{ year: lastWeekYear.toString(), week: lastWeekNumber.toString() }}
-              className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted min-w-35 text-center inline-block"
+              className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
             >
               先週のランキング
             </Link>
@@ -55,7 +55,7 @@ export function GlobalNav() {
             <Link
               to="/rankings/$year/$month"
               params={{ year: currentYear, month: currentMonth }}
-              className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted min-w-35 text-center inline-block"
+              className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
             >
               今月のランキング
             </Link>
@@ -64,7 +64,7 @@ export function GlobalNav() {
             <Link
               to="/history/$date"
               params={{ date: today }}
-              className="px-3 py-1.5 rounded-md text-foreground/70 hover:bg-muted min-w-35 text-center inline-block"
+              className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
             >
               閲覧履歴
             </Link>

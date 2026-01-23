@@ -17,62 +17,82 @@ hateblogフロントエンドの画面設計書一覧です。各画面の詳細
 | 8 | タグ別エントリー一覧 | `/tags/:tag` | [08_tag_entries.md](./08_tag_entries.md) | 指定タグに関連するエントリー一覧 |
 | 9 | 検索結果 | `/search/:search` | [09_search.md](./09_search.md) | キーワード検索結果を表示（GETベース） |
 | 10 | 閲覧履歴 | `/history/:date` | [10_history.md](./10_history.md) | ユーザーの閲覧履歴を日付単位で表示（localStorageベース） |
+| 11 | 404エラーページ | - | [11_not_found.md](./11_not_found.md) | 存在しないページにアクセスした際のエラー画面 |
 
 ## 共通要素
 
 ### レイアウト
 - ヘッダー（ロゴ、グローバルナビゲーション、検索フォーム）
 - フッター（コピーライト、リンク）
-- サイドバー／タグセクション（表示中の画面で頻出するタグを表示）
-- ダークモード対応
+- サイドバー
 
 ### グローバルナビゲーション
 各リンクのURLはシステム時刻に基づいて動的に生成されます。
 
 - 本日の人気エントリー → `/entries/{今日の日付}/hot`
 - 本日の新着エントリー → `/entries/{今日の日付}/new`
-- 1年前の人気エントリー → `/entries/{1年前の日付}/hot`
+- アーカイブ → `/archive`
 - 先週のランキング → `/rankings/{該当年}/week/{先週の週番号}`
 - 今月のランキング → `/rankings/{該当年}/{今月}`
-- アーカイブ → `/archive`
-- 閲覧履歴 → `/history/{今日の日付}`
+- 閲覧履歴 → `/history/{履歴の最新の日付}`
+- 検索 → `/search/{検索キーワード}`
+- ライトモード/ダークモード
 
-例（2024年12月15日の場合）:
-- `/entries/20241215/hot`
-- `/entries/20241215/new`
-- `/entries/20231215/hot`
-- `/rankings/2024/week/49`
-- `/rankings/2024/12`
-- `/history/20241215`
+### サイドバー
+- 新着エントリー
+  - 15分単位で更新
+- 人気のタグ
+- 1年前のエントリー
+- 注目のタグ
 
-### エントリーカード共通要素
-- タイトル
-- 投稿日時
-- はてなブックマーク件数
-- ブックマーク追加リンク
-- 共有アクション（Twitter、Facebook、Pocket、Instapaper、Evernote）
-- タグ一覧
-- 記事抜粋
-- 続きを読むリンク
-- Favicon表示
-- クリック計測
+## API連携
 
-### フィルタ機能
-- はてなブックマーク件数閾値（5/10/50/100/500/1000 users）
+### 新着エントリー
+```
+GET /api/v1/entries/new?date={YYYYMMDD}&limit=5
+```
 
-## 技術スタック
-- フレームワーク: React（Next.jsは使用しない）
-- UI コンポーネント: shadcn/ui
-- スタイリング: Tailwind CSS
-- データフェッチ: TanStack Query
-- ルーティング: TanStack Router
-- API通信: Axios / Fetch API（OpenAPIクライアント生成ライブラリに依存）
-- トップページ: SSG化対応（詳細は[top-page-ssg-strategy.md](../top-page-ssg-strategy.md)参照）
+#### リクエストパラメータ
+- `date`: 対象日付（YYYYMMDD形式）
+  - 本日の日付、なかったら前日の日付で再取得
+- `limit`: 5
 
-## デザインガイドライン
-- カラー: Hatebuブルー + モノクロベース
-- レスポンシブ対応
-  - PC: リスト型表示
-  - タブレット: 2列カード表示
-  - スマホ: 1列カード表示
-- ダークモード対応
+#### レスポンス
+openapi.yamlを参照
+
+### 人気のタグ
+```
+GET /api/v1/tags/trending?hours=48&limit=10
+```
+
+#### リクエストパラメータ
+- `hours`: 集計対象時間
+- `limit`: 取得件数
+
+#### レスポンス
+openapi.yamlを参照
+
+### 1年前のエントリー
+```
+GET /api/v1/entries/hot?date={YYYYMMDD}&limit=5
+```
+
+#### リクエストパラメータ
+- `date`: 対象日付（YYYYMMDD形式）
+  - 1年前の日付
+- `limit`: 5
+
+#### レスポンス
+openapi.yamlを参照
+
+### 注目のタグ
+```
+GET /api/v1/tags/clicked?days=30&limit=10
+```
+
+#### リクエストパラメータ
+- `days`: 集計対象日数
+- `limit`: 取得件数
+
+#### レスポンス
+openapi.yamlを参照

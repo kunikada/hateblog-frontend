@@ -4,105 +4,62 @@
 - **画面名**: 新着順エントリー一覧
 - **URL**: `/entries/:date/new`
 - **URLパラメータ**:
-  - `date`: 対象日付（YYYYMMDD形式、または `today`, `year-ago` などの特殊値）
-  - `min_users`: 最低ブックマーク件数フィルタ（デフォルト: 5）
-  - `page`: ページ番号（デフォルト: 1）
+  - `date`: 対象日付（YYYYMMDD形式）
 - **目的**: 指定日付のエントリーを新着順（posted_at DESC）で表示
 
 ### URL例
-- `/entries/today/new` - 本日の新着エントリー
 - `/entries/20241215/new` - 2024年12月15日の新着エントリー
 
 ## レイアウト構成
 
 ### ページヘッダー
-- ページタイトル: "新着エントリー"
-- 対象日付表示: "2025年1月5日"
-- 日付選択カレンダー
+- ページタイトル: "2024年12月15日の新着エントリー"
 - 前日/翌日ナビゲーションボタン
 
 ### フィルタバー
 - はてなブックマーク件数閾値チップ
-  - 5 users / 10 users / 50 users / 100 users / 500 users / 1000 users
-  - 複数選択可能（OR条件）
-  - クリアボタン
-- PC: 水平配置
-- SP: 横スクロールチップ
+  - 5 users（デフォルト） / 10 users / 50 users / 100 users / 500 users / 1000 users
 
 ### メインコンテンツ
+- エントリー件数
 - エントリーカードリスト
-  - PC: 2列グリッド
-  - SP: 1列リスト
 - 読み込み中: スケルトンスクリーン表示
-
-### ページネーション
-- 前のページ / 次のページボタン
-- ページ番号表示（現在ページ / 総ページ数）
-- ページ数セレクタ
 
 ## エントリーカード構成
 
 ### 上部
-- Favicon（左）+ ドメイン名
-- 投稿日時（右）
+- Favicon（左）+ タイトル
 
 ### 中央
-- タイトル（太字、リンク）
 - 記事抜粋（100-200文字）
-
-### 下部左
-- タグ一覧（最大5個、横並び）
+- タグ一覧
   - クリックでタグ別一覧ページへ遷移
 
-### 下部右
-- はてなブックマーク件数バッジ（アイコン + 件数）
-- ブックマーク追加アイコン（はてなブックマークへのリンク）
+### 下部
+- はてなブックマーク件数バッジ
+  - クリックではてなブックマーク詳細ページへ遷移
+- ドメイン
+  - クリックで同じドメインの一覧ページを表示
+- 投稿日
 - 共有アイコンバー（hover/tapで展開）
   - Twitter
   - Facebook
-  - Pocket
-  - Instapaper
-  - Evernote
+  - Instagram
+  - リンクをコピー
+  - スマホの場合は単純な共有ボタン
 
 ## API連携
 
-### 初期表示
+### 初期データ
 ```
-GET /api/v1/entries/new?date={YYYYMMDD}&min_users={number}&limit=25&offset=0
+GET /api/v1/entries/new?date={YYYYMMDD}
 ```
 
 #### リクエストパラメータ
 - `date`: 対象日付（YYYYMMDD形式）
-- `min_users`: 最低ブックマーク件数（5/10/50/100/500/1000）
-- `limit`: 取得件数（デフォルト: 25）
-- `offset`: オフセット（ページネーション用）
 
 #### レスポンス
-```json
-{
-  "entries": [
-    {
-      "id": "uuid",
-      "title": "記事タイトル",
-      "url": "https://example.com/article",
-      "posted_at": "2025-01-05T10:30:00Z",
-      "bookmark_count": 150,
-      "excerpt": "記事の抜粋...",
-      "tags": [
-        {
-          "tag_id": "uuid",
-          "tag_name": "Go",
-          "score": 0.95
-        }
-      ],
-      "favicon_url": "https://www.google.com/s2/favicons?domain=example.com"
-    }
-  ],
-  "total": 500,
-  "limit": 25,
-  "offset": 0
-}
-```
+openapi.yamlを参照
 
 ### クリック計測
 エントリーカードクリック時:
@@ -117,27 +74,36 @@ Content-Type: application/json
 }
 ```
 
+### Favicon取得
+```
+GET /api/v1/favicons?domain=example.com
+```
+
+#### リクエストパラメータ
+- `domain`: Faviconを取得するドメイン名 
+
+#### レスポンス
+openapi.yamlを参照
+
 ## インタラクション
 
-### 日付選択
-1. 日付選択カレンダーをクリック
-2. カレンダーモーダル表示
-3. 日付を選択
-4. `/entries/{YYYYMMDD}/new` に遷移
+### 初期表示
+1. 初期データをリクエスト
+2. localStorageの閾値でフィルタリング
 
 ### 前日/翌日ナビゲーション
-- 前日ボタン: 1日前の日付で再読み込み
-- 翌日ボタン: 1日後の日付で再読み込み
+- 前日ボタン: 1日前の日付のページに遷移
+- 翌日ボタン: 1日後の日付のページに遷移
 - 未来日付の場合は翌日ボタンを無効化
 
 ### 閾値フィルタ選択
 1. チップをクリック
 2. 選択状態をトグル（ON/OFF）
-3. URLパラメータ更新: `?min_users={number}`
-4. API再リクエスト
+3. エントリーリストをフィルタリング
+4. エントリー件数を更新
 
 ### エントリーカードクリック
-1. カード全体がクリック領域
+1. タイトルがクリック領域
 2. クリック計測APIを呼び出し（非同期）
 3. 元記事URLを新規タブで開く
 4. 閲覧履歴をlocalStorageに保存
@@ -145,31 +111,38 @@ Content-Type: application/json
 ### タグクリック
 - `/tags/{tag_name}` に遷移
 
-### 共有アイコンクリック
-- Twitter: `https://twitter.com/intent/tweet?url={encoded_url}&text={encoded_title}`
-- Facebook: `https://www.facebook.com/sharer/sharer.php?u={encoded_url}`
-- Pocket: `https://getpocket.com/edit?url={encoded_url}`
-- Instapaper: `https://www.instapaper.com/text?u={encoded_url}`
-- Evernote: `https://www.evernote.com/clip.action?url={encoded_url}`
+### ブックマーク件数クリック
+- `https://b.hatena.ne.jp/entry/s/{raw_url}`
 
-### ページネーション
-- 次のページボタン: `offset` を `limit` 分増やして再リクエスト
-- 前のページボタン: `offset` を `limit` 分減らして再リクエスト
+### ドメインをクリック
+- ドメインをキーワードにして検索ページに遷移
+
+### 共有アイコンクリック
+- PCの場合はホバーとする
+  - Twitter
+  - Facebook
+  - Instagram
+  - リンクをコピー
+- スマホの場合は単純な共有機能とする
+
+### 無限スクロール
+- 初期表示: 25件
+- スクロールでロードトリガーに到達すると25件追加読み込み
+- 読み込み中はスピナー表示
+- 全件表示完了時は何もなし
+- 実際のデータは初回で全件取得済み（疑似的な無限スクロール）
 
 ## 状態管理
 
 ### ローカルステート
-- 選択日付（date）
-- 選択閾値フィルタ（minUsers）
-- 現在ページ（page）
 - エントリーリスト（entries）
 - 総件数（total）
 - ローディング状態（isLoading）
 - エラー状態（error）
 
 ### localStorage
+- `minUsers`: 選択閾値フィルタ
 - `viewHistory`: 閲覧履歴配列
-  - `{ entry_id, title, url, viewed_at }`
 
 ## デザインガイドライン
 
@@ -203,25 +176,19 @@ Content-Type: application/json
 
 - 初期表示: 2秒以内
 - Faviconの遅延読み込み
-- 無限スクロール検討（将来）
-- APIレスポンスキャッシュ（同一日付の場合）
 
 ## エラーハンドリング
 
 ### APIエラー
-- 400 Bad Request: "日付形式が正しくありません"
-- 500 Server Error: "サーバーエラーが発生しました。しばらくしてから再度お試しください。"
-- エラーメッセージをトースト表示
-- 再試行ボタン表示
+- 200以外はエラー状態とする
 
 ### ネットワークエラー
-- "ネットワークに接続できません"
-- オフライン検知
-- 再試行ボタン表示
+- エラー状態とする
 
 ### データなし
 - "該当するエントリーがありません"
-- フィルタ条件を緩和する提案表示
+- APIのデータがない場合
+- フィルタによるデータがない場合
 
 ## テスト観点
 
