@@ -25,7 +25,7 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
   const entriesPerPage = config.pagination.entriesPerPage
 
   const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
-    'filter-threshold',
+    'minUsers',
     5,
   )
   const [displayedCount, setDisplayedCount] = useState(entriesPerPage)

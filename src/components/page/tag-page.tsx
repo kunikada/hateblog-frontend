@@ -24,7 +24,7 @@ export function TagPage({ tag }: TagPageProps) {
   const entriesPerPage = config.pagination.entriesPerPage
 
   const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
-    'filter-threshold',
+    'minUsers',
     5,
   )
   const [sortType, setSortType] = useState<SortType>('new')

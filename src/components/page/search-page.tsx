@@ -1,68 +1,60 @@
-import type { ReactElement } from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
+import { Button } from '@/components/ui/button'
 import { EntryCard } from '@/components/ui/entry-card'
 import { useLocalStorage } from '@/hooks/use-local-storage'
+import { config } from '@/lib/config'
 import { filterEntriesByBookmarkCount } from '@/mocks/entries'
 import type { Entry } from '@/repositories/entries'
+import { recordEntryClick } from '@/usecases/entry-click'
 
 type SearchPageProps = {
   query?: string
   entries: Entry[]
 }
 
-// Highlight matching keywords in text
-function highlightKeywords(text: string, keywords: string[]): ReactElement {
-  if (keywords.length === 0) {
-    return <>{text}</>
-  }
-
-  const pattern = new RegExp(
-    `(${keywords.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`,
-    'gi',
-  )
-  const parts = text.split(pattern)
-
-  return (
-    <>
-      {parts.map((part, index) => {
-        const isMatch = keywords.some((keyword) =>
-          part.toLowerCase().includes(keyword.toLowerCase()),
-        )
-        return isMatch ? (
-          <mark
-            key={
-              // biome-ignore lint/suspicious/noArrayIndexKey: text part key
-              index
-            }
-            className="bg-warning-200 dark:bg-warning-700 font-medium"
-          >
-            {part}
-          </mark>
-        ) : (
-          // biome-ignore lint/suspicious/noArrayIndexKey: text part key
-          <span key={index}>{part}</span>
-        )
-      })}
-    </>
-  )
-}
-
 export function SearchPage({ query, entries }: SearchPageProps) {
+  const entriesPerPage = config.pagination.entriesPerPage
   const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
-    'filter-threshold',
+    'minUsers',
     5,
   )
+  const [sortType, setSortType] = useState<'popular' | 'new'>('popular')
   const [displayedEntries, setDisplayedEntries] = useState<Entry[]>([])
   const [hasMore, setHasMore] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
-  const keywords = query ? query.trim().split(/\s+/) : []
-  const filteredEntries = filterEntriesByBookmarkCount(entries, selectedThreshold)
-  const totalEntries = filteredEntries.length
+  const filteredEntries = useMemo(
+    () => filterEntriesByBookmarkCount(entries, selectedThreshold),
+    [entries, selectedThreshold],
+  )
+  const sortedEntries = useMemo(() => {
+    const sorted = [...filteredEntries]
+    if (sortType === 'new') {
+      return sorted.sort(
+        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      )
+    }
+    return sorted.sort((a, b) => b.bookmarkCount - a.bookmarkCount)
+  }, [filteredEntries, sortType])
+  const totalEntries = sortedEntries.length
+
+  const handleEntryClick = (entry: Entry) => {
+    recordEntryClick({
+      entryId: entry.id,
+      entryUrl: entry.url,
+      referrer: window.location.href,
+      userAgent: navigator.userAgent,
+    })
+  }
+
+  const handleThresholdChange = (threshold: number | null) => {
+    setSelectedThreshold(threshold)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   // Load more entries
   const loadMore = useCallback(() => {
@@ -71,7 +63,7 @@ export function SearchPage({ query, entries }: SearchPageProps) {
     setIsLoading(true)
     setTimeout(() => {
       const currentLength = displayedEntries.length
-      const nextEntries = filteredEntries.slice(currentLength, currentLength + 10)
+      const nextEntries = sortedEntries.slice(currentLength, currentLength + entriesPerPage)
 
       if (nextEntries.length === 0) {
         setHasMore(false)
@@ -80,7 +72,7 @@ export function SearchPage({ query, entries }: SearchPageProps) {
       }
       setIsLoading(false)
     }, 500)
-  }, [isLoading, displayedEntries.length, filteredEntries])
+  }, [isLoading, displayedEntries.length, sortedEntries, entriesPerPage])
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -107,17 +99,49 @@ export function SearchPage({ query, entries }: SearchPageProps) {
 
   // Reset entries when filter changes
   useEffect(() => {
-    setDisplayedEntries(filteredEntries.slice(0, 10))
-    setHasMore(filteredEntries.length > 10)
-  }, [filteredEntries])
+    setDisplayedEntries(sortedEntries.slice(0, entriesPerPage))
+    setHasMore(sortedEntries.length > entriesPerPage)
+  }, [sortedEntries, entriesPerPage])
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Main Column */}
       <div className="flex-1">
         {/* Page Title */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold">検索: {query || ''}</h2>
+        <div className="mb-6 flex items-center justify-between flex-wrap gap-3">
+          <h2 className="text-2xl font-bold">
+            {query ? `「${query}」の検索結果` : '検索結果'}
+          </h2>
+          {query && (
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant={sortType === 'popular' ? 'default' : 'outline'}
+                className={
+                  sortType === 'popular'
+                    ? 'bg-hatebu-500 text-white hover:bg-hatebu-600'
+                    : 'text-gray-600 border-gray-300'
+                }
+                onClick={() => setSortType('popular')}
+              >
+                人気順
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={sortType === 'new' ? 'default' : 'outline'}
+                className={
+                  sortType === 'new'
+                    ? 'bg-hatebu-500 text-white hover:bg-hatebu-600'
+                    : 'text-gray-600 border-gray-300'
+                }
+                onClick={() => setSortType('new')}
+              >
+                新着順
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Filter Bar */}
@@ -125,7 +149,7 @@ export function SearchPage({ query, entries }: SearchPageProps) {
           <div className="mb-4">
             <FilterBar
               selectedThreshold={selectedThreshold}
-              onThresholdChange={setSelectedThreshold}
+              onThresholdChange={handleThresholdChange}
             />
           </div>
         )}
@@ -151,15 +175,7 @@ export function SearchPage({ query, entries }: SearchPageProps) {
             <>
               {displayedEntries.map((entry) => (
                 <div key={entry.id}>
-                  <EntryCard
-                    entry={{
-                      ...entry,
-                      title: highlightKeywords(entry.title, keywords) as unknown as string,
-                      excerpt: entry.excerpt
-                        ? (highlightKeywords(entry.excerpt, keywords) as unknown as string)
-                        : entry.excerpt,
-                    }}
-                  />
+                  <EntryCard entry={entry} onTitleClick={handleEntryClick} />
                 </div>
               ))}
 

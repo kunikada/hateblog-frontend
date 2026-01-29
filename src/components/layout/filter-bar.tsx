@@ -17,7 +17,9 @@ export function FilterBar({ selectedThreshold, onThresholdChange }: FilterBarPro
             key={threshold}
             variant={selectedThreshold === threshold ? 'default' : 'outline'}
             size="sm"
-            onClick={() => onThresholdChange(threshold)}
+            onClick={() =>
+              onThresholdChange(selectedThreshold === threshold ? null : threshold)
+            }
             className={
               selectedThreshold === threshold
                 ? 'min-w-28 bg-hatebu-500 text-white hover:bg-hatebu-600'

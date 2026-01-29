@@ -19,7 +19,7 @@ import { archiveQueryOptions } from '@/usecases/fetch-archive'
 
 export function ArchivePage() {
   const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
-    'filter-threshold',
+    'minUsers',
     5,
   )
 

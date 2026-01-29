@@ -21,7 +21,7 @@ type HistoryPageProps = {
 
 export function HistoryPage({ date, entries }: HistoryPageProps) {
   const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
-    'filter-threshold',
+    'minUsers',
     5,
   )
 
