@@ -1,69 +1,50 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
-import { FilterBar } from '@/components/layout/filter-bar'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCard } from '@/components/ui/entry-card'
 import { SkeletonList } from '@/components/ui/skeleton-list'
-import { useLocalStorage } from '@/hooks/use-local-storage'
 import { config } from '@/lib/config'
-import { EntryDate } from '@/lib/entry-date'
 import type { Entry } from '@/repositories/entries'
 import { recordEntryClick } from '@/usecases/entry-click'
-import { entriesQueryOptions } from '@/usecases/fetch-entries'
+import { type RankingEntry, rankingsQueryOptions } from '@/usecases/fetch-rankings'
 
-interface EntriesPageProps {
-  date: string
+type YearlyRankingPageProps = {
   title: string
-  routeType: 'hot' | 'new'
+  year: number
+  prev?: {
+    label: string
+    path: string
+    disabled?: boolean
+  }
+  next?: {
+    label: string
+    path: string
+    disabled?: boolean
+  }
 }
 
-export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
-  console.debug('[EntriesPage] Component mounted', { date, title, routeType })
+const YEARLY_RANKING_LIMIT = 1000
+
+export function YearlyRankingPage({ title, year, prev, next }: YearlyRankingPageProps) {
+  console.debug('[YearlyRankingPage] Component mounted', { title, year })
 
   const entriesPerPage = config.pagination.entriesPerPage
-
-  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
-    'filter-threshold',
-    5,
-  )
   const [displayedCount, setDisplayedCount] = useState(entriesPerPage)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
-  const entryDate = EntryDate.fromUrlParam(date)
-  const previousDay = entryDate.previousDay()
-  const nextDay = entryDate.nextDay()
-
-  // Fetch data from API
-  const queryOptions = routeType === 'new' ? entriesQueryOptions.new : entriesQueryOptions.hot
-  const queryParams = {
-    date: entryDate.toYYYYMMDD(),
-    minUsers: selectedThreshold ?? undefined,
-  }
-  console.debug('[EntriesPage] Query params', queryParams)
-
-  const { data, isLoading, error } = useQuery(queryOptions(queryParams))
-
-  console.debug('[EntriesPage] Query state', { isLoading, hasData: !!data, error })
-
-  const getRoutePath = (entryDate: EntryDate) => {
-    return `/entries/${entryDate.toYYYYMMDD()}/${routeType}`
-  }
+  const { data, isLoading, error } = useQuery(
+    rankingsQueryOptions.yearly({ year, limit: YEARLY_RANKING_LIMIT }),
+  )
 
   const allEntries = data?.entries ?? []
   const displayedEntries = allEntries.slice(0, displayedCount)
   const hasMore = displayedCount < allEntries.length
 
-  const handleThresholdChange = (threshold: number | null) => {
-    setSelectedThreshold(threshold)
-    setDisplayedCount(entriesPerPage)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const handleEntryClick = (entry: Entry) => {
+  const handleEntryClick = (entry: Entry | RankingEntry) => {
     recordEntryClick({
       entryId: entry.id,
       entryUrl: entry.url,
@@ -93,11 +74,11 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
     return () => observer.disconnect()
   }, [hasMore, isLoadingMore, entriesPerPage])
 
-  // Reset displayed count when date or threshold changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally reset on date/threshold change
+  // Reset displayed count when year changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally reset on year change
   useEffect(() => {
     setDisplayedCount(entriesPerPage)
-  }, [date, selectedThreshold, entriesPerPage])
+  }, [year, entriesPerPage])
 
   if (error) {
     return (
@@ -114,40 +95,15 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
-      {/* Main Column */}
       <div className="flex-1">
-        {/* Page Title and Date Navigation */}
         <div className="mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
-            <h2 className="text-2xl font-bold">
-              {entryDate.toDisplayString()}の{title}
-            </h2>
+            <h2 className="text-2xl font-bold">{title}</h2>
             <div className="ml-auto">
-              <Navigation
-                prev={{
-                  label: previousDay.toDisplayString(),
-                  path: getRoutePath(previousDay),
-                }}
-                next={{
-                  label: nextDay.toDisplayString(),
-                  path: getRoutePath(nextDay),
-                  disabled: entryDate.isToday(),
-                }}
-              />
+              <Navigation prev={prev} next={next} />
             </div>
           </div>
-
-          {/* Filter Bar */}
-          <FilterBar
-            selectedThreshold={selectedThreshold}
-            onThresholdChange={handleThresholdChange}
-          />
         </div>
-
-        {/* Entry Count */}
-        {!isLoading && (data?.total ?? 0) > 0 && (
-          <div className="mb-4 text-sm text-muted-foreground">{data?.total ?? 0}件のエントリー</div>
-        )}
 
         {/* Loading State */}
         {isLoading && <SkeletonList count={5} />}
@@ -168,6 +124,13 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
           </div>
         )}
 
+        {/* Entry Count */}
+        {!isLoading && !hasMore && allEntries.length > 0 && (
+          <div className="mt-8 text-center text-sm text-muted-foreground">
+            {data?.total ?? allEntries.length}件のエントリー
+          </div>
+        )}
+
         {/* No results */}
         {!isLoading && allEntries.length === 0 && (
           <div className="mt-8 text-center text-sm text-muted-foreground">
@@ -176,10 +139,8 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
         )}
       </div>
 
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Scroll to Top Button */}
       <ScrollToTopButton />
     </div>
   )

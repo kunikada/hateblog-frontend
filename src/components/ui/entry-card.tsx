@@ -34,9 +34,41 @@ export function EntryCard({ entry, onTitleClick }: EntryCardProps) {
 
   const [copied, setCopied] = useState(false)
   const [faviconUrl, setFaviconUrl] = useState(entry.favicon)
+  const [isInView, setIsInView] = useState(false)
+  const cardRef = useRef<HTMLElement | null>(null)
   const faviconRevokeRef = useRef<null | (() => void)>(null)
 
   useEffect(() => {
+    const element = cardRef.current
+    if (!element) {
+      return
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      setIsInView(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entryObserver]) => {
+        if (entryObserver?.isIntersecting) {
+          setIsInView(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '200px 0px' },
+    )
+
+    observer.observe(element)
+
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!isInView) {
+      return
+    }
+
     let isActive = true
 
     const loadFavicon = async () => {
@@ -61,7 +93,7 @@ export function EntryCard({ entry, onTitleClick }: EntryCardProps) {
       faviconRevokeRef.current?.()
       faviconRevokeRef.current = null
     }
-  }, [entry.favicon])
+  }, [entry.favicon, isInView])
 
   const handleNativeShare = async () => {
     if (navigator.share) {
@@ -106,7 +138,10 @@ export function EntryCard({ entry, onTitleClick }: EntryCardProps) {
   ]
 
   return (
-    <article className="group rounded-lg border bg-card p-3 hover:shadow-md transition-shadow">
+    <article
+      ref={cardRef}
+      className="group rounded-lg border bg-card p-3 hover:shadow-md transition-shadow"
+    >
       <div className="flex flex-col gap-2">
         {/* Title with Favicon */}
         <h3 className="font-semibold text-base leading-tight">

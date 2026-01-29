@@ -108,6 +108,10 @@ type GetClickedTagsParams = paths['/tags/clicked']['get']['parameters']['query']
 type GetClickedTagsResponse =
   paths['/tags/clicked']['get']['responses']['200']['content']['application/json']
 
+type GetYearlyRankingParams = paths['/rankings/yearly']['get']['parameters']['query']
+type GetYearlyRankingResponse =
+  paths['/rankings/yearly']['get']['responses']['200']['content']['application/json']
+
 export const api = {
   entries: {
     getNew: (params: GetNewEntriesParams): Promise<GetNewEntriesResponse> => {
@@ -162,6 +166,14 @@ export const api = {
       return request(`/tags/clicked${query ? `?${query}` : ''}`)
     },
   },
+  rankings: {
+    getYearly: (params: GetYearlyRankingParams): Promise<GetYearlyRankingResponse> => {
+      const searchParams = new URLSearchParams()
+      searchParams.set('year', String(params.year))
+      if (params.limit !== undefined) searchParams.set('limit', String(params.limit))
+      return request(`/rankings/yearly?${searchParams}`)
+    },
+  },
 }
 
 export type {
@@ -175,6 +187,8 @@ export type {
   GetNewEntriesResponse,
   GetTrendingTagsParams,
   GetTrendingTagsResponse,
+  GetYearlyRankingParams,
+  GetYearlyRankingResponse,
   RecordClickBody,
   RecordClickResponse,
 }

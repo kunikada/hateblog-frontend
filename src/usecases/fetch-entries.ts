@@ -46,7 +46,10 @@ function convertResponse(response: EntryListResponse): EntriesResult {
 
 async function fetchNewEntries(params: FetchEntriesParams): Promise<EntriesResult> {
   console.debug('[fetchNewEntries] Calling repository', params)
-  const response = await entriesRepository.getNewEntries(params)
+  const response = await entriesRepository.getNewEntries({
+    ...params,
+    limit: 1000,
+  })
   console.debug('[fetchNewEntries] Response received', {
     total: response.total,
     count: response.entries.length,
@@ -56,7 +59,10 @@ async function fetchNewEntries(params: FetchEntriesParams): Promise<EntriesResul
 
 async function fetchHotEntries(params: FetchEntriesParams): Promise<EntriesResult> {
   console.debug('[fetchHotEntries] Calling repository', params)
-  const response = await entriesRepository.getHotEntries(params)
+  const response = await entriesRepository.getHotEntries({
+    ...params,
+    limit: 1000,
+  })
   console.debug('[fetchHotEntries] Response received', {
     total: response.total,
     count: response.entries.length,

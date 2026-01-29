@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { RankingPage } from '@/components/page/ranking-page'
-import { mockYearlyRankings } from '@/mocks/rankings'
+import { YearlyRankingPage } from '@/components/page/yearly-ranking-page'
 
 export const Route = createFileRoute('/rankings/$year/')({
   component: YearlyRankings,
@@ -9,11 +8,14 @@ export const Route = createFileRoute('/rankings/$year/')({
 function YearlyRankings() {
   const { year } = Route.useParams()
   const currentYear = Number.parseInt(year, 10)
+  const now = new Date()
+  const thisYear = now.getFullYear()
+  const isNextDisabled = currentYear >= thisYear
 
   return (
-    <RankingPage
+    <YearlyRankingPage
       title={`はてブ・オブ・ザ・イヤー ${year}`}
-      entries={mockYearlyRankings}
+      year={currentYear}
       prev={{
         label: `${currentYear - 1}年`,
         path: `/rankings/${currentYear - 1}`,
@@ -21,6 +23,7 @@ function YearlyRankings() {
       next={{
         label: `${currentYear + 1}年`,
         path: `/rankings/${currentYear + 1}`,
+        disabled: isNextDisabled,
       }}
     />
   )

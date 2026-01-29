@@ -27,7 +27,8 @@
       "Bash(npx biome check:*)",
       "Bash(grep:*)",
       "Bash(mv:*)",
-      "Bash(pnpm msw:*)"
+      "Bash(pnpm msw:*)",
+      "Bash(pnpm exec tsc:*)"
     ],
     "deny": [],
     "ask": []
