@@ -130,7 +130,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tags/{tag}/entries": {
+    "/tags/entries/{tag}": {
         parameters: {
             query?: never;
             header?: never;
@@ -139,7 +139,7 @@ export interface paths {
         };
         /**
          * タグ別エントリー一覧取得
-         * @description 指定されたタグに紐づくエントリーを新着順で取得します。
+         * @description 指定されたタグに紐づくエントリーを新着順または人気順で取得します。
          *     ブックマーク件数での閾値フィルタリングが可能です。
          *     タグ閲覧はサーバー側で自動的に記録されます（tag_view_historyテーブル）。
          */
@@ -1022,6 +1022,8 @@ export interface operations {
             query?: {
                 /** @description 最低ブックマーク件数（5/10/50/100/500/1000など） */
                 min_users?: number;
+                /** @description 並び順（new=新着, hot=人気） */
+                sort?: "new" | "hot";
                 /** @description 取得件数 */
                 limit?: number;
                 /** @description オフセット（ページネーション用） */
@@ -1175,6 +1177,8 @@ export interface operations {
                 q: string;
                 /** @description 最低ブックマーク件数フィルタ */
                 min_users?: number;
+                /** @description 並び順（new=新着, hot=人気） */
+                sort?: "new" | "hot";
                 /** @description 取得件数 */
                 limit?: number;
                 /** @description オフセット（ページネーション用） */
