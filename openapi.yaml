@@ -71,7 +71,7 @@ paths:
           schema:
             type: integer
             minimum: 1
-            maximum: 100
+            maximum: 1000
             default: 25
             example: 25
         - name: offset
@@ -86,6 +86,9 @@ paths:
       responses:
         '200':
           description: 成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -139,7 +142,7 @@ paths:
           schema:
             type: integer
             minimum: 1
-            maximum: 100
+            maximum: 1000
             default: 25
             example: 25
         - name: offset
@@ -154,6 +157,9 @@ paths:
       responses:
         '200':
           description: 成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -195,6 +201,9 @@ paths:
       responses:
         '200':
           description: 成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -246,6 +255,9 @@ paths:
       responses:
         '200':
           description: 成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -300,12 +312,15 @@ paths:
           schema:
             type: integer
             minimum: 1
-            maximum: 100
+            maximum: 1000
             default: 100
             example: 100
       responses:
         '200':
           description: 成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -360,12 +375,15 @@ paths:
           schema:
             type: integer
             minimum: 1
-            maximum: 100
+            maximum: 1000
             default: 100
             example: 100
       responses:
         '200':
           description: 成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -420,7 +438,7 @@ paths:
           schema:
             type: integer
             minimum: 1
-            maximum: 100
+            maximum: 1000
             default: 25
             example: 25
         - name: offset
@@ -435,6 +453,9 @@ paths:
       responses:
         '200':
           description: 成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -501,6 +522,9 @@ paths:
       responses:
         '200':
           description: 成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -552,6 +576,9 @@ paths:
       responses:
         '200':
           description: 成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -608,7 +635,7 @@ paths:
           schema:
             type: integer
             minimum: 1
-            maximum: 100
+            maximum: 1000
             default: 25
             example: 25
         - name: offset
@@ -623,6 +650,9 @@ paths:
       responses:
         '200':
           description: 成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -660,6 +690,9 @@ paths:
       responses:
         '201':
           description: 記録成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -688,6 +721,7 @@ paths:
         指定されたドメインのFaviconを取得します。
         Google Favicon API経由で取得し、キャッシュして返します。
       operationId: getFavicon
+      security: []
       parameters:
         - name: domain
           in: query
@@ -700,6 +734,9 @@ paths:
       responses:
         '200':
           description: 成功（画像を返す）
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             image/png:
               schema:
@@ -715,8 +752,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: サーバーエラー
           content:
@@ -743,6 +778,9 @@ paths:
       responses:
         '201':
           description: APIキー発行成功
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -777,6 +815,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '200':
           description: 正常
+          headers:
+            X-Cache:
+              $ref: '#/components/headers/CacheStatus'
           content:
             application/json:
               schema:
@@ -814,6 +855,13 @@ components:
           example:
             error: "UNAUTHORIZED"
             message: "Missing API key or key ID"
+
+  headers:
+    CacheStatus:
+      description: キャッシュ判定（HIT/MISS）
+      schema:
+        type: string
+        enum: [HIT, MISS]
 
   schemas:
     Entry:
