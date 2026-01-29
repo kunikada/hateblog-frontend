@@ -1,5 +1,10 @@
 import { api } from '@/api/client'
-import type { GetYearlyRankingParams, RankingResponse, RankingsRepository } from '@/repositories/rankings'
+import type {
+  GetMonthlyRankingParams,
+  GetYearlyRankingParams,
+  RankingResponse,
+  RankingsRepository,
+} from '@/repositories/rankings'
 
 export function createRankingsRepository(): RankingsRepository {
   return {
@@ -10,6 +15,16 @@ export function createRankingsRepository(): RankingsRepository {
         limit: params.limit,
       })
       console.debug('[RankingsRepository] getYearlyRanking result', result)
+      return result
+    },
+    async getMonthlyRanking(params: GetMonthlyRankingParams): Promise<RankingResponse> {
+      console.debug('[RankingsRepository] getMonthlyRanking', params)
+      const result = await api.rankings.getMonthly({
+        year: params.year,
+        month: params.month,
+        limit: params.limit,
+      })
+      console.debug('[RankingsRepository] getMonthlyRanking result', result)
       return result
     },
   }

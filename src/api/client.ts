@@ -112,6 +112,10 @@ type GetYearlyRankingParams = paths['/rankings/yearly']['get']['parameters']['qu
 type GetYearlyRankingResponse =
   paths['/rankings/yearly']['get']['responses']['200']['content']['application/json']
 
+type GetMonthlyRankingParams = paths['/rankings/monthly']['get']['parameters']['query']
+type GetMonthlyRankingResponse =
+  paths['/rankings/monthly']['get']['responses']['200']['content']['application/json']
+
 export const api = {
   entries: {
     getNew: (params: GetNewEntriesParams): Promise<GetNewEntriesResponse> => {
@@ -173,6 +177,13 @@ export const api = {
       if (params.limit !== undefined) searchParams.set('limit', String(params.limit))
       return request(`/rankings/yearly?${searchParams}`)
     },
+    getMonthly: (params: GetMonthlyRankingParams): Promise<GetMonthlyRankingResponse> => {
+      const searchParams = new URLSearchParams()
+      searchParams.set('year', String(params.year))
+      searchParams.set('month', String(params.month))
+      if (params.limit !== undefined) searchParams.set('limit', String(params.limit))
+      return request(`/rankings/monthly?${searchParams}`)
+    },
   },
 }
 
@@ -183,6 +194,8 @@ export type {
   GetClickedTagsResponse,
   GetHotEntriesParams,
   GetHotEntriesResponse,
+  GetMonthlyRankingParams,
+  GetMonthlyRankingResponse,
   GetNewEntriesParams,
   GetNewEntriesResponse,
   GetTrendingTagsParams,
