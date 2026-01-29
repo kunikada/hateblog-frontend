@@ -249,6 +249,7 @@ export interface paths {
          * Faviconプロキシ
          * @description 指定されたドメインのFaviconを取得します。
          *     Google Favicon API経由で取得し、キャッシュして返します。
+         *     同一ドメインの短時間連続取得は 425 Too Early を返します。
          */
         get: operations["getFavicon"];
         put?: never;
@@ -1285,6 +1286,15 @@ export interface operations {
             };
             /** @description バリデーションエラー */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 短時間の同一ドメイン連続取得による抑止 */
+            425: {
                 headers: {
                     [name: string]: unknown;
                 };
