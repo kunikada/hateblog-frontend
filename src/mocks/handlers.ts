@@ -5,6 +5,8 @@ type Entry = components['schemas']['Entry']
 type EntryListResponse = components['schemas']['EntryListResponse']
 type MetricsResponse = components['schemas']['MetricsResponse']
 type ApiKeyResponse = components['schemas']['ApiKeyResponse']
+type TrendingTagsResponse = components['schemas']['TrendingTagsResponse']
+type ClickedTagsResponse = components['schemas']['ClickedTagsResponse']
 
 function generateMockEntry(index: number, date: string): Entry {
   const domains = ['example.com', 'qiita.com', 'zenn.dev', 'note.com', 'dev.to']
@@ -37,7 +39,9 @@ function generateMockEntry(index: number, date: string): Entry {
   const year = date.slice(0, 4)
   const month = date.slice(4, 6)
   const day = date.slice(6, 8)
-  const postedAt = new Date(`${year}-${month}-${day}T${String(10 + (index % 12)).padStart(2, '0')}:${String(index % 60).padStart(2, '0')}:00Z`)
+  const postedAt = new Date(
+    `${year}-${month}-${day}T${String(10 + (index % 12)).padStart(2, '0')}:${String(index % 60).padStart(2, '0')}:00Z`,
+  )
 
   return {
     id: `entry-${date}-${index}`,
@@ -82,7 +86,7 @@ export const handlers = [
     const allEntries = generateMockEntries(date, minUsers, 200)
     // Sort by posted_at DESC (newest first)
     const sortedEntries = allEntries.sort(
-      (a, b) => new Date(b.posted_at).getTime() - new Date(a.posted_at).getTime()
+      (a, b) => new Date(b.posted_at).getTime() - new Date(a.posted_at).getTime(),
     )
     const entries = sortedEntries.slice(offset, offset + limit)
 
@@ -138,10 +142,7 @@ export const handlers = [
     const domain = url.searchParams.get('domain') || 'example.com'
 
     // Redirect to Google's favicon service
-    return HttpResponse.redirect(
-      `https://www.google.com/s2/favicons?domain=${domain}&sz=32`,
-      302
-    )
+    return HttpResponse.redirect(`https://www.google.com/s2/favicons?domain=${domain}&sz=32`, 302)
   }),
 
   // POST /api/v1/api-keys
@@ -155,5 +156,63 @@ export const handlers = [
     }
 
     return HttpResponse.json(response, { status: 201 })
+  }),
+
+  // GET /api/v1/tags/trending
+  http.get('/api/v1/tags/trending', async ({ request }) => {
+    await delay(200)
+    const url = new URL(request.url)
+    const limit = Number(url.searchParams.get('limit')) || 20
+
+    const tagNames = [
+      'React', 'TypeScript', 'JavaScript', 'Go', 'Python',
+      'Rust', 'Docker', 'AWS', 'AI', '機械学習',
+      'Web開発', 'フロントエンド', 'バックエンド', 'インフラ', 'セキュリティ',
+      'データベース', 'API', 'マイクロサービス', 'CI/CD', 'テスト',
+    ]
+
+    const tags = tagNames.slice(0, limit).map((name, i) => ({
+      id: `trending-tag-${i}`,
+      name,
+      occurrence_count: Math.floor(Math.random() * 100) + 10,
+      entry_count: Math.floor(Math.random() * 5000) + 100,
+    }))
+
+    const response: TrendingTagsResponse = {
+      tags,
+      hours: 48,
+      total: tags.length,
+    }
+
+    return HttpResponse.json(response)
+  }),
+
+  // GET /api/v1/tags/clicked
+  http.get('/api/v1/tags/clicked', async ({ request }) => {
+    await delay(200)
+    const url = new URL(request.url)
+    const limit = Number(url.searchParams.get('limit')) || 20
+
+    const tagNames = [
+      'プログラミング', 'エンジニア', 'キャリア', '転職', '副業',
+      'ChatGPT', 'LLM', '生成AI', 'OpenAI', 'Claude',
+      'Next.js', 'Vite', 'TailwindCSS', 'shadcn/ui', 'Radix',
+      'PostgreSQL', 'Redis', 'GraphQL', 'REST', 'gRPC',
+    ]
+
+    const tags = tagNames.slice(0, limit).map((name, i) => ({
+      id: `clicked-tag-${i}`,
+      name,
+      click_count: Math.floor(Math.random() * 500) + 50,
+      entry_count: Math.floor(Math.random() * 3000) + 100,
+    }))
+
+    const response: ClickedTagsResponse = {
+      tags,
+      days: 30,
+      total: tags.length,
+    }
+
+    return HttpResponse.json(response)
   }),
 ]

@@ -47,15 +47,21 @@ export function ThemeProvider({
     root.classList.add(theme)
   }, [theme])
 
-  const handleSetTheme = useCallback((newTheme: Theme) => {
-    localStorage.setItem(storageKey, newTheme)
-    setTheme(newTheme)
-  }, [storageKey])
+  const handleSetTheme = useCallback(
+    (newTheme: Theme) => {
+      localStorage.setItem(storageKey, newTheme)
+      setTheme(newTheme)
+    },
+    [storageKey],
+  )
 
-  const value = useMemo(() => ({
-    theme,
-    setTheme: handleSetTheme,
-  }), [theme, handleSetTheme])
+  const value = useMemo(
+    () => ({
+      theme,
+      setTheme: handleSetTheme,
+    }),
+    [theme, handleSetTheme],
+  )
 
   return (
     <ThemeProviderContext.Provider {...props} value={value}>

@@ -1,11 +1,15 @@
 import { Link } from '@tanstack/react-router'
 import { EntryDate } from '@/lib/entry-date'
 
+const baseClass = 'px-3 py-1.5 rounded-md min-w-35 text-center inline-block'
+const activeClass = `${baseClass} bg-hatebu-500 text-white cursor-default`
+const inactiveClass = `${baseClass} text-gray-600 hover:text-gray-900 hover:bg-muted`
+
 export function GlobalNav() {
   const today = EntryDate.today()
   const lastWeek = today.subtractWeeks(1)
 
-  const todayParam = today.toYYYY_MM_DD()
+  const todayParam = today.toYYYYMMDD()
   const lastWeekNumber = lastWeek.getISOWeek()
   const lastWeekYear = lastWeek.getISOWeekYear()
   const currentYear = today.getYear()
@@ -17,8 +21,10 @@ export function GlobalNav() {
         <ul className="flex flex-wrap gap-2 text-sm">
           <li>
             <Link
-              to="/"
-              className="px-3 py-1.5 rounded-md bg-hatebu-500 text-white hover:bg-hatebu-600 min-w-35 text-center inline-block"
+              to="/entries/$date/hot"
+              params={{ date: todayParam }}
+              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              inactiveProps={{ className: inactiveClass }}
             >
               本日の人気順
             </Link>
@@ -27,7 +33,8 @@ export function GlobalNav() {
             <Link
               to="/entries/$date/new"
               params={{ date: todayParam }}
-              className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
+              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              inactiveProps={{ className: inactiveClass }}
             >
               本日の新着順
             </Link>
@@ -35,7 +42,8 @@ export function GlobalNav() {
           <li>
             <Link
               to="/archive"
-              className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
+              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              inactiveProps={{ className: inactiveClass }}
             >
               アーカイブ
             </Link>
@@ -44,7 +52,8 @@ export function GlobalNav() {
             <Link
               to="/rankings/$year/week/$week"
               params={{ year: lastWeekYear.toString(), week: lastWeekNumber.toString() }}
-              className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
+              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              inactiveProps={{ className: inactiveClass }}
             >
               先週のランキング
             </Link>
@@ -53,16 +62,17 @@ export function GlobalNav() {
             <Link
               to="/rankings/$year/$month"
               params={{ year: currentYear, month: currentMonth }}
-              className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
+              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              inactiveProps={{ className: inactiveClass }}
             >
               今月のランキング
             </Link>
           </li>
           <li>
             <Link
-              to="/history/$date"
-              params={{ date: todayParam }}
-              className="px-3 py-1.5 rounded-md text-gray-600 hover:text-gray-900 hover:bg-muted min-w-35 text-center inline-block"
+              to="/history"
+              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              inactiveProps={{ className: inactiveClass }}
             >
               閲覧履歴
             </Link>

@@ -15,14 +15,14 @@ function MonthlyRankings() {
 
   return (
     <RankingPage
-      title={`${format(currentDate, 'yyyy年MM月')}の月間ランキング`}
+      title={`${format(currentDate, 'yyyy年M月')}の月間ランキング`}
       entries={mockMonthlyRankings}
       prev={{
-        label: format(prevMonth, 'yyyy年MM月'),
+        label: format(prevMonth, 'yyyy年M月'),
         path: `/rankings/${format(prevMonth, 'yyyy/MM')}`,
       }}
       next={{
-        label: format(nextMonth, 'yyyy年MM月'),
+        label: format(nextMonth, 'yyyy年M月'),
         path: `/rankings/${format(nextMonth, 'yyyy/MM')}`,
       }}
     />

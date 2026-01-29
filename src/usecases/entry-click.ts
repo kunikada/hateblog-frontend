@@ -31,7 +31,10 @@ function saveToViewHistory(entryId: string): void {
     const viewHistory = JSON.parse(localStorage.getItem(VIEW_HISTORY_KEY) || '[]') as string[]
     if (!viewHistory.includes(entryId)) {
       viewHistory.unshift(entryId)
-      localStorage.setItem(VIEW_HISTORY_KEY, JSON.stringify(viewHistory.slice(0, VIEW_HISTORY_MAX_SIZE)))
+      localStorage.setItem(
+        VIEW_HISTORY_KEY,
+        JSON.stringify(viewHistory.slice(0, VIEW_HISTORY_MAX_SIZE)),
+      )
     }
   } catch (error) {
     console.debug('Failed to save view history:', error)

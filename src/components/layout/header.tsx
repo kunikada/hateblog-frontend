@@ -21,7 +21,7 @@ export function Header() {
   return (
     <>
       <header className="bg-card shadow-sm">
-        <div className="container mx-auto py-3 px-4 md:px-6">
+        <div className="container mx-auto py-2 px-4 md:px-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Link to="/" className="flex items-center">

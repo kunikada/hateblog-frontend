@@ -7,9 +7,12 @@ export function ThemeToggle() {
 
   const toggleTheme = () => {
     // systemの場合は、実際の表示テーマを取得
-    const currentTheme = theme === 'system'
-      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-      : theme
+    const currentTheme =
+      theme === 'system'
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+        : theme
 
     // light ⇄ dark のシンプルな切り替え
     setTheme(currentTheme === 'light' ? 'dark' : 'light')

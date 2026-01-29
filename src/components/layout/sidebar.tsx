@@ -1,70 +1,211 @@
-export function Sidebar() {
-  const popularTags = [
-    'JavaScript',
-    'Python',
-    'React',
-    'AI',
-    '機械学習',
-    '設計',
-    'AWS',
-    'Docker',
-    'セキュリティ',
-    'データベース',
-  ]
+import { useQuery } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
+import { useEffect, useRef, useState } from 'react'
+import { EntryDate } from '@/lib/entry-date'
+import { getCachedFaviconUrl } from '@/lib/favicon-cache'
+import {
+  sidebarQueryOptions,
+  type SidebarEntry,
+  type SidebarTag,
+} from '@/usecases/fetch-sidebar'
+import { SidebarCard } from './sidebar-card'
 
-  const weeklyRanking = [
-    { rank: 1, title: 'GPT-5発表 - AIの新時代が始まる', color: 'bg-warning-500' },
-    { rank: 2, title: 'TypeScript 5.4の新機能完全ガイド', color: 'bg-gray-400' },
-    { rank: 3, title: '初心者のためのDocker完全入門', color: 'bg-hot-500' },
-    { rank: 4, title: 'パフォーマンス改善テクニック集', color: 'bg-gray-300' },
-    { rank: 5, title: 'Reactのベストプラクティス2024', color: 'bg-gray-300' },
-  ]
+function SidebarEntrySkeleton() {
+  return (
+    <div className="animate-pulse space-y-3">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="flex items-start gap-2">
+          <div className="h-4 w-4 bg-muted rounded-sm shrink-0" />
+          <div className="flex-1 space-y-1">
+            <div className="h-4 bg-muted rounded w-full" />
+            <div className="h-4 bg-muted rounded w-3/4" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function SidebarTagsSkeleton() {
+  return (
+    <div className="animate-pulse flex flex-wrap gap-2">
+      {Array.from({ length: 10 }).map((_, i) => (
+        <div key={i} className="h-7 bg-muted rounded-full w-16" />
+      ))}
+    </div>
+  )
+}
+
+function EntryFavicon({ src }: { src: string }) {
+  const [faviconUrl, setFaviconUrl] = useState(src)
+  const revokeRef = useRef<null | (() => void)>(null)
+
+  useEffect(() => {
+    let isActive = true
+
+    const loadFavicon = async () => {
+      revokeRef.current?.()
+      revokeRef.current = null
+      setFaviconUrl(src)
+
+      const result = await getCachedFaviconUrl(src)
+      if (!isActive) {
+        result.revoke?.()
+        return
+      }
+
+      setFaviconUrl(result.url)
+      revokeRef.current = result.revoke ?? null
+    }
+
+    void loadFavicon()
+
+    return () => {
+      isActive = false
+      revokeRef.current?.()
+      revokeRef.current = null
+    }
+  }, [src])
+
+  return faviconUrl ? (
+    <img
+      src={faviconUrl}
+      alt=""
+      className="h-4 w-4 rounded-sm shrink-0 translate-y-0.5"
+      loading="lazy"
+    />
+  ) : (
+    <div className="h-4 w-4 rounded-sm bg-muted shrink-0 translate-y-0.5" />
+  )
+}
+
+function MoreLink({ to, params }: { to: string; params?: Record<string, string> }) {
+  return (
+    <Link
+      to={to}
+      params={params}
+      className="block mt-4 text-sm text-hatebu-500 hover:underline text-center"
+    >
+      もっと見る
+    </Link>
+  )
+}
+
+function EntryList({ entries }: { entries: SidebarEntry[] }) {
+  if (entries.length === 0) {
+    return <p className="text-sm text-muted-foreground">エントリーがありません</p>
+  }
 
   return (
-    <aside className="hidden lg:block w-80">
-      {/* Popular Tags */}
-      <div className="bg-card rounded-lg shadow-md p-5 mb-6">
-        <h3 className="text-lg font-bold mb-4">人気のタグ</h3>
-        <div className="flex flex-wrap gap-2">
-          {popularTags.map((tag) => (
-            <button
-              key={tag}
-              type="button"
-              className="px-3 py-1.5 bg-muted rounded-full text-sm hover:bg-hatebu-500 hover:text-white transition-colors"
-            >
-              #{tag}
-            </button>
-          ))}
-        </div>
-      </div>
+    <ol className="space-y-3">
+      {entries.map((entry) => (
+        <li key={entry.id}>
+          <a
+            href={entry.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm hover:text-hatebu-500 line-clamp-2 flex items-start gap-2"
+          >
+            <EntryFavicon src={entry.favicon} />
+            <span className="flex-1">{entry.title}</span>
+          </a>
+          <span className="text-xs font-medium text-hatebu-500 ml-6">
+            {entry.bookmarkCount.toLocaleString()} users
+          </span>
+        </li>
+      ))}
+    </ol>
+  )
+}
 
-      {/* Weekly Ranking */}
-      <div className="bg-card rounded-lg shadow-md p-5">
-        <h3 className="text-lg font-bold mb-4">週間ランキング</h3>
-        <ol className="space-y-3">
-          {weeklyRanking.map((item) => (
-            <li key={item.rank} className="flex gap-3">
-              <span
-                className={`shrink-0 w-6 h-6 ${item.color} ${item.rank <= 3 ? 'text-white' : 'text-foreground'} rounded-full flex items-center justify-center text-sm font-bold`}
-              >
-                {item.rank}
-              </span>
-              <button
-                type="button"
-                className="text-sm hover:text-hatebu-500 line-clamp-2 text-left"
-              >
-                {item.title}
-              </button>
-            </li>
-          ))}
-        </ol>
-        <button
-          type="button"
-          className="block mt-4 text-sm text-hatebu-500 hover:underline text-center w-full"
+function TagList({ tags }: { tags: SidebarTag[] }) {
+  if (tags.length === 0) {
+    return <p className="text-sm text-muted-foreground">タグがありません</p>
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {tags.slice(0, 10).map((tag) => (
+        <Link
+          key={tag.id}
+          to="/tags/$tag"
+          params={{ tag: tag.name }}
+          className="px-3 py-1.5 bg-muted rounded-full text-sm hover:bg-hatebu-500 hover:text-white transition-colors"
         >
-          もっと見る →
-        </button>
-      </div>
+          {tag.name}
+        </Link>
+      ))}
+    </div>
+  )
+}
+
+function NewEntriesSection() {
+  const today = EntryDate.today().toYYYYMMDD()
+  const { data, isLoading } = useQuery(sidebarQueryOptions.newEntries(today))
+
+  return (
+    <SidebarCard title="新着エントリー">
+      {isLoading && <SidebarEntrySkeleton />}
+      {data && (
+        <>
+          <EntryList entries={data.entries} />
+          {data.entries.length > 0 && (
+            <MoreLink to="/entries/$date/new" params={{ date: today }} />
+          )}
+        </>
+      )}
+    </SidebarCard>
+  )
+}
+
+function TrendingTagsSection() {
+  const { data, isLoading } = useQuery(sidebarQueryOptions.trendingTags())
+
+  return (
+    <SidebarCard title="人気のタグ">
+      {isLoading && <SidebarTagsSkeleton />}
+      {data && <TagList tags={data.tags} />}
+    </SidebarCard>
+  )
+}
+
+function YearAgoEntriesSection() {
+  const yearAgoDate = EntryDate.today().subtractYears(1).toYYYYMMDD()
+  const { data, isLoading } = useQuery(sidebarQueryOptions.yearAgoEntries())
+
+  return (
+    <SidebarCard title="1年前の人気エントリー">
+      {isLoading && <SidebarEntrySkeleton />}
+      {data && (
+        <>
+          <EntryList entries={data.entries} />
+          {data.entries.length > 0 && (
+            <MoreLink to="/entries/$date/hot" params={{ date: yearAgoDate }} />
+          )}
+        </>
+      )}
+    </SidebarCard>
+  )
+}
+
+function ClickedTagsSection() {
+  const { data, isLoading } = useQuery(sidebarQueryOptions.clickedTags())
+
+  return (
+    <SidebarCard title="注目のタグ">
+      {isLoading && <SidebarTagsSkeleton />}
+      {data && <TagList tags={data.tags} />}
+    </SidebarCard>
+  )
+}
+
+export function Sidebar() {
+  return (
+    <aside className="hidden lg:block w-80 space-y-6">
+      <NewEntriesSection />
+      <TrendingTagsSection />
+      <YearAgoEntriesSection />
+      <ClickedTagsSection />
     </aside>
   )
 }

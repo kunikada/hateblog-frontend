@@ -37,7 +37,7 @@ export function HistoryPage({ date, entries }: HistoryPageProps) {
 
   const isToday = format(parsedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
 
-  const formatDateForUrl = (date: Date) => format(date, 'yyyy-MM-dd')
+  const formatDateForUrl = (date: Date) => format(date, 'yyyyMMdd')
 
   // Filter entries for the selected date
   const filterByDate = (entries: HistoryEntry[], targetDate: Date): HistoryEntry[] => {
@@ -119,16 +119,16 @@ export function HistoryPage({ date, entries }: HistoryPageProps) {
         <div className="mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
             <h2 className="text-2xl font-bold">
-              {format(parsedDate, 'yyyy年MM月dd日', { locale: ja })}の閲覧履歴
+              {format(parsedDate, 'yyyy年M月d日', { locale: ja })}の閲覧履歴
             </h2>
             <div className="ml-auto">
               <Navigation
                 prev={{
-                  label: format(previousDay, 'yyyy年MM月dd日', { locale: ja }),
+                  label: format(previousDay, 'yyyy年M月d日', { locale: ja }),
                   path: `/history/${formatDateForUrl(previousDay)}`,
                 }}
                 next={{
-                  label: format(nextDay, 'yyyy年MM月dd日', { locale: ja }),
+                  label: format(nextDay, 'yyyy年M月d日', { locale: ja }),
                   path: `/history/${formatDateForUrl(nextDay)}`,
                   disabled: isToday,
                 }}

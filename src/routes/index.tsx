@@ -1,92 +1,55 @@
+import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useRef, useState } from 'react'
-import { FilterBar } from '@/components/layout/filter-bar'
-import { EntryCard } from '@/components/ui/entry-card'
+import { EntriesPage } from '@/components/page/entries-page'
+import { Sidebar } from '@/components/layout/sidebar'
 import { SkeletonList } from '@/components/ui/skeleton-list'
-import { filterEntriesByBookmarkCount, mockEntries } from '@/mocks/entries'
+import { archiveQueryOptions } from '@/usecases/fetch-archive'
 
 export const Route = createFileRoute('/')({
   component: Index,
 })
 
 function Index() {
-  const [selectedThreshold, setSelectedThreshold] = useState<number | null>(null)
-  const [displayedCount, setDisplayedCount] = useState(10)
-  const [isLoading, setIsLoading] = useState(false)
+  const { data: archiveData, isLoading, error } = useQuery(archiveQueryOptions.get({ minUsers: 5 }))
 
-  const loadMoreRef = useRef<HTMLDivElement>(null)
-  const loadMoreStep = 10
-
-  // Filter entries
-  const filteredEntries = filterEntriesByBookmarkCount(mockEntries, selectedThreshold)
-  const displayedEntries = filteredEntries.slice(0, displayedCount)
-  const hasMore = displayedCount < filteredEntries.length
-
-  const handleThresholdChange = (threshold: number | null) => {
-    setSelectedThreshold(threshold)
-    setDisplayedCount(10)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  if (isLoading) {
+    return (
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1">
+          <SkeletonList count={5} />
+        </div>
+        <Sidebar />
+      </div>
+    )
   }
 
-  // Infinite scroll
-  useEffect(() => {
-    if (!loadMoreRef.current || !hasMore) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoading) {
-          setIsLoading(true)
-          setTimeout(() => {
-            setDisplayedCount((prev) => prev + loadMoreStep)
-            setIsLoading(false)
-          }, 500)
-        }
-      },
-      { threshold: 0.1 },
+  if (error) {
+    return (
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1">
+          <div className="mt-8 text-center text-sm text-error-500">
+            エラーが発生しました: {error.message}
+          </div>
+        </div>
+        <Sidebar />
+      </div>
     )
+  }
 
-    observer.observe(loadMoreRef.current)
-    return () => observer.disconnect()
-  }, [hasMore, isLoading])
-
-  return (
-    <>
-      {/* Page Title and Filter */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-4">本日の人気エントリー</h2>
-        <FilterBar
-          selectedThreshold={selectedThreshold}
-          onThresholdChange={handleThresholdChange}
-        />
+  const latestDate = archiveData?.latestDate
+  if (!latestDate) {
+    return (
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1">
+          <div className="mt-8 text-center text-sm text-muted-foreground">データがありません</div>
+        </div>
+        <Sidebar />
       </div>
+    )
+  }
 
-      {/* Entry Cards */}
-      <div className="space-y-4">
-        {displayedEntries.map((entry) => (
-          <EntryCard key={entry.id} entry={entry} />
-        ))}
-      </div>
+  // YYYY-MM-DD を YYYYMMDD に変換
+  const date = latestDate.replace(/-/g, '')
 
-      {/* Load more trigger */}
-      {hasMore && (
-        <div ref={loadMoreRef} className="mt-8">
-          {isLoading && <SkeletonList count={3} />}
-        </div>
-      )}
-
-      {/* End of list */}
-      {!hasMore && filteredEntries.length > 0 && (
-        <div className="mt-8 text-center text-sm text-muted-foreground">
-          すべてのエントリーを表示しました
-        </div>
-      )}
-
-      {/* No results */}
-      {filteredEntries.length === 0 && (
-        <div className="mt-8 text-center text-sm text-muted-foreground">
-          該当するエントリーがありません
-        </div>
-      )}
-    </>
-  )
+  return <EntriesPage date={date} title="人気エントリー" routeType="hot" />
 }

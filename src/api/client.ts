@@ -96,6 +96,18 @@ type RecordClickBody =
 type RecordClickResponse =
   paths['/metrics/clicks']['post']['responses']['201']['content']['application/json']
 
+type GetArchiveParams = paths['/archive']['get']['parameters']['query']
+type GetArchiveResponse =
+  paths['/archive']['get']['responses']['200']['content']['application/json']
+
+type GetTrendingTagsParams = paths['/tags/trending']['get']['parameters']['query']
+type GetTrendingTagsResponse =
+  paths['/tags/trending']['get']['responses']['200']['content']['application/json']
+
+type GetClickedTagsParams = paths['/tags/clicked']['get']['parameters']['query']
+type GetClickedTagsResponse =
+  paths['/tags/clicked']['get']['responses']['200']['content']['application/json']
+
 export const api = {
   entries: {
     getNew: (params: GetNewEntriesParams): Promise<GetNewEntriesResponse> => {
@@ -125,13 +137,44 @@ export const api = {
       return `${config.api.baseUrl}/favicons?domain=${encodeURIComponent(domain)}`
     },
   },
+  archive: {
+    get: (params?: GetArchiveParams): Promise<GetArchiveResponse> => {
+      const searchParams = new URLSearchParams()
+      if (params?.min_users !== undefined) searchParams.set('min_users', String(params.min_users))
+      const query = searchParams.toString()
+      return request(`/archive${query ? `?${query}` : ''}`)
+    },
+  },
+  tags: {
+    getTrending: (params?: GetTrendingTagsParams): Promise<GetTrendingTagsResponse> => {
+      const searchParams = new URLSearchParams()
+      if (params?.hours !== undefined) searchParams.set('hours', String(params.hours))
+      if (params?.min_users !== undefined) searchParams.set('min_users', String(params.min_users))
+      if (params?.limit !== undefined) searchParams.set('limit', String(params.limit))
+      const query = searchParams.toString()
+      return request(`/tags/trending${query ? `?${query}` : ''}`)
+    },
+    getClicked: (params?: GetClickedTagsParams): Promise<GetClickedTagsResponse> => {
+      const searchParams = new URLSearchParams()
+      if (params?.days !== undefined) searchParams.set('days', String(params.days))
+      if (params?.limit !== undefined) searchParams.set('limit', String(params.limit))
+      const query = searchParams.toString()
+      return request(`/tags/clicked${query ? `?${query}` : ''}`)
+    },
+  },
 }
 
 export type {
+  GetArchiveParams,
+  GetArchiveResponse,
+  GetClickedTagsParams,
+  GetClickedTagsResponse,
   GetHotEntriesParams,
   GetHotEntriesResponse,
   GetNewEntriesParams,
   GetNewEntriesResponse,
+  GetTrendingTagsParams,
+  GetTrendingTagsResponse,
   RecordClickBody,
   RecordClickResponse,
 }

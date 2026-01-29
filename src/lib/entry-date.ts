@@ -43,6 +43,14 @@ export class EntryDate {
     throw new Error(`Invalid date format: ${dateStr}. Expected YYYYMMDD or YYYY-MM-DD.`)
   }
 
+  static fromTimestamp(timestamp: string | number): EntryDate {
+    const date = new Date(timestamp)
+    if (Number.isNaN(date.getTime())) {
+      throw new Error(`Invalid timestamp: ${timestamp}`)
+    }
+    return new EntryDate(date)
+  }
+
   static today(): EntryDate {
     return new EntryDate(new Date())
   }
@@ -56,7 +64,11 @@ export class EntryDate {
   }
 
   toDisplayString(): string {
-    return format(this.date, 'yyyy年MM月dd日', { locale: ja })
+    return format(this.date, 'yyyy年M月d日', { locale: ja })
+  }
+
+  toSlashSeparated(): string {
+    return format(this.date, 'yyyy/MM/dd')
   }
 
   previousDay(): EntryDate {
@@ -111,6 +123,12 @@ export class EntryDate {
   subtractWeeks(weeks: number): EntryDate {
     const result = new Date(this.date)
     result.setDate(result.getDate() - weeks * 7)
+    return new EntryDate(result)
+  }
+
+  subtractYears(years: number): EntryDate {
+    const result = new Date(this.date)
+    result.setFullYear(result.getFullYear() - years)
     return new EntryDate(result)
   }
 }

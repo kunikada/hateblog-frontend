@@ -1,5 +1,9 @@
 import { api } from '@/api/client'
-import type { MetricsRepository, ClickMetricsRequest, MetricsResponse } from '@/repositories/metrics'
+import type {
+  MetricsRepository,
+  ClickMetricsRequest,
+  MetricsResponse,
+} from '@/repositories/metrics'
 
 export function createMetricsRepository(): MetricsRepository {
   return {

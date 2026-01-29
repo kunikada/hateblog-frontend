@@ -32,7 +32,7 @@ function convertApiEntry(apiEntry: ApiEntry): Entry {
     favicon: faviconUrl,
     bookmarkCount: apiEntry.bookmark_count,
     timestamp: apiEntry.posted_at,
-    tags: apiEntry.tags.map((t) => t.tag_name),
+    tags: apiEntry.tags.map((t) => ({ name: t.tag_name, score: t.score })),
     excerpt: apiEntry.excerpt ?? undefined,
   }
 }

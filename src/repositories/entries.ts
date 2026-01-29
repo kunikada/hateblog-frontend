@@ -5,6 +5,11 @@ export type ApiEntry = components['schemas']['Entry']
 export type EntryListResponse = components['schemas']['EntryListResponse']
 
 // Domain types (used throughout the application)
+export type EntryTag = {
+  name: string
+  score: number
+}
+
 export type Entry = {
   id: string
   title: string
@@ -13,7 +18,7 @@ export type Entry = {
   favicon: string
   bookmarkCount: number
   timestamp: string
-  tags: string[]
+  tags: EntryTag[]
   excerpt?: string
 }
 
