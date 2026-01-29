@@ -1,7 +1,9 @@
 import { api } from '@/api/client'
 import type {
   ClickedTagsResponse,
+  EntryListResponse,
   GetClickedTagsParams,
+  GetTagEntriesParams,
   GetTrendingTagsParams,
   TagsRepository,
   TrendingTagsResponse,
@@ -26,6 +28,18 @@ export function createTagsRepository(): TagsRepository {
         limit: params?.limit,
       })
       console.debug('[TagsRepository] getClickedTags result', result)
+      return result
+    },
+    async getEntries(params: GetTagEntriesParams): Promise<EntryListResponse> {
+      console.debug('[TagsRepository] getEntries', params)
+      const result = await api.tags.getEntries({
+        tag: params.tag,
+        min_users: params.minUsers,
+        sort: params.sort,
+        limit: params.limit,
+        offset: params.offset,
+      })
+      console.debug('[TagsRepository] getEntries result', result)
       return result
     },
   }

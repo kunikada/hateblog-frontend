@@ -1,143 +1,179 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect, useRef, useState } from 'react'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
+import { Button } from '@/components/ui/button'
 import { EntryCard } from '@/components/ui/entry-card'
+import { SkeletonList } from '@/components/ui/skeleton-list'
 import { useLocalStorage } from '@/hooks/use-local-storage'
-import { filterEntriesByBookmarkCount } from '@/mocks/entries'
+import { config } from '@/lib/config'
 import type { Entry } from '@/repositories/entries'
+import { recordEntryClick } from '@/usecases/entry-click'
+import { tagEntriesQueryOptions } from '@/usecases/fetch-tag-entries'
 
 type TagPageProps = {
   tag: string
-  entries: Entry[]
 }
 
-export function TagPage({ tag, entries }: TagPageProps) {
+type SortType = 'new' | 'hot'
+
+export function TagPage({ tag }: TagPageProps) {
+  console.debug('[TagPage] Component mounted', { tag })
+
+  const entriesPerPage = config.pagination.entriesPerPage
+
   const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
     'filter-threshold',
     5,
   )
-  const [displayedEntries, setDisplayedEntries] = useState<Entry[]>([])
-  const [hasMore, setHasMore] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
+  const [sortType, setSortType] = useState<SortType>('new')
+  const [displayedCount, setDisplayedCount] = useState(entriesPerPage)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
-  const filteredEntries = filterEntriesByBookmarkCount(entries, selectedThreshold)
-  const totalEntries = filteredEntries.length
+  const queryParams = {
+    tag,
+    minUsers: selectedThreshold ?? undefined,
+    sort: sortType,
+  }
+  console.debug('[TagPage] Query params', queryParams)
 
-  // Load more entries
-  const loadMore = useCallback(() => {
-    if (isLoading) return
+  const { data, isLoading, error } = useQuery(tagEntriesQueryOptions.entries(queryParams))
 
-    setIsLoading(true)
-    setTimeout(() => {
-      const currentLength = displayedEntries.length
-      const nextEntries = filteredEntries.slice(currentLength, currentLength + 10)
+  console.debug('[TagPage] Query state', { isLoading, hasData: !!data, error })
 
-      if (nextEntries.length === 0) {
-        setHasMore(false)
-      } else {
-        setDisplayedEntries((prev) => [...prev, ...nextEntries])
-      }
-      setIsLoading(false)
-    }, 500)
-  }, [isLoading, displayedEntries.length, filteredEntries])
+  const allEntries = data?.entries ?? []
+  const displayedEntries = allEntries.slice(0, displayedCount)
+  const hasMore = displayedCount < allEntries.length
 
-  // Intersection Observer for infinite scroll
+  const handleThresholdChange = (threshold: number | null) => {
+    setSelectedThreshold(threshold)
+    setDisplayedCount(entriesPerPage)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleSortChange = (sort: SortType) => {
+    setSortType(sort)
+    setDisplayedCount(entriesPerPage)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleEntryClick = (entry: Entry) => {
+    recordEntryClick({
+      entryId: entry.id,
+      entryUrl: entry.url,
+      referrer: window.location.href,
+      userAgent: navigator.userAgent,
+    })
+  }
+
+  // Infinite scroll
   useEffect(() => {
+    if (!loadMoreRef.current || !hasMore) return
+
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading) {
-          loadMore()
+        if (entries[0].isIntersecting && !isLoadingMore) {
+          setIsLoadingMore(true)
+          setTimeout(() => {
+            setDisplayedCount((prev) => prev + entriesPerPage)
+            setIsLoadingMore(false)
+          }, 500)
         }
       },
       { threshold: 0.1 },
     )
 
-    const currentRef = loadMoreRef.current
-    if (currentRef) {
-      observer.observe(currentRef)
-    }
+    observer.observe(loadMoreRef.current)
+    return () => observer.disconnect()
+  }, [hasMore, isLoadingMore, entriesPerPage])
 
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef)
-      }
-    }
-  }, [hasMore, isLoading, loadMore])
-
-  // Reset entries when filter changes
+  // Reset displayed count when tag, threshold, or sort changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally reset on tag/threshold/sort change
   useEffect(() => {
-    setDisplayedEntries(filteredEntries.slice(0, 10))
-    setHasMore(filteredEntries.length > 10)
-  }, [filteredEntries])
+    setDisplayedCount(entriesPerPage)
+  }, [tag, selectedThreshold, sortType, entriesPerPage])
+
+  if (error) {
+    return (
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1">
+          <div className="mt-8 text-center text-sm text-error-500">
+            エラーが発生しました: {error.message}
+          </div>
+        </div>
+        <Sidebar />
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Main Column */}
       <div className="flex-1">
-        {/* Page Title */}
+        {/* Page Title and Sort Toggle */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold">タグ: {tag}</h2>
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <h2 className="text-2xl font-bold">タグ: {tag}</h2>
+            <div className="flex gap-2">
+              <Button
+                variant={sortType === 'hot' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleSortChange('hot')}
+              >
+                人気順
+              </Button>
+              <Button
+                variant={sortType === 'new' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleSortChange('new')}
+              >
+                新着順
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Filter Bar */}
         <div className="mb-4">
           <FilterBar
             selectedThreshold={selectedThreshold}
-            onThresholdChange={setSelectedThreshold}
+            onThresholdChange={handleThresholdChange}
           />
         </div>
 
         {/* Entry Count */}
-        <div className="mb-4 text-sm text-muted-foreground">
-          {totalEntries.toLocaleString()}件のエントリー
-        </div>
+        {!isLoading && (data?.total ?? 0) > 0 && (
+          <div className="mb-4 text-sm text-muted-foreground">{data?.total ?? 0}件のエントリー</div>
+        )}
 
-        {/* Entry List */}
-        <div className="space-y-4">
-          {displayedEntries.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              該当するエントリーがありません
-            </div>
-          ) : (
-            <>
-              {displayedEntries.map((entry) => (
-                <EntryCard key={entry.id} entry={entry} />
-              ))}
+        {/* Loading State */}
+        {isLoading && <SkeletonList count={5} />}
 
-              {/* Loading Skeleton */}
-              {isLoading && (
-                <div className="space-y-4">
-                  {[...Array(3)].map((_, i) => (
-                    <div
-                      key={`skeleton-${
-                        // biome-ignore lint/suspicious/noArrayIndexKey: skeleton key
-                        i
-                      }`}
-                      className="bg-card rounded-lg border p-4 animate-pulse"
-                    >
-                      <div className="h-6 bg-muted rounded w-3/4 mb-2" />
-                      <div className="h-4 bg-muted rounded w-1/4 mb-4" />
-                      <div className="h-4 bg-muted rounded w-full mb-2" />
-                      <div className="h-4 bg-muted rounded w-2/3" />
-                    </div>
-                  ))}
-                </div>
-              )}
+        {/* Entry Cards */}
+        {!isLoading && (
+          <div className="space-y-4">
+            {displayedEntries.map((entry) => (
+              <EntryCard key={entry.id} entry={entry} onTitleClick={handleEntryClick} />
+            ))}
+          </div>
+        )}
 
-              {/* Infinite Scroll Trigger */}
-              {hasMore && <div ref={loadMoreRef} className="h-10" />}
+        {/* Load more trigger */}
+        {hasMore && (
+          <div ref={loadMoreRef} className="mt-8">
+            {isLoadingMore && <SkeletonList count={3} />}
+          </div>
+        )}
 
-              {/* End of List */}
-              {!hasMore && displayedEntries.length > 0 && (
-                <div className="text-center py-8 text-sm text-muted-foreground">
-                  すべてのエントリーを表示しました
-                </div>
-              )}
-            </>
-          )}
-        </div>
+        {/* No results */}
+        {!isLoading && allEntries.length === 0 && (
+          <div className="mt-8 text-center text-sm text-muted-foreground">
+            該当するエントリーがありません
+          </div>
+        )}
       </div>
 
       {/* Sidebar */}

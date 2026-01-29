@@ -120,6 +120,16 @@ type GetWeeklyRankingParams = paths['/rankings/weekly']['get']['parameters']['qu
 type GetWeeklyRankingResponse =
   paths['/rankings/weekly']['get']['responses']['200']['content']['application/json']
 
+type GetTagEntriesParams = {
+  tag: string
+  min_users?: number
+  sort?: 'new' | 'hot'
+  limit?: number
+  offset?: number
+}
+type GetTagEntriesResponse =
+  paths['/tags/entries/{tag}']['get']['responses']['200']['content']['application/json']
+
 export const api = {
   entries: {
     getNew: (params: GetNewEntriesParams): Promise<GetNewEntriesResponse> => {
@@ -173,6 +183,15 @@ export const api = {
       const query = searchParams.toString()
       return request(`/tags/clicked${query ? `?${query}` : ''}`)
     },
+    getEntries: (params: GetTagEntriesParams): Promise<GetTagEntriesResponse> => {
+      const searchParams = new URLSearchParams()
+      if (params.min_users !== undefined) searchParams.set('min_users', String(params.min_users))
+      if (params.sort !== undefined) searchParams.set('sort', params.sort)
+      if (params.limit !== undefined) searchParams.set('limit', String(params.limit))
+      if (params.offset !== undefined) searchParams.set('offset', String(params.offset))
+      const query = searchParams.toString()
+      return request(`/tags/entries/${encodeURIComponent(params.tag)}${query ? `?${query}` : ''}`)
+    },
   },
   rankings: {
     getYearly: (params: GetYearlyRankingParams): Promise<GetYearlyRankingResponse> => {
@@ -209,6 +228,8 @@ export type {
   GetMonthlyRankingResponse,
   GetNewEntriesParams,
   GetNewEntriesResponse,
+  GetTagEntriesParams,
+  GetTagEntriesResponse,
   GetTrendingTagsParams,
   GetTrendingTagsResponse,
   GetYearlyRankingParams,
