@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { YearlyRankingPage } from '@/components/page/yearly-ranking-page'
+import { EntryDate } from '@/lib/entry-date'
 
 export const Route = createFileRoute('/rankings/$year/')({
   component: YearlyRankings,
@@ -8,8 +9,7 @@ export const Route = createFileRoute('/rankings/$year/')({
 function YearlyRankings() {
   const { year } = Route.useParams()
   const currentYear = Number.parseInt(year, 10)
-  const now = new Date()
-  const thisYear = now.getFullYear()
+  const thisYear = EntryDate.today().getYearNumber()
   const isNextDisabled = currentYear >= thisYear
 
   return (

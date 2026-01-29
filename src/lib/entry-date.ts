@@ -1,4 +1,12 @@
-import { format } from 'date-fns'
+import {
+  addMonths,
+  endOfWeek,
+  format,
+  getWeek,
+  isSameWeek,
+  startOfWeek,
+} from 'date-fns'
+import type { Locale } from 'date-fns'
 import { ja } from 'date-fns/locale'
 
 export class EntryDate {
@@ -51,6 +59,30 @@ export class EntryDate {
     return new EntryDate(date)
   }
 
+  static fromYearMonthDay(year: number, month: number, day: number): EntryDate {
+    const date = new Date(year, month - 1, day)
+    if (Number.isNaN(date.getTime())) {
+      throw new Error(`Invalid date: ${year}-${month}-${day}`)
+    }
+    return new EntryDate(date)
+  }
+
+  static endOfMonth(year: number, month: number): EntryDate {
+    const date = new Date(year, month, 0)
+    if (Number.isNaN(date.getTime())) {
+      throw new Error(`Invalid date: ${year}-${month}`)
+    }
+    return new EntryDate(date)
+  }
+
+  static fromISOWeek(year: number, week: number): EntryDate {
+    const jan4 = new Date(year, 0, 4)
+    const jan4Day = jan4.getDay() || 7
+    const weekStart = new Date(jan4)
+    weekStart.setDate(jan4.getDate() - jan4Day + 1 + (week - 1) * 7)
+    return new EntryDate(weekStart)
+  }
+
   static today(): EntryDate {
     return new EntryDate(new Date())
   }
@@ -95,12 +127,40 @@ export class EntryDate {
     return new Date(this.date)
   }
 
+  toEpochMs(): number {
+    return this.date.getTime()
+  }
+
   getYear(): string {
     return format(this.date, 'yyyy')
   }
 
+  getYearNumber(): number {
+    return Number.parseInt(this.getYear(), 10)
+  }
+
   getMonth(): string {
     return format(this.date, 'MM')
+  }
+
+  getMonthNumber(): number {
+    return Number.parseInt(this.getMonth(), 10)
+  }
+
+  getMonthIndex(): number {
+    return this.date.getMonth()
+  }
+
+  getDateNumber(): number {
+    return this.date.getDate()
+  }
+
+  getDayOfWeek(): number {
+    return this.date.getDay()
+  }
+
+  getWeek(locale: Locale = ja): number {
+    return getWeek(this.date, { locale })
   }
 
   getISOWeek(): number {
@@ -118,6 +178,28 @@ export class EntryDate {
     const d = new Date(this.date)
     d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7))
     return d.getFullYear()
+  }
+
+  isSameWeek(other: EntryDate, locale: Locale = ja): boolean {
+    return isSameWeek(this.date, other.date, { locale })
+  }
+
+  startOfWeek(locale: Locale = ja): EntryDate {
+    return new EntryDate(startOfWeek(this.date, { locale }))
+  }
+
+  endOfWeek(locale: Locale = ja): EntryDate {
+    return new EntryDate(endOfWeek(this.date, { locale }))
+  }
+
+  addDays(days: number): EntryDate {
+    const result = new Date(this.date)
+    result.setDate(result.getDate() + days)
+    return new EntryDate(result)
+  }
+
+  addMonths(months: number): EntryDate {
+    return new EntryDate(addMonths(this.date, months))
   }
 
   subtractWeeks(weeks: number): EntryDate {

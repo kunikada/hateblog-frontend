@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
+import { EntryCount } from '@/components/ui/entry-count'
 import { EntryCard } from '@/components/ui/entry-card'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { config } from '@/lib/config'
@@ -126,9 +127,10 @@ export function YearlyRankingPage({ title, year, prev, next }: YearlyRankingPage
 
         {/* Entry Count */}
         {!isLoading && !hasMore && allEntries.length > 0 && (
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            {data?.total ?? allEntries.length}件のエントリー
-          </div>
+          <EntryCount
+            count={data?.total ?? allEntries.length}
+            className="mt-8 text-center"
+          />
         )}
 
         {/* No results */}

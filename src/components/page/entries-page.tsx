@@ -4,6 +4,7 @@ import { FilterBar } from '@/components/layout/filter-bar'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
+import { EntryCount } from '@/components/ui/entry-count'
 import { EntryCard } from '@/components/ui/entry-card'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { useLocalStorage } from '@/hooks/use-local-storage'
@@ -146,7 +147,7 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
 
         {/* Entry Count */}
         {!isLoading && (data?.total ?? 0) > 0 && (
-          <div className="mb-4 text-sm text-muted-foreground">{data?.total ?? 0}件のエントリー</div>
+          <EntryCount count={data?.total ?? 0} className="mb-4" />
         )}
 
         {/* Loading State */}

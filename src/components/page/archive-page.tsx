@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import { endOfWeek, format, getWeek, isSameWeek, startOfWeek } from 'date-fns'
+import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
@@ -11,9 +11,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { Button } from '@/components/ui/button'
+import { RankingLinkButton } from '@/components/ui/ranking-link-button'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { useLocalStorage } from '@/hooks/use-local-storage'
+import { EntryDate } from '@/lib/entry-date'
 import type { ArchiveDay } from '@/usecases/fetch-archive'
 import { archiveQueryOptions } from '@/usecases/fetch-archive'
 
@@ -36,8 +37,8 @@ export function ArchivePage() {
   // 月に含まれる週のリストを取得（件数付き）
   const getWeeksInMonth = (monthStr: string, days: ArchiveDay[]) => {
     const [year, month] = monthStr.split('-').map(Number)
-    const firstDay = new Date(year, month - 1, 1)
-    const lastDay = new Date(year, month, 0)
+    const firstDay = EntryDate.fromYearMonthDay(year, month, 1)
+    const lastDay = EntryDate.endOfMonth(year, month)
 
     const weeks: Array<{
       weekNumber: number
@@ -47,25 +48,25 @@ export function ArchivePage() {
     }> = []
     const seenWeeks = new Set<string>()
 
-    for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
-      const weekNumber = getWeek(date, { locale: ja })
-      const weekYear = date.getFullYear()
+    for (let date = firstDay; date.toEpochMs() <= lastDay.toEpochMs(); date = date.addDays(1)) {
+      const weekNumber = date.getWeek(ja)
+      const weekYear = date.getYearNumber()
       const weekKey = `${weekYear}-${weekNumber}`
 
       if (!seenWeeks.has(weekKey)) {
         seenWeeks.add(weekKey)
-        const weekStartDate = startOfWeek(date, { locale: ja })
-        const weekEndDate = endOfWeek(date, { locale: ja })
+        const weekStartDate = date.startOfWeek(ja)
+        const weekEndDate = date.endOfWeek(ja)
 
         // 同じ月内か判定
-        const isSameMonth = weekStartDate.getMonth() === weekEndDate.getMonth()
+        const isSameMonth = weekStartDate.getMonthIndex() === weekEndDate.getMonthIndex()
         const range = isSameMonth
-          ? `${format(weekStartDate, 'd', { locale: ja })}日～${format(weekEndDate, 'd', { locale: ja })}日`
-          : `${format(weekStartDate, 'M月d', { locale: ja })}日～${format(weekEndDate, 'M月d', { locale: ja })}日`
+          ? `${format(weekStartDate.toDate(), 'd', { locale: ja })}日～${format(weekEndDate.toDate(), 'd', { locale: ja })}日`
+          : `${format(weekStartDate.toDate(), 'M月d', { locale: ja })}日～${format(weekEndDate.toDate(), 'M月d', { locale: ja })}日`
 
         // この週に含まれる日のエントリー数を集計
         const totalEntries = days
-          .filter((day) => isSameWeek(new Date(day.date), date, { locale: ja }))
+          .filter((day) => EntryDate.fromYYYY_MM_DD(day.date).isSameWeek(date, ja))
           .reduce((sum, day) => sum + day.entryCount, 0)
 
         // 12月に週番号1が出る場合は表示上53週として扱う
@@ -79,8 +80,8 @@ export function ArchivePage() {
   }
 
   // 曜日のスタイルを取得
-  const getDayOfWeekStyle = (date: Date) => {
-    const dayOfWeek = date.getDay()
+  const getDayOfWeekStyle = (date: EntryDate) => {
+    const dayOfWeek = date.getDayOfWeek()
     if (dayOfWeek === 0) return 'text-red-500' // 日曜
     if (dayOfWeek === 6) return 'text-blue-500' // 土曜
     return 'text-muted-foreground'
@@ -129,17 +130,18 @@ export function ArchivePage() {
                     （{yearData.totalEntries.toLocaleString()}件のエントリー）
                   </span>
                 </h3>
-                <Link to="/rankings/$year" params={{ year: yearData.year.toString() }}>
-                  <Button variant="outline" size="sm">
-                    年間ランキング
-                  </Button>
-                </Link>
+                <RankingLinkButton
+                  to="/rankings/$year"
+                  params={{ year: yearData.year.toString() }}
+                >
+                  年間ランキング
+                </RankingLinkButton>
               </div>
 
               <Accordion type="multiple" className="w-full">
                 {yearData.months.map((monthData) => {
-                  const monthDate = new Date(`${monthData.month}-01`)
-                  const monthLabel = format(monthDate, 'M月', { locale: ja })
+                  const monthDate = EntryDate.fromYYYY_MM_DD(`${monthData.month}-01`)
+                  const monthLabel = format(monthDate.toDate(), 'M月', { locale: ja })
                   const [year, month] = monthData.month.split('-')
                   const weeks = getWeeksInMonth(monthData.month, monthData.days)
 
@@ -153,15 +155,14 @@ export function ArchivePage() {
                               （{monthData.totalEntries.toLocaleString()}件）
                             </span>
                           </span>
-                          <Link
+                          <RankingLinkButton
                             to="/rankings/$year/$month"
                             params={{ year, month }}
                             onClick={(e) => e.stopPropagation()}
+                            className="h-7 px-2 text-xs"
                           >
-                            <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
-                              月間ランキング
-                            </Button>
-                          </Link>
+                            月間ランキング
+                          </RankingLinkButton>
                         </div>
                       </AccordionTrigger>
                       <AccordionContent>
@@ -173,21 +174,20 @@ export function ArchivePage() {
                             </h4>
                             <div className="flex flex-wrap gap-2">
                               {weeks.filter((w) => w.totalEntries > 0).map((week) => (
-                                <Link
+                                <RankingLinkButton
                                   key={`${week.year}-${week.weekNumber}`}
                                   to="/rankings/$year/week/$week"
                                   params={{
                                     year: week.year.toString(),
                                     week: week.weekNumber.toString(),
                                   }}
+                                  className="h-8 text-xs"
                                 >
-                                  <Button variant="outline" size="sm" className="h-8 text-xs">
-                                    第{week.weekNumber}週（{week.range}）
-                                    <span className="ml-1 text-muted-foreground">
-                                      {week.totalEntries.toLocaleString()}件
-                                    </span>
-                                  </Button>
-                                </Link>
+                                  第{week.weekNumber}週（{week.range}）
+                                  <span className="ml-1 text-muted-foreground">
+                                    {week.totalEntries.toLocaleString()}件
+                                  </span>
+                                </RankingLinkButton>
                               ))}
                             </div>
                           </div>
@@ -196,9 +196,9 @@ export function ArchivePage() {
                         {/* 日別エントリー */}
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 pt-2">
                           {monthData.days.map((dayData) => {
-                            const date = new Date(dayData.date)
-                            const dayNum = format(date, 'd日', { locale: ja })
-                            const dayOfWeekName = format(date, 'E', { locale: ja })
+                            const date = EntryDate.fromYYYY_MM_DD(dayData.date)
+                            const dayNum = format(date.toDate(), 'd日', { locale: ja })
+                            const dayOfWeekName = format(date.toDate(), 'E', { locale: ja })
 
                             return (
                               <Link
@@ -216,7 +216,7 @@ export function ArchivePage() {
                                   <span className="text-xs text-muted-foreground">）</span>
                                 </span>
                                 <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                  {dayData.entryCount}件
+                                  {dayData.entryCount.toLocaleString()}件
                                 </span>
                               </Link>
                             )

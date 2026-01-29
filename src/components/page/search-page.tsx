@@ -2,10 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
-import { Button } from '@/components/ui/button'
+import { EntryCount } from '@/components/ui/entry-count'
 import { EntryCard } from '@/components/ui/entry-card'
+import { EntrySortToggle } from '@/components/ui/entry-sort-toggle'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { config } from '@/lib/config'
+import { EntryDate } from '@/lib/entry-date'
 import { filterEntriesByBookmarkCount } from '@/mocks/entries'
 import type { Entry } from '@/repositories/entries'
 import { recordEntryClick } from '@/usecases/entry-click'
@@ -35,7 +37,9 @@ export function SearchPage({ query, entries }: SearchPageProps) {
     const sorted = [...filteredEntries]
     if (sortType === 'new') {
       return sorted.sort(
-        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+        (a, b) =>
+          EntryDate.fromTimestamp(b.timestamp).toEpochMs() -
+          EntryDate.fromTimestamp(a.timestamp).toEpochMs(),
       )
     }
     return sorted.sort((a, b) => b.bookmarkCount - a.bookmarkCount)
@@ -109,38 +113,16 @@ export function SearchPage({ query, entries }: SearchPageProps) {
       <div className="flex-1">
         {/* Page Title */}
         <div className="mb-6 flex items-center justify-between flex-wrap gap-3">
-          <h2 className="text-2xl font-bold">
-            {query ? `「${query}」の検索結果` : '検索結果'}
-          </h2>
+          <h2 className="text-2xl font-bold">{query} の検索結果</h2>
           {query && (
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                size="sm"
-                variant={sortType === 'popular' ? 'default' : 'outline'}
-                className={
-                  sortType === 'popular'
-                    ? 'bg-hatebu-500 text-white hover:bg-hatebu-600'
-                    : 'text-gray-600 border-gray-300'
-                }
-                onClick={() => setSortType('popular')}
-              >
-                人気順
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant={sortType === 'new' ? 'default' : 'outline'}
-                className={
-                  sortType === 'new'
-                    ? 'bg-hatebu-500 text-white hover:bg-hatebu-600'
-                    : 'text-gray-600 border-gray-300'
-                }
-                onClick={() => setSortType('new')}
-              >
-                新着順
-              </Button>
-            </div>
+            <EntrySortToggle
+              value={sortType}
+              onChange={setSortType}
+              options={[
+                { value: 'popular', label: '人気順' },
+                { value: 'new', label: '新着順' },
+              ]}
+            />
           )}
         </div>
 
@@ -155,10 +137,8 @@ export function SearchPage({ query, entries }: SearchPageProps) {
         )}
 
         {/* Entry Count */}
-        {query && (
-          <div className="mb-4 text-sm text-muted-foreground">
-            {totalEntries.toLocaleString()}件のエントリー
-          </div>
+        {query && totalEntries > 0 && (
+          <EntryCount count={totalEntries} className="mb-4" />
         )}
 
         {/* Entry List */}
@@ -169,7 +149,7 @@ export function SearchPage({ query, entries }: SearchPageProps) {
             </div>
           ) : displayedEntries.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              「{query}」に一致するエントリーが見つかりませんでした
+              該当するエントリーがありません
             </div>
           ) : (
             <>
@@ -201,13 +181,6 @@ export function SearchPage({ query, entries }: SearchPageProps) {
 
               {/* Infinite Scroll Trigger */}
               {hasMore && <div ref={loadMoreRef} className="h-10" />}
-
-              {/* End of List */}
-              {!hasMore && displayedEntries.length > 0 && (
-                <div className="text-center py-8 text-sm text-muted-foreground">
-                  すべての検索結果を表示しました
-                </div>
-              )}
             </>
           )}
         </div>

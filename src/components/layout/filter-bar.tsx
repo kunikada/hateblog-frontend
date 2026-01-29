@@ -17,12 +17,15 @@ export function FilterBar({ selectedThreshold, onThresholdChange }: FilterBarPro
             key={threshold}
             variant={selectedThreshold === threshold ? 'default' : 'outline'}
             size="sm"
-            onClick={() =>
-              onThresholdChange(selectedThreshold === threshold ? null : threshold)
-            }
+            onClick={() => {
+              if (selectedThreshold !== threshold) {
+                onThresholdChange(threshold)
+              }
+            }}
+            disabled={selectedThreshold === threshold}
             className={
               selectedThreshold === threshold
-                ? 'min-w-28 bg-hatebu-500 text-white hover:bg-hatebu-600'
+                ? 'min-w-28 bg-hatebu-500 text-white hover:bg-hatebu-600 disabled:opacity-100 disabled:cursor-default'
                 : 'min-w-28 text-gray-600 border-gray-300'
             }
           >

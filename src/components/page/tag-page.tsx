@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
-import { Button } from '@/components/ui/button'
+import { EntryCount } from '@/components/ui/entry-count'
 import { EntryCard } from '@/components/ui/entry-card'
+import { EntrySortToggle } from '@/components/ui/entry-sort-toggle'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { config } from '@/lib/config'
@@ -116,23 +117,15 @@ export function TagPage({ tag }: TagPageProps) {
         {/* Page Title and Sort Toggle */}
         <div className="mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
-            <h2 className="text-2xl font-bold">タグ: {tag}</h2>
-            <div className="flex gap-2">
-              <Button
-                variant={sortType === 'hot' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => handleSortChange('hot')}
-              >
-                人気順
-              </Button>
-              <Button
-                variant={sortType === 'new' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => handleSortChange('new')}
-              >
-                新着順
-              </Button>
-            </div>
+            <h2 className="text-2xl font-bold">{tag} のタグ</h2>
+            <EntrySortToggle
+              value={sortType}
+              onChange={handleSortChange}
+              options={[
+                { value: 'hot', label: '人気順' },
+                { value: 'new', label: '新着順' },
+              ]}
+            />
           </div>
         </div>
 
@@ -146,7 +139,7 @@ export function TagPage({ tag }: TagPageProps) {
 
         {/* Entry Count */}
         {!isLoading && (data?.total ?? 0) > 0 && (
-          <div className="mb-4 text-sm text-muted-foreground">{data?.total ?? 0}件のエントリー</div>
+          <EntryCount count={data?.total ?? 0} className="mb-4" />
         )}
 
         {/* Loading State */}

@@ -5,6 +5,7 @@ import { FilterBar } from '@/components/layout/filter-bar'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
+import { EntryCount } from '@/components/ui/entry-count'
 import { EntryCard } from '@/components/ui/entry-card'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { filterEntriesByBookmarkCount } from '@/mocks/entries'
@@ -144,9 +145,7 @@ export function HistoryPage({ date, entries }: HistoryPageProps) {
         </div>
 
         {/* Entry Count */}
-        <div className="mb-4 text-sm text-muted-foreground">
-          {totalEntries.toLocaleString()}件の履歴
-        </div>
+        <EntryCount count={totalEntries} suffix="件の履歴" className="mb-4" />
 
         {/* Entry List */}
         <div className="space-y-4">
