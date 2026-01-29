@@ -15,7 +15,14 @@ export type GetMonthlyRankingParams = {
   limit?: number
 }
 
+export type GetWeeklyRankingParams = {
+  year: number
+  week: number
+  limit?: number
+}
+
 export interface RankingsRepository {
   getYearlyRanking(params: GetYearlyRankingParams): Promise<RankingResponse>
   getMonthlyRanking(params: GetMonthlyRankingParams): Promise<RankingResponse>
+  getWeeklyRanking(params: GetWeeklyRankingParams): Promise<RankingResponse>
 }

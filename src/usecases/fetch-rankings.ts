@@ -18,6 +18,12 @@ export type FetchMonthlyRankingParams = {
   limit?: number
 }
 
+export type FetchWeeklyRankingParams = {
+  year: number
+  week: number
+  limit?: number
+}
+
 export type YearlyRankingResult = {
   entries: RankingEntry[]
   total: number
@@ -29,6 +35,13 @@ export type MonthlyRankingResult = {
   total: number
   year: number
   month: number
+}
+
+export type WeeklyRankingResult = {
+  entries: RankingEntry[]
+  total: number
+  year: number
+  week: number
 }
 
 function convertApiRankingEntry(apiEntry: ApiRankingEntry): RankingEntry {
@@ -68,6 +81,15 @@ function convertMonthlyResponse(response: RankingResponse): MonthlyRankingResult
   }
 }
 
+function convertWeeklyResponse(response: RankingResponse): WeeklyRankingResult {
+  return {
+    entries: response.entries.map(convertApiRankingEntry),
+    total: response.total,
+    year: response.year,
+    week: response.week ?? 1,
+  }
+}
+
 async function fetchYearlyRanking(params: FetchYearlyRankingParams): Promise<YearlyRankingResult> {
   console.debug('[fetchYearlyRanking] Calling repository', params)
   const response = await rankingsRepository.getYearlyRanking(params)
@@ -88,6 +110,16 @@ async function fetchMonthlyRanking(params: FetchMonthlyRankingParams): Promise<M
   return convertMonthlyResponse(response)
 }
 
+async function fetchWeeklyRanking(params: FetchWeeklyRankingParams): Promise<WeeklyRankingResult> {
+  console.debug('[fetchWeeklyRanking] Calling repository', params)
+  const response = await rankingsRepository.getWeeklyRanking(params)
+  console.debug('[fetchWeeklyRanking] Response received', {
+    total: response.total,
+    count: response.entries.length,
+  })
+  return convertWeeklyResponse(response)
+}
+
 export const rankingsQueryOptions = {
   staleTime: 1000 * 60 * 5, // 5分
 
@@ -95,6 +127,7 @@ export const rankingsQueryOptions = {
     all: ['rankings'] as const,
     yearly: (params: FetchYearlyRankingParams) => [...rankingsQueryOptions.keys.all, 'yearly', params] as const,
     monthly: (params: FetchMonthlyRankingParams) => [...rankingsQueryOptions.keys.all, 'monthly', params] as const,
+    weekly: (params: FetchWeeklyRankingParams) => [...rankingsQueryOptions.keys.all, 'weekly', params] as const,
   },
 
   yearly: (params: FetchYearlyRankingParams) => ({
@@ -106,6 +139,12 @@ export const rankingsQueryOptions = {
   monthly: (params: FetchMonthlyRankingParams) => ({
     queryKey: rankingsQueryOptions.keys.monthly(params),
     queryFn: () => fetchMonthlyRanking(params),
+    staleTime: rankingsQueryOptions.staleTime,
+  }),
+
+  weekly: (params: FetchWeeklyRankingParams) => ({
+    queryKey: rankingsQueryOptions.keys.weekly(params),
+    queryFn: () => fetchWeeklyRanking(params),
     staleTime: rankingsQueryOptions.staleTime,
   }),
 }

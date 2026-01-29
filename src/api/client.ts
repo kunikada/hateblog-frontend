@@ -116,6 +116,10 @@ type GetMonthlyRankingParams = paths['/rankings/monthly']['get']['parameters']['
 type GetMonthlyRankingResponse =
   paths['/rankings/monthly']['get']['responses']['200']['content']['application/json']
 
+type GetWeeklyRankingParams = paths['/rankings/weekly']['get']['parameters']['query']
+type GetWeeklyRankingResponse =
+  paths['/rankings/weekly']['get']['responses']['200']['content']['application/json']
+
 export const api = {
   entries: {
     getNew: (params: GetNewEntriesParams): Promise<GetNewEntriesResponse> => {
@@ -183,6 +187,13 @@ export const api = {
       searchParams.set('month', String(params.month))
       if (params.limit !== undefined) searchParams.set('limit', String(params.limit))
       return request(`/rankings/monthly?${searchParams}`)
+    },
+    getWeekly: (params: GetWeeklyRankingParams): Promise<GetWeeklyRankingResponse> => {
+      const searchParams = new URLSearchParams()
+      searchParams.set('year', String(params.year))
+      searchParams.set('week', String(params.week))
+      if (params.limit !== undefined) searchParams.set('limit', String(params.limit))
+      return request(`/rankings/weekly?${searchParams}`)
     },
   },
 }

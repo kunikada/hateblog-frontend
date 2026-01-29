@@ -1,6 +1,7 @@
 import { api } from '@/api/client'
 import type {
   GetMonthlyRankingParams,
+  GetWeeklyRankingParams,
   GetYearlyRankingParams,
   RankingResponse,
   RankingsRepository,
@@ -25,6 +26,16 @@ export function createRankingsRepository(): RankingsRepository {
         limit: params.limit,
       })
       console.debug('[RankingsRepository] getMonthlyRanking result', result)
+      return result
+    },
+    async getWeeklyRanking(params: GetWeeklyRankingParams): Promise<RankingResponse> {
+      console.debug('[RankingsRepository] getWeeklyRanking', params)
+      const result = await api.rankings.getWeekly({
+        year: params.year,
+        week: params.week,
+        limit: params.limit,
+      })
+      console.debug('[RankingsRepository] getWeeklyRanking result', result)
       return result
     },
   }
