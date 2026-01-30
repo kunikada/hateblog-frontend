@@ -45,10 +45,14 @@ export function Header() {
                   }}
                   className="w-64 px-4 py-2 pr-10 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-hatebu-500 focus:border-transparent"
                 />
-                <Search
-                  className="h-5 w-5 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                <button
+                  type="button"
+                  aria-label="検索"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
                   onClick={handleSearch}
-                />
+                >
+                  <Search className="h-5 w-5" />
+                </button>
               </div>
               <ThemeToggle />
               <Button
@@ -77,10 +81,14 @@ export function Header() {
               }}
               className="w-full px-4 py-2 pr-10 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-hatebu-500 focus:border-transparent"
             />
-            <Search
-              className="h-5 w-5 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+            <button
+              type="button"
+              aria-label="検索"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
               onClick={handleSearch}
-            />
+            >
+              <Search className="h-5 w-5" />
+            </button>
           </div>
         </div>
       </header>

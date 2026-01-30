@@ -1,6 +1,6 @@
 import { entriesRepository } from '@/infra/repositories/entries'
-import { config } from '@/lib/config'
-import type { ApiEntry, Entry, EntryListResponse } from '@/repositories/entries'
+import { convertApiEntry } from '@/lib/entry-mapper'
+import type { Entry, EntryListResponse } from '@/repositories/entries'
 
 // Re-export Entry for convenience
 export type { Entry }
@@ -18,24 +18,6 @@ export type EntriesResult = {
 }
 
 export type EntryType = 'new' | 'hot'
-
-function convertApiEntry(apiEntry: ApiEntry): Entry {
-  const url = new URL(apiEntry.url)
-  const faviconUrl =
-    apiEntry.favicon_url ||
-    `${config.api.baseUrl}/favicons?domain=${encodeURIComponent(url.hostname)}`
-  return {
-    id: apiEntry.id,
-    title: apiEntry.title,
-    url: apiEntry.url,
-    domain: url.hostname,
-    favicon: faviconUrl,
-    bookmarkCount: apiEntry.bookmark_count,
-    timestamp: apiEntry.posted_at,
-    tags: apiEntry.tags.map((t) => ({ name: t.tag_name, score: t.score })),
-    excerpt: apiEntry.excerpt ?? undefined,
-  }
-}
 
 function convertResponse(response: EntryListResponse): EntriesResult {
   return {

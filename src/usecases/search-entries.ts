@@ -1,6 +1,6 @@
 import { searchRepository } from '@/infra/repositories/search'
-import { config } from '@/lib/config'
-import type { ApiEntry, Entry } from '@/repositories/entries'
+import { convertApiEntry } from '@/lib/entry-mapper'
+import type { Entry } from '@/repositories/entries'
 
 export type SearchEntriesParams = {
   q: string
@@ -13,24 +13,6 @@ export type SearchEntriesParams = {
 export type SearchEntriesResult = {
   entries: Entry[]
   total: number
-}
-
-function convertApiEntry(apiEntry: ApiEntry): Entry {
-  const url = new URL(apiEntry.url)
-  const faviconUrl =
-    apiEntry.favicon_url ||
-    `${config.api.baseUrl}/favicons?domain=${encodeURIComponent(url.hostname)}`
-  return {
-    id: apiEntry.id,
-    title: apiEntry.title,
-    url: apiEntry.url,
-    domain: url.hostname,
-    favicon: faviconUrl,
-    bookmarkCount: apiEntry.bookmark_count,
-    timestamp: apiEntry.posted_at,
-    tags: apiEntry.tags.map((t) => ({ name: t.tag_name, score: t.score })),
-    excerpt: apiEntry.excerpt ?? undefined,
-  }
 }
 
 async function searchEntries(params: SearchEntriesParams): Promise<SearchEntriesResult> {

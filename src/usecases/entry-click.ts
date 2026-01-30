@@ -1,8 +1,23 @@
 import { metricsRepository } from '@/infra/repositories/metrics'
 import type { Entry } from '@/repositories/entries'
 
-const VIEW_HISTORY_KEY = 'viewHistory'
+const VIEW_HISTORY_KEY = 'viewHistory:v1'
+const VIEW_HISTORY_LEGACY_KEY = 'viewHistory'
 const VIEW_HISTORY_MAX_SIZE = 1000
+
+function migrateViewHistory(): void {
+  try {
+    const legacy = localStorage.getItem(VIEW_HISTORY_LEGACY_KEY)
+    if (legacy && !localStorage.getItem(VIEW_HISTORY_KEY)) {
+      localStorage.setItem(VIEW_HISTORY_KEY, legacy)
+      localStorage.removeItem(VIEW_HISTORY_LEGACY_KEY)
+    }
+  } catch {
+    // ignore migration errors
+  }
+}
+
+migrateViewHistory()
 
 export type ViewHistoryItem = Entry & {
   viewedAt: string

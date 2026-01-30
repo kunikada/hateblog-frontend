@@ -1,7 +1,7 @@
 import { entriesRepository } from '@/infra/repositories/entries'
 import { tagsRepository } from '@/infra/repositories/tags'
-import { config } from '@/lib/config'
 import { EntryDate } from '@/lib/entry-date'
+import { getFaviconUrl } from '@/lib/entry-mapper'
 import type { ApiEntry, EntryListResponse } from '@/repositories/entries'
 import type { ClickedTagsResponse, TrendingTagsResponse } from '@/repositories/tags'
 
@@ -36,22 +36,18 @@ export type SidebarClickedTagsResult = {
   tags: SidebarTag[]
 }
 
-function convertApiEntry(apiEntry: ApiEntry): SidebarEntry {
-  const url = new URL(apiEntry.url)
-  const faviconUrl =
-    apiEntry.favicon_url ||
-    `${config.api.baseUrl}/favicons?domain=${encodeURIComponent(url.hostname)}`
+function convertApiEntryToSidebarEntry(apiEntry: ApiEntry): SidebarEntry {
   return {
     id: apiEntry.id,
     title: apiEntry.title,
     url: apiEntry.url,
     bookmarkCount: apiEntry.bookmark_count,
-    favicon: faviconUrl,
+    favicon: getFaviconUrl(apiEntry),
   }
 }
 
 function convertEntryListResponse(response: EntryListResponse): SidebarEntry[] {
-  return response.entries.map(convertApiEntry)
+  return response.entries.map(convertApiEntryToSidebarEntry)
 }
 
 function convertTrendingTags(response: TrendingTagsResponse): SidebarTag[] {

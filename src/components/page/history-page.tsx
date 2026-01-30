@@ -1,13 +1,14 @@
 import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { Trash2 } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { Button } from '@/components/ui/button'
 import { EntryCard } from '@/components/ui/entry-card'
 import { EntryCount } from '@/components/ui/entry-count'
 import { SkeletonList } from '@/components/ui/skeleton-list'
+import { useInfiniteScroll } from '@/hooks/use-infinite-scroll'
 import { config } from '@/lib/config'
 import { EntryDate } from '@/lib/entry-date'
 import type { Entry } from '@/repositories/entries'
@@ -50,16 +51,19 @@ function groupByDate(entries: ViewHistoryItem[]): DateGroup[] {
 }
 
 export function HistoryPage() {
-  const entriesPerPage = config.pagination.entriesPerPage
   const [historyItems, setHistoryItems] = useState<ViewHistoryItem[]>(() => getViewHistory())
-  const [displayedCount, setDisplayedCount] = useState(entriesPerPage)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
-  const loadMoreRef = useRef<HTMLDivElement>(null)
 
   const allItems = historyItems
+  const totalEntries = allItems.length
+
+  const { displayedCount, isLoadingMore, loadMoreRef } = useInfiniteScroll({
+    totalCount: allItems.length,
+    perPage: config.pagination.entriesPerPage,
+    resetDeps: [],
+  })
+
   const displayedItems = allItems.slice(0, displayedCount)
   const hasMore = displayedCount < allItems.length
-  const totalEntries = allItems.length
 
   const dateGroups = useMemo(() => groupByDate(displayedItems), [displayedItems])
 
@@ -80,27 +84,6 @@ export function HistoryPage() {
     clearViewHistory()
     setHistoryItems([])
   }
-
-  // Infinite scroll
-  useEffect(() => {
-    if (!loadMoreRef.current || !hasMore) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoadingMore) {
-          setIsLoadingMore(true)
-          setTimeout(() => {
-            setDisplayedCount((prev) => prev + entriesPerPage)
-            setIsLoadingMore(false)
-          }, 500)
-        }
-      },
-      { threshold: 0.1 },
-    )
-
-    observer.observe(loadMoreRef.current)
-    return () => observer.disconnect()
-  }, [hasMore, isLoadingMore, entriesPerPage])
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
@@ -137,16 +120,17 @@ export function HistoryPage() {
             {dateGroups.map((group) => (
               <div key={group.date} className="mb-6">
                 <h3 className="text-sm font-medium text-muted-foreground mb-3">{group.label}</h3>
-                <div className="space-y-4">
+                <ul className="space-y-4">
                   {group.entries.map((entry) => (
-                    <EntryCard
-                      key={`${entry.id}-${entry.viewedAt}`}
-                      entry={entry}
-                      onTitleClick={handleEntryClick}
-                      onDelete={handleDelete}
-                    />
+                    <li key={`${entry.id}-${entry.viewedAt}`}>
+                      <EntryCard
+                        entry={entry}
+                        onTitleClick={handleEntryClick}
+                        onDelete={handleDelete}
+                      />
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             ))}
 

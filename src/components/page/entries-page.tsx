@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
@@ -7,6 +6,7 @@ import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCard } from '@/components/ui/entry-card'
 import { EntryCount } from '@/components/ui/entry-count'
 import { SkeletonList } from '@/components/ui/skeleton-list'
+import { useInfiniteScroll } from '@/hooks/use-infinite-scroll'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { config } from '@/lib/config'
 import { EntryDate } from '@/lib/entry-date'
@@ -23,13 +23,7 @@ interface EntriesPageProps {
 export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
   console.debug('[EntriesPage] Component mounted', { date, title, routeType })
 
-  const entriesPerPage = config.pagination.entriesPerPage
-
-  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>('minUsers', 5)
-  const [displayedCount, setDisplayedCount] = useState(entriesPerPage)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
-
-  const loadMoreRef = useRef<HTMLDivElement>(null)
+  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>('minUsers:v1', 5)
 
   const entryDate = EntryDate.fromUrlParam(date)
   const previousDay = entryDate.previousDay()
@@ -54,12 +48,18 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
   const allEntries = (data?.entries ?? []).filter(
     (entry) => selectedThreshold === null || entry.bookmarkCount >= selectedThreshold,
   )
+
+  const { displayedCount, isLoadingMore, loadMoreRef } = useInfiniteScroll({
+    totalCount: allEntries.length,
+    perPage: config.pagination.entriesPerPage,
+    resetDeps: [date, selectedThreshold],
+  })
+
   const displayedEntries = allEntries.slice(0, displayedCount)
   const hasMore = displayedCount < allEntries.length
 
   const handleThresholdChange = (threshold: number | null) => {
     setSelectedThreshold(threshold)
-    setDisplayedCount(entriesPerPage)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -70,33 +70,6 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
       userAgent: navigator.userAgent,
     })
   }
-
-  // Infinite scroll
-  useEffect(() => {
-    if (!loadMoreRef.current || !hasMore) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoadingMore) {
-          setIsLoadingMore(true)
-          setTimeout(() => {
-            setDisplayedCount((prev) => prev + entriesPerPage)
-            setIsLoadingMore(false)
-          }, 500)
-        }
-      },
-      { threshold: 0.1 },
-    )
-
-    observer.observe(loadMoreRef.current)
-    return () => observer.disconnect()
-  }, [hasMore, isLoadingMore, entriesPerPage])
-
-  // Reset displayed count when date or threshold changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally reset on date/threshold change
-  useEffect(() => {
-    setDisplayedCount(entriesPerPage)
-  }, [date, selectedThreshold, entriesPerPage])
 
   if (error) {
     return (
@@ -153,11 +126,13 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
 
         {/* Entry Cards */}
         {!isLoading && (
-          <div className="space-y-4">
+          <ul className="space-y-4">
             {displayedEntries.map((entry) => (
-              <EntryCard key={entry.id} entry={entry} onTitleClick={handleEntryClick} />
+              <li key={entry.id}>
+                <EntryCard entry={entry} onTitleClick={handleEntryClick} />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
 
         {/* Load more trigger */}

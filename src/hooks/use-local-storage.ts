@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * LocalStorageと同期するカスタムフック
@@ -12,14 +12,33 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
 
     try {
       const item = window.localStorage.getItem(key)
-      return item ? JSON.parse(item) : initialValue
+      if (item) return JSON.parse(item)
+
+      // Migrate from legacy key (without version suffix)
+      const legacyKey = key.replace(/:v\d+$/, '')
+      if (legacyKey !== key) {
+        const legacyItem = window.localStorage.getItem(legacyKey)
+        if (legacyItem) {
+          window.localStorage.setItem(key, legacyItem)
+          window.localStorage.removeItem(legacyKey)
+          return JSON.parse(legacyItem)
+        }
+      }
+
+      return initialValue
     } catch (error) {
       console.error(`Error loading ${key} from localStorage:`, error)
       return initialValue
     }
   })
 
+  const isInitialMount = useRef(true)
+
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
     try {
       window.localStorage.setItem(key, JSON.stringify(value))
     } catch (error) {

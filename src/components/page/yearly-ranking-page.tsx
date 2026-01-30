@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
-import { EntryCount } from '@/components/ui/entry-count'
 import { EntryCard } from '@/components/ui/entry-card'
+import { EntryCount } from '@/components/ui/entry-count'
 import { SkeletonList } from '@/components/ui/skeleton-list'
+import { useInfiniteScroll } from '@/hooks/use-infinite-scroll'
 import { config } from '@/lib/config'
 import type { Entry } from '@/repositories/entries'
 import { recordEntryClick } from '@/usecases/entry-click'
@@ -31,17 +31,18 @@ const YEARLY_RANKING_LIMIT = 1000
 export function YearlyRankingPage({ title, year, prev, next }: YearlyRankingPageProps) {
   console.debug('[YearlyRankingPage] Component mounted', { title, year })
 
-  const entriesPerPage = config.pagination.entriesPerPage
-  const [displayedCount, setDisplayedCount] = useState(entriesPerPage)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
-
-  const loadMoreRef = useRef<HTMLDivElement>(null)
-
   const { data, isLoading, error } = useQuery(
     rankingsQueryOptions.yearly({ year, limit: YEARLY_RANKING_LIMIT }),
   )
 
   const allEntries = data?.entries ?? []
+
+  const { displayedCount, isLoadingMore, loadMoreRef } = useInfiniteScroll({
+    totalCount: allEntries.length,
+    perPage: config.pagination.entriesPerPage,
+    resetDeps: [year],
+  })
+
   const displayedEntries = allEntries.slice(0, displayedCount)
   const hasMore = displayedCount < allEntries.length
 
@@ -52,33 +53,6 @@ export function YearlyRankingPage({ title, year, prev, next }: YearlyRankingPage
       userAgent: navigator.userAgent,
     })
   }
-
-  // Infinite scroll
-  useEffect(() => {
-    if (!loadMoreRef.current || !hasMore) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoadingMore) {
-          setIsLoadingMore(true)
-          setTimeout(() => {
-            setDisplayedCount((prev) => prev + entriesPerPage)
-            setIsLoadingMore(false)
-          }, 500)
-        }
-      },
-      { threshold: 0.1 },
-    )
-
-    observer.observe(loadMoreRef.current)
-    return () => observer.disconnect()
-  }, [hasMore, isLoadingMore, entriesPerPage])
-
-  // Reset displayed count when year changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally reset on year change
-  useEffect(() => {
-    setDisplayedCount(entriesPerPage)
-  }, [year, entriesPerPage])
 
   if (error) {
     return (
@@ -110,11 +84,13 @@ export function YearlyRankingPage({ title, year, prev, next }: YearlyRankingPage
 
         {/* Entry Cards */}
         {!isLoading && (
-          <div className="space-y-4">
+          <ul className="space-y-4">
             {displayedEntries.map((entry) => (
-              <EntryCard key={entry.id} entry={entry} onTitleClick={handleEntryClick} />
+              <li key={entry.id}>
+                <EntryCard entry={entry} onTitleClick={handleEntryClick} />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
 
         {/* Load more trigger */}

@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { config } from '@/lib/config'
 import { ThemeProvider } from '@/components/theme-provider'
 import { routeTree } from './routeTree.gen'
 import './index.css'
@@ -34,7 +35,6 @@ declare module '@tanstack/react-router' {
 }
 
 async function enableMocking() {
-  const { config } = await import('@/lib/config')
   if (config.msw.enabled) {
     const { worker } = await import('./mocks/browser')
     return worker.start({

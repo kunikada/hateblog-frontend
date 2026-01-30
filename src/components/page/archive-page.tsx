@@ -18,8 +18,56 @@ import { EntryDate } from '@/lib/entry-date'
 import type { ArchiveDay } from '@/usecases/fetch-archive'
 import { archiveQueryOptions } from '@/usecases/fetch-archive'
 
+function getWeeksInMonth(monthStr: string, days: ArchiveDay[]) {
+  const [year, month] = monthStr.split('-').map(Number)
+  const firstDay = EntryDate.fromYearMonthDay(year, month, 1)
+  const lastDay = EntryDate.endOfMonth(year, month)
+
+  const weeks: Array<{
+    weekNumber: number
+    year: number
+    range: string
+    totalEntries: number
+  }> = []
+  const seenWeeks = new Set<string>()
+
+  for (let date = firstDay; date.toEpochMs() <= lastDay.toEpochMs(); date = date.addDays(1)) {
+    const weekNumber = date.getWeek(ja)
+    const weekYear = date.getYearNumber()
+    const weekKey = `${weekYear}-${weekNumber}`
+
+    if (!seenWeeks.has(weekKey)) {
+      seenWeeks.add(weekKey)
+      const weekStartDate = date.startOfWeek(ja)
+      const weekEndDate = date.endOfWeek(ja)
+
+      const isSameMonth = weekStartDate.getMonthIndex() === weekEndDate.getMonthIndex()
+      const range = isSameMonth
+        ? `${format(weekStartDate.toDate(), 'd', { locale: ja })}日～${format(weekEndDate.toDate(), 'd', { locale: ja })}日`
+        : `${format(weekStartDate.toDate(), 'M月d', { locale: ja })}日～${format(weekEndDate.toDate(), 'M月d', { locale: ja })}日`
+
+      const totalEntries = days
+        .filter((day) => EntryDate.fromYYYY_MM_DD(day.date).isSameWeek(date, ja))
+        .reduce((sum, day) => sum + day.entryCount, 0)
+
+      const displayWeekNumber = month === 12 && weekNumber === 1 ? 53 : weekNumber
+
+      weeks.push({ weekNumber: displayWeekNumber, year: weekYear, range, totalEntries })
+    }
+  }
+
+  return weeks
+}
+
+function getDayOfWeekStyle(date: EntryDate) {
+  const dayOfWeek = date.getDayOfWeek()
+  if (dayOfWeek === 0) return 'text-red-500'
+  if (dayOfWeek === 6) return 'text-blue-500'
+  return 'text-muted-foreground'
+}
+
 export function ArchivePage() {
-  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>('minUsers', 5)
+  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>('minUsers:v1', 5)
 
   const { data, isLoading, error } = useQuery(
     archiveQueryOptions.get({ minUsers: selectedThreshold ?? undefined }),
@@ -29,59 +77,6 @@ export function ArchivePage() {
 
   const handleThresholdChange = (threshold: number | null) => {
     setSelectedThreshold(threshold)
-  }
-
-  // 月に含まれる週のリストを取得（件数付き）
-  const getWeeksInMonth = (monthStr: string, days: ArchiveDay[]) => {
-    const [year, month] = monthStr.split('-').map(Number)
-    const firstDay = EntryDate.fromYearMonthDay(year, month, 1)
-    const lastDay = EntryDate.endOfMonth(year, month)
-
-    const weeks: Array<{
-      weekNumber: number
-      year: number
-      range: string
-      totalEntries: number
-    }> = []
-    const seenWeeks = new Set<string>()
-
-    for (let date = firstDay; date.toEpochMs() <= lastDay.toEpochMs(); date = date.addDays(1)) {
-      const weekNumber = date.getWeek(ja)
-      const weekYear = date.getYearNumber()
-      const weekKey = `${weekYear}-${weekNumber}`
-
-      if (!seenWeeks.has(weekKey)) {
-        seenWeeks.add(weekKey)
-        const weekStartDate = date.startOfWeek(ja)
-        const weekEndDate = date.endOfWeek(ja)
-
-        // 同じ月内か判定
-        const isSameMonth = weekStartDate.getMonthIndex() === weekEndDate.getMonthIndex()
-        const range = isSameMonth
-          ? `${format(weekStartDate.toDate(), 'd', { locale: ja })}日～${format(weekEndDate.toDate(), 'd', { locale: ja })}日`
-          : `${format(weekStartDate.toDate(), 'M月d', { locale: ja })}日～${format(weekEndDate.toDate(), 'M月d', { locale: ja })}日`
-
-        // この週に含まれる日のエントリー数を集計
-        const totalEntries = days
-          .filter((day) => EntryDate.fromYYYY_MM_DD(day.date).isSameWeek(date, ja))
-          .reduce((sum, day) => sum + day.entryCount, 0)
-
-        // 12月に週番号1が出る場合は表示上53週として扱う
-        const displayWeekNumber = month === 12 && weekNumber === 1 ? 53 : weekNumber
-
-        weeks.push({ weekNumber: displayWeekNumber, year: weekYear, range, totalEntries })
-      }
-    }
-
-    return weeks
-  }
-
-  // 曜日のスタイルを取得
-  const getDayOfWeekStyle = (date: EntryDate) => {
-    const dayOfWeek = date.getDayOfWeek()
-    if (dayOfWeek === 0) return 'text-red-500' // 日曜
-    if (dayOfWeek === 6) return 'text-blue-500' // 土曜
-    return 'text-muted-foreground'
   }
 
   if (error) {

@@ -1,5 +1,5 @@
 import { rankingsRepository } from '@/infra/repositories/rankings'
-import { config } from '@/lib/config'
+import { convertApiEntry } from '@/lib/entry-mapper'
 import type { Entry } from '@/repositories/entries'
 import type { ApiRankingEntry, RankingResponse } from '@/repositories/rankings'
 
@@ -45,22 +45,10 @@ export type WeeklyRankingResult = {
 }
 
 function convertApiRankingEntry(apiEntry: ApiRankingEntry): RankingEntry {
-  const entry = apiEntry.entry
-  const url = new URL(entry.url)
-  const faviconUrl =
-    entry.favicon_url || `${config.api.baseUrl}/favicons?domain=${encodeURIComponent(url.hostname)}`
-
+  const base = convertApiEntry(apiEntry.entry)
   return {
-    id: entry.id,
+    ...base,
     rank: apiEntry.rank,
-    title: entry.title,
-    url: entry.url,
-    domain: url.hostname,
-    favicon: faviconUrl,
-    bookmarkCount: entry.bookmark_count,
-    timestamp: entry.posted_at,
-    tags: entry.tags.map((t) => ({ name: t.tag_name, score: t.score })),
-    excerpt: entry.excerpt ?? undefined,
   }
 }
 
