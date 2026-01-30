@@ -134,7 +134,7 @@ export function TagList({ tags, onLinkClick }: { tags: SidebarTag[]; onLinkClick
 
   return (
     <div className="flex flex-wrap gap-2">
-      {tags.slice(0, 10).map((tag) => (
+      {tags.slice(0, 20).map((tag) => (
         <Link
           key={tag.id}
           to="/tags/$tag"

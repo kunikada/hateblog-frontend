@@ -67,6 +67,30 @@ function convertClickedTags(response: ClickedTagsResponse): SidebarTag[] {
 }
 
 const SIDEBAR_NEW_ENTRIES_LIMIT = 5
+const SIDEBAR_TAGS_API_LIMIT = 25
+const SIDEBAR_TAGS_MIN_LENGTH_JP = 2
+const SIDEBAR_TAGS_MIN_LENGTH_ALNUM = 3
+
+function isAsciiAlnumOnly(value: string): boolean {
+  return /^[A-Za-z0-9]+$/.test(value)
+}
+
+function getTagNameLength(value: string): number {
+  return Array.from(value).length
+}
+
+function filterSidebarTags(tags: SidebarTag[]): SidebarTag[] {
+  return tags.filter((tag) => {
+    const name = tag.name.trim()
+    if (name.length === 0) {
+      return false
+    }
+    const minLength = isAsciiAlnumOnly(name)
+      ? SIDEBAR_TAGS_MIN_LENGTH_ALNUM
+      : SIDEBAR_TAGS_MIN_LENGTH_JP
+    return getTagNameLength(name) >= minLength
+  })
+}
 
 async function fetchNewEntries(date: string): Promise<SidebarNewEntriesResult> {
   console.debug('[fetchSidebarNewEntries] Fetching', { date })
@@ -113,10 +137,10 @@ async function fetchTrendingTags(): Promise<SidebarTrendingTagsResult> {
   console.debug('[fetchSidebarTrendingTags] Fetching')
   const response = await tagsRepository.getTrendingTags({
     hours: 48,
-    limit: 10,
+    limit: SIDEBAR_TAGS_API_LIMIT,
   })
   return {
-    tags: convertTrendingTags(response),
+    tags: filterSidebarTags(convertTrendingTags(response)),
   }
 }
 
@@ -124,10 +148,10 @@ async function fetchClickedTags(): Promise<SidebarClickedTagsResult> {
   console.debug('[fetchSidebarClickedTags] Fetching')
   const response = await tagsRepository.getClickedTags({
     days: 30,
-    limit: 10,
+    limit: SIDEBAR_TAGS_API_LIMIT,
   })
   return {
-    tags: convertClickedTags(response),
+    tags: filterSidebarTags(convertClickedTags(response)),
   }
 }
 
