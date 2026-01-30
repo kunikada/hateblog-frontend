@@ -218,62 +218,62 @@ export function EntryCard({ entry, onTitleClick, onDelete }: EntryCardProps) {
           </div>
 
           <div className="flex items-center gap-1 -my-1">
-          {/* Share - PC: hover popover, Mobile: native share */}
-          <div className="relative group/share">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:cursor-default"
-              onClick={handleNativeShare}
-            >
-              <Share2 className="h-4 w-4" />
-            </Button>
-            {/* PC hover popover */}
-            <div className="hidden md:block absolute right-0 bottom-full mb-1 opacity-0 invisible group-hover/share:opacity-100 group-hover/share:visible transition-all z-10">
-              <div className="bg-popover border rounded-md shadow-md p-1 flex flex-col gap-0.5 min-w-32">
-                {shareActions.map((action) => (
-                  <a
-                    key={action.name}
-                    href={action.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-1.5 text-sm hover:bg-accent rounded-sm transition-colors flex items-center gap-2"
+            {/* Share - PC: hover popover, Mobile: native share */}
+            <div className="relative group/share">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="md:cursor-default"
+                onClick={handleNativeShare}
+              >
+                <Share2 className="h-4 w-4" />
+              </Button>
+              {/* PC hover popover */}
+              <div className="hidden md:block absolute right-0 bottom-full mb-1 opacity-0 invisible group-hover/share:opacity-100 group-hover/share:visible transition-all z-10">
+                <div className="bg-popover border rounded-md shadow-md p-1 flex flex-col gap-0.5 min-w-32">
+                  {shareActions.map((action) => (
+                    <a
+                      key={action.name}
+                      href={action.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 text-sm hover:bg-accent rounded-sm transition-colors flex items-center gap-2"
+                    >
+                      {action.icon}
+                      {action.name}
+                    </a>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="px-3 py-1.5 text-sm hover:bg-accent rounded-sm transition-colors text-left flex items-center gap-2"
                   >
-                    {action.icon}
-                    {action.name}
-                  </a>
-                ))}
-                <button
-                  type="button"
-                  onClick={handleCopyLink}
-                  className="px-3 py-1.5 text-sm hover:bg-accent rounded-sm transition-colors text-left flex items-center gap-2"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="h-3 w-3" />
-                      コピーしました
-                    </>
-                  ) : (
-                    <>
-                      <LinkIcon className="h-3 w-3" />
-                      リンクをコピー
-                    </>
-                  )}
-                </button>
+                    {copied ? (
+                      <>
+                        <Check className="h-3 w-3" />
+                        コピーしました
+                      </>
+                    ) : (
+                      <>
+                        <LinkIcon className="h-3 w-3" />
+                        リンクをコピー
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-          {/* Delete */}
-          {onDelete && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-              onClick={() => onDelete(entry)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          )}
+            {/* Delete */}
+            {onDelete && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                onClick={() => onDelete(entry)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
       </div>

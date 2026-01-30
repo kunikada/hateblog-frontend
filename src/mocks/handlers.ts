@@ -165,10 +165,26 @@ export const handlers = [
     const limit = Number(url.searchParams.get('limit')) || 20
 
     const tagNames = [
-      'React', 'TypeScript', 'JavaScript', 'Go', 'Python',
-      'Rust', 'Docker', 'AWS', 'AI', '機械学習',
-      'Web開発', 'フロントエンド', 'バックエンド', 'インフラ', 'セキュリティ',
-      'データベース', 'API', 'マイクロサービス', 'CI/CD', 'テスト',
+      'React',
+      'TypeScript',
+      'JavaScript',
+      'Go',
+      'Python',
+      'Rust',
+      'Docker',
+      'AWS',
+      'AI',
+      '機械学習',
+      'Web開発',
+      'フロントエンド',
+      'バックエンド',
+      'インフラ',
+      'セキュリティ',
+      'データベース',
+      'API',
+      'マイクロサービス',
+      'CI/CD',
+      'テスト',
     ]
 
     const tags = tagNames.slice(0, limit).map((name, i) => ({
@@ -194,10 +210,26 @@ export const handlers = [
     const limit = Number(url.searchParams.get('limit')) || 20
 
     const tagNames = [
-      'プログラミング', 'エンジニア', 'キャリア', '転職', '副業',
-      'ChatGPT', 'LLM', '生成AI', 'OpenAI', 'Claude',
-      'Next.js', 'Vite', 'TailwindCSS', 'shadcn/ui', 'Radix',
-      'PostgreSQL', 'Redis', 'GraphQL', 'REST', 'gRPC',
+      'プログラミング',
+      'エンジニア',
+      'キャリア',
+      '転職',
+      '副業',
+      'ChatGPT',
+      'LLM',
+      '生成AI',
+      'OpenAI',
+      'Claude',
+      'Next.js',
+      'Vite',
+      'TailwindCSS',
+      'shadcn/ui',
+      'Radix',
+      'PostgreSQL',
+      'Redis',
+      'GraphQL',
+      'REST',
+      'gRPC',
     ]
 
     const tags = tagNames.slice(0, limit).map((name, i) => ({

@@ -1,11 +1,4 @@
-import {
-  addMonths,
-  endOfWeek,
-  format,
-  getWeek,
-  isSameWeek,
-  startOfWeek,
-} from 'date-fns'
+import { addMonths, endOfWeek, format, getWeek, isSameWeek, startOfWeek } from 'date-fns'
 import type { Locale } from 'date-fns'
 import { ja } from 'date-fns/locale'
 

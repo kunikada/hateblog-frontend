@@ -4,1399 +4,1399 @@
  */
 
 export interface paths {
-    "/entries/new": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 新着順エントリー一覧取得
-         * @description 指定日付のエントリーを新着順（posted_at DESC）で取得します。
-         *     ブックマーク件数での閾値フィルタリングが可能です。
-         */
-        get: operations["getNewEntries"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/entries/hot": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 人気順エントリー一覧取得
-         * @description 指定日付のエントリーを人気順（bookmark_count DESC, posted_at DESC）で取得します。
-         *     ブックマーク件数での閾値フィルタリングが可能です。
-         */
-        get: operations["getHotEntries"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/archive": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 日別エントリー数一覧取得
-         * @description 全期間の日別エントリー数をリスト形式で取得します。
-         *     日付の新しい順に並びます。
-         */
-        get: operations["getArchive"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/rankings/yearly": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 年次ランキング取得
-         * @description 指定年の「はてブ・オブ・ザ・イヤー」ランキングを取得します。
-         *     ブックマーク件数上位順に並びます。
-         */
-        get: operations["getYearlyRanking"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/rankings/monthly": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 月次ランキング取得
-         * @description 指定年月の月間ランキングTOP 100を取得します。
-         *     ブックマーク件数上位順に並びます。
-         */
-        get: operations["getMonthlyRanking"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/rankings/weekly": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 週次ランキング取得
-         * @description 指定年・週の週間ランキングTOP 100を取得します。
-         *     ブックマーク件数上位順に並びます。
-         */
-        get: operations["getWeeklyRanking"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/tags/entries/{tag}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * タグ別エントリー一覧取得
-         * @description 指定されたタグに紐づくエントリーを新着順または人気順で取得します。
-         *     ブックマーク件数での閾値フィルタリングが可能です。
-         *     タグ閲覧はサーバー側で自動的に記録されます（tag_view_historyテーブル）。
-         */
-        get: operations["getEntriesByTag"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/tags/trending": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * トレンドタグ一覧取得
-         * @description 直近の人気エントリーで使用されているタグの一覧を取得します。
-         *     指定時間内のエントリーを対象に、タグの出現頻度とスコアを集計して返します。
-         */
-        get: operations["getTrendingTags"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/tags/clicked": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * クリックされたエントリーのタグ一覧取得
-         * @description 実際にクリックされたエントリーで使用されているタグの一覧を取得します。
-         *     click_metricsテーブルを参照し、ユーザーの実際の興味関心を反映したタグを返します。
-         */
-        get: operations["getClickedTags"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * キーワード検索
-         * @description エントリーのタイトル・抜粋・URLをキーワード検索します。
-         *     全文検索（pg_bigm）を使用します。
-         *     半角/全角スペース区切りでAND検索します。
-         *     英数字のみの単語は単語境界で一致（大文字小文字は無視）。
-         */
-        get: operations["searchEntries"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/metrics/clicks": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * クリック計測
-         * @description エントリーへのクリックを記録します。
-         *     日別集計でclick_metricsテーブルに保存されます。
-         */
-        post: operations["recordClick"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/favicons": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Faviconプロキシ
-         * @description 指定されたドメインのFaviconを取得します。
-         *     Google Favicon API経由で取得し、キャッシュして返します。
-         *     同一ドメインの短時間連続取得は 425 Too Early を返します。
-         */
-        get: operations["getFavicon"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api-keys": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * APIキー発行
-         * @description 新しいAPIキーを発行します。
-         *     現在は認証なしで発行できますが、将来的に認証や発行制限を追加予定です。
-         */
-        post: operations["createApiKey"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * ヘルスチェック
-         * @description APIサーバーとデータベースの健全性をチェックします。
-         */
-        get: operations["healthCheck"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+  '/entries/new': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * 新着順エントリー一覧取得
+     * @description 指定日付のエントリーを新着順（posted_at DESC）で取得します。
+     *     ブックマーク件数での閾値フィルタリングが可能です。
+     */
+    get: operations['getNewEntries']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/entries/hot': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * 人気順エントリー一覧取得
+     * @description 指定日付のエントリーを人気順（bookmark_count DESC, posted_at DESC）で取得します。
+     *     ブックマーク件数での閾値フィルタリングが可能です。
+     */
+    get: operations['getHotEntries']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/archive': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * 日別エントリー数一覧取得
+     * @description 全期間の日別エントリー数をリスト形式で取得します。
+     *     日付の新しい順に並びます。
+     */
+    get: operations['getArchive']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/rankings/yearly': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * 年次ランキング取得
+     * @description 指定年の「はてブ・オブ・ザ・イヤー」ランキングを取得します。
+     *     ブックマーク件数上位順に並びます。
+     */
+    get: operations['getYearlyRanking']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/rankings/monthly': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * 月次ランキング取得
+     * @description 指定年月の月間ランキングTOP 100を取得します。
+     *     ブックマーク件数上位順に並びます。
+     */
+    get: operations['getMonthlyRanking']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/rankings/weekly': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * 週次ランキング取得
+     * @description 指定年・週の週間ランキングTOP 100を取得します。
+     *     ブックマーク件数上位順に並びます。
+     */
+    get: operations['getWeeklyRanking']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/tags/entries/{tag}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * タグ別エントリー一覧取得
+     * @description 指定されたタグに紐づくエントリーを新着順または人気順で取得します。
+     *     ブックマーク件数での閾値フィルタリングが可能です。
+     *     タグ閲覧はサーバー側で自動的に記録されます（tag_view_historyテーブル）。
+     */
+    get: operations['getEntriesByTag']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/tags/trending': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * トレンドタグ一覧取得
+     * @description 直近の人気エントリーで使用されているタグの一覧を取得します。
+     *     指定時間内のエントリーを対象に、タグの出現頻度とスコアを集計して返します。
+     */
+    get: operations['getTrendingTags']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/tags/clicked': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * クリックされたエントリーのタグ一覧取得
+     * @description 実際にクリックされたエントリーで使用されているタグの一覧を取得します。
+     *     click_metricsテーブルを参照し、ユーザーの実際の興味関心を反映したタグを返します。
+     */
+    get: operations['getClickedTags']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * キーワード検索
+     * @description エントリーのタイトル・抜粋・URLをキーワード検索します。
+     *     全文検索（pg_bigm）を使用します。
+     *     半角/全角スペース区切りでAND検索します。
+     *     英数字のみの単語は単語境界で一致（大文字小文字は無視）。
+     */
+    get: operations['searchEntries']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/metrics/clicks': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * クリック計測
+     * @description エントリーへのクリックを記録します。
+     *     日別集計でclick_metricsテーブルに保存されます。
+     */
+    post: operations['recordClick']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/favicons': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Faviconプロキシ
+     * @description 指定されたドメインのFaviconを取得します。
+     *     Google Favicon API経由で取得し、キャッシュして返します。
+     *     同一ドメインの短時間連続取得は 425 Too Early を返します。
+     */
+    get: operations['getFavicon']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api-keys': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * APIキー発行
+     * @description 新しいAPIキーを発行します。
+     *     現在は認証なしで発行できますが、将来的に認証や発行制限を追加予定です。
+     */
+    post: operations['createApiKey']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/health': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * ヘルスチェック
+     * @description APIサーバーとデータベースの健全性をチェックします。
+     */
+    get: operations['healthCheck']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
-export type webhooks = Record<string, never>;
+export type webhooks = Record<string, never>
 export interface components {
-    schemas: {
-        /** @description はてなブックマークエントリー */
-        Entry: {
-            /**
-             * Format: uuid
-             * @description エントリーID
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            id: string;
-            /**
-             * @description エントリーのタイトル
-             * @example Go言語による高速なWeb API開発
-             */
-            title: string;
-            /**
-             * Format: uri
-             * @description エントリーのURL
-             * @example https://example.com/article/golang-web-api
-             */
-            url: string;
-            /**
-             * Format: date-time
-             * @description 記事の投稿日時（ISO 8601形式）
-             * @example 2025-01-05T10:30:00Z
-             */
-            posted_at: string;
-            /**
-             * @description はてなブックマーク件数
-             * @example 150
-             */
-            bookmark_count: number;
-            /**
-             * @description 記事本文の抜粋
-             * @example Go言語を使ったWeb API開発の実践的なテクニックを紹介します...
-             */
-            excerpt?: string | null;
-            /**
-             * @description RSSフィードのsubject（画面非表示、内部利用）
-             * @example テクノロジー
-             */
-            subject?: string | null;
-            /**
-             * @description エントリーに紐づくタグ一覧
-             * @example [
-             *       {
-             *         "tag_id": "123e4567-e89b-12d3-a456-426614174000",
-             *         "tag_name": "Go",
-             *         "score": 95
-             *       },
-             *       {
-             *         "tag_id": "223e4567-e89b-12d3-a456-426614174001",
-             *         "tag_name": "プログラミング",
-             *         "score": 85
-             *       }
-             *     ]
-             */
-            tags: components["schemas"]["EntryTag"][];
-            /**
-             * Format: uri
-             * @description Favicon URL（FaviconプロキシAPI）
-             * @example /api/v1/favicons?domain=example.com
-             */
-            favicon_url?: string;
-            /**
-             * Format: date-time
-             * @description レコード作成日時（ISO 8601形式）
-             * @example 2025-01-05T10:00:00Z
-             */
-            created_at: string;
-            /**
-             * Format: date-time
-             * @description レコード更新日時（ISO 8601形式）
-             * @example 2025-01-05T12:00:00Z
-             */
-            updated_at: string;
-        };
-        /** @description エントリーに紐づくタグ（スコア付き） */
-        EntryTag: {
-            /**
-             * Format: uuid
-             * @description タグID
-             * @example 123e4567-e89b-12d3-a456-426614174000
-             */
-            tag_id: string;
-            /**
-             * @description タグ名
-             * @example Go
-             */
-            tag_name: string;
-            /**
-             * @description タグのスコア（Yahoo! キーフレーズ抽出APIから取得した重要度、0〜100）
-             * @example 95
-             */
-            score: number;
-        };
-        /** @description エントリー一覧レスポンス */
-        EntryListResponse: {
-            /** @description エントリー一覧 */
-            entries: components["schemas"]["Entry"][];
-            /**
-             * @description 総件数（フィルタ適用後）
-             * @example 500
-             */
-            total: number;
-            /**
-             * @description 1ページあたりの件数
-             * @example 25
-             */
-            limit: number;
-            /**
-             * @description オフセット
-             * @example 0
-             */
-            offset: number;
-        };
-        /** @description トレンドタグ（出現回数付き） */
-        TrendingTag: {
-            /**
-             * Format: uuid
-             * @description タグID
-             * @example 123e4567-e89b-12d3-a456-426614174000
-             */
-            id: string;
-            /**
-             * @description タグ名
-             * @example Go
-             */
-            name: string;
-            /**
-             * @description 集計期間内での出現回数（エントリー数）
-             * @example 42
-             */
-            occurrence_count: number;
-            /**
-             * @description このタグに紐づく総エントリー数
-             * @example 1234
-             */
-            entry_count: number;
-        };
-        /** @description トレンドタグ一覧レスポンス */
-        TrendingTagsResponse: {
-            /** @description トレンドタグ一覧 */
-            tags: components["schemas"]["TrendingTag"][];
-            /**
-             * @description 集計対象時間
-             * @example 24
-             */
-            hours: number;
-            /**
-             * @description 該当タグ総数
-             * @example 50
-             */
-            total: number;
-        };
-        /** @description クリックされたタグ（クリック数付き） */
-        ClickedTag: {
-            /**
-             * Format: uuid
-             * @description タグID
-             * @example 123e4567-e89b-12d3-a456-426614174000
-             */
-            id: string;
-            /**
-             * @description タグ名
-             * @example Go
-             */
-            name: string;
-            /**
-             * @description 集計期間内でのクリック数
-             * @example 156
-             */
-            click_count: number;
-            /**
-             * @description このタグに紐づく総エントリー数
-             * @example 1234
-             */
-            entry_count: number;
-        };
-        /** @description クリックされたタグ一覧レスポンス */
-        ClickedTagsResponse: {
-            /** @description クリックされたタグ一覧 */
-            tags: components["schemas"]["ClickedTag"][];
-            /**
-             * @description 集計対象日数
-             * @example 7
-             */
-            days: number;
-            /**
-             * @description 該当タグ総数
-             * @example 30
-             */
-            total: number;
-        };
-        /** @description 日別エントリー数 */
-        ArchiveItem: {
-            /**
-             * Format: date
-             * @description 日付（YYYY-MM-DD形式）
-             * @example 2025-01-05
-             */
-            date: string;
-            /**
-             * @description その日のエントリー件数
-             * @example 1234
-             */
-            count: number;
-        };
-        /** @description 日別エントリー数一覧レスポンス */
-        ArchiveResponse: {
-            /** @description 日別エントリー数一覧（日付降順） */
-            items: components["schemas"]["ArchiveItem"][];
-        };
-        /** @description ランキングエントリー */
-        RankingEntry: {
-            /**
-             * @description 順位
-             * @example 1
-             */
-            rank: number;
-            entry: components["schemas"]["Entry"];
-        };
-        /** @description ランキングレスポンス */
-        RankingResponse: {
-            /**
-             * @description ランキング期間種別
-             * @example monthly
-             * @enum {string}
-             */
-            period_type: "yearly" | "monthly" | "weekly";
-            /**
-             * @description 対象年
-             * @example 2025
-             */
-            year: number;
-            /**
-             * @description 対象月（月次・週次ランキング時のみ）
-             * @example 12
-             */
-            month?: number | null;
-            /**
-             * @description 対象週（週次ランキング時のみ、ISO週番号）
-             * @example 1
-             */
-            week?: number | null;
-            /** @description ランキングエントリー一覧 */
-            entries: components["schemas"]["RankingEntry"][];
-            /**
-             * @description 対象期間の総エントリー数
-             * @example 10000
-             */
-            total: number;
-        };
-        /** @description 検索結果レスポンス */
-        SearchResponse: {
-            /**
-             * @description 検索キーワード
-             * @example Go言語
-             */
-            query: string;
-            /** @description 検索結果のエントリー一覧 */
-            entries: components["schemas"]["Entry"][];
-            /**
-             * @description 検索結果の総件数
-             * @example 123
-             */
-            total: number;
-            /**
-             * @description 1ページあたりの件数
-             * @example 25
-             */
-            limit: number;
-            /**
-             * @description オフセット
-             * @example 0
-             */
-            offset: number;
-        };
-        /** @description クリック計測リクエスト */
-        ClickMetricsRequest: {
-            /**
-             * Format: uuid
-             * @description エントリーID
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            entry_id: string;
-            /**
-             * @description リファラーURL（オプション）
-             * @example https://hateblog.example.com/entries/new
-             */
-            referrer?: string | null;
-            /**
-             * @description ユーザーエージェント（オプション）
-             * @example Mozilla/5.0...
-             */
-            user_agent?: string | null;
-        };
-        /** @description メトリクス記録レスポンス */
-        MetricsResponse: {
-            /**
-             * @description 成功フラグ
-             * @example true
-             */
-            success: boolean;
-            /**
-             * @description メッセージ
-             * @example Click recorded successfully
-             */
-            message: string;
-        };
-        /** @description APIキー発行リクエスト */
-        CreateApiKeyRequest: {
-            /**
-             * @description キーの名前（オプション、将来の管理用）
-             * @example Frontend App Key
-             */
-            name?: string | null;
-            /**
-             * @description キーの説明（オプション）
-             * @example 本番環境のフロントエンドアプリ用
-             */
-            description?: string | null;
-        };
-        /** @description APIキー発行レスポンス */
-        ApiKeyResponse: {
-            /**
-             * Format: uuid
-             * @description APIキーID
-             * @example 9f8e7d6c-5b4a-3c2d-1e0f-123456789abc
-             */
-            id: string;
-            /**
-             * @description 生成されたAPIキー（この1回のみ表示）
-             * @example hb_live_1234567890abcdef1234567890abcdef
-             */
-            key: string;
-            /**
-             * @description キーの名前
-             * @example Frontend App Key
-             */
-            name?: string | null;
-            /**
-             * @description キーの説明
-             * @example 本番環境のフロントエンドアプリ用
-             */
-            description?: string | null;
-            /**
-             * Format: date-time
-             * @description 作成日時
-             * @example 2025-01-05T10:00:00Z
-             */
-            created_at: string;
-        };
-        /** @description ヘルスチェックレスポンス */
-        HealthResponse: {
-            /**
-             * @description ステータス
-             * @example healthy
-             * @enum {string}
-             */
-            status: "healthy" | "unhealthy";
-            /**
-             * Format: date-time
-             * @description チェック実行日時
-             * @example 2025-01-05T10:00:00Z
-             */
-            timestamp: string;
-            /** @description データベース接続状態 */
-            database?: {
-                /**
-                 * @description 接続可否
-                 * @example true
-                 */
-                connected?: boolean;
-                /**
-                 * Format: float
-                 * @description レスポンスタイム（ミリ秒）
-                 * @example 5.2
-                 */
-                response_time_ms?: number;
-            };
-        };
-        /** @description エラーレスポンス */
-        ErrorResponse: {
-            /**
-             * @description エラーコード
-             * @example VALIDATION_ERROR
-             */
-            error: string;
-            /**
-             * @description エラーメッセージ
-             * @example Invalid parameter: date format must be YYYYMMDD
-             */
-            message: string;
-            /**
-             * @description 詳細情報（オプション）
-             * @example {
-             *       "field": "date",
-             *       "value": "20251301",
-             *       "constraint": "month must be 1-12"
-             *     }
-             */
-            details?: {
-                [key: string]: unknown;
-            } | null;
-        };
-    };
-    responses: {
-        /** @description 認証エラー - APIキーまたはAPIキーIDが無効または未提供 */
-        UnauthorizedError: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                /**
-                 * @example {
-                 *       "error": "UNAUTHORIZED",
-                 *       "message": "Missing API key or key ID"
-                 *     }
-                 */
-                "application/json": components["schemas"]["ErrorResponse"];
-            };
-        };
-    };
-    parameters: never;
-    requestBodies: never;
-    headers: {
-        /** @description キャッシュ判定（HIT/MISS） */
-        CacheStatus: "HIT" | "MISS";
-    };
-    pathItems: never;
+  schemas: {
+    /** @description はてなブックマークエントリー */
+    Entry: {
+      /**
+       * Format: uuid
+       * @description エントリーID
+       * @example 550e8400-e29b-41d4-a716-446655440000
+       */
+      id: string
+      /**
+       * @description エントリーのタイトル
+       * @example Go言語による高速なWeb API開発
+       */
+      title: string
+      /**
+       * Format: uri
+       * @description エントリーのURL
+       * @example https://example.com/article/golang-web-api
+       */
+      url: string
+      /**
+       * Format: date-time
+       * @description 記事の投稿日時（ISO 8601形式）
+       * @example 2025-01-05T10:30:00Z
+       */
+      posted_at: string
+      /**
+       * @description はてなブックマーク件数
+       * @example 150
+       */
+      bookmark_count: number
+      /**
+       * @description 記事本文の抜粋
+       * @example Go言語を使ったWeb API開発の実践的なテクニックを紹介します...
+       */
+      excerpt?: string | null
+      /**
+       * @description RSSフィードのsubject（画面非表示、内部利用）
+       * @example テクノロジー
+       */
+      subject?: string | null
+      /**
+       * @description エントリーに紐づくタグ一覧
+       * @example [
+       *       {
+       *         "tag_id": "123e4567-e89b-12d3-a456-426614174000",
+       *         "tag_name": "Go",
+       *         "score": 95
+       *       },
+       *       {
+       *         "tag_id": "223e4567-e89b-12d3-a456-426614174001",
+       *         "tag_name": "プログラミング",
+       *         "score": 85
+       *       }
+       *     ]
+       */
+      tags: components['schemas']['EntryTag'][]
+      /**
+       * Format: uri
+       * @description Favicon URL（FaviconプロキシAPI）
+       * @example /api/v1/favicons?domain=example.com
+       */
+      favicon_url?: string
+      /**
+       * Format: date-time
+       * @description レコード作成日時（ISO 8601形式）
+       * @example 2025-01-05T10:00:00Z
+       */
+      created_at: string
+      /**
+       * Format: date-time
+       * @description レコード更新日時（ISO 8601形式）
+       * @example 2025-01-05T12:00:00Z
+       */
+      updated_at: string
+    }
+    /** @description エントリーに紐づくタグ（スコア付き） */
+    EntryTag: {
+      /**
+       * Format: uuid
+       * @description タグID
+       * @example 123e4567-e89b-12d3-a456-426614174000
+       */
+      tag_id: string
+      /**
+       * @description タグ名
+       * @example Go
+       */
+      tag_name: string
+      /**
+       * @description タグのスコア（Yahoo! キーフレーズ抽出APIから取得した重要度、0〜100）
+       * @example 95
+       */
+      score: number
+    }
+    /** @description エントリー一覧レスポンス */
+    EntryListResponse: {
+      /** @description エントリー一覧 */
+      entries: components['schemas']['Entry'][]
+      /**
+       * @description 総件数（フィルタ適用後）
+       * @example 500
+       */
+      total: number
+      /**
+       * @description 1ページあたりの件数
+       * @example 25
+       */
+      limit: number
+      /**
+       * @description オフセット
+       * @example 0
+       */
+      offset: number
+    }
+    /** @description トレンドタグ（出現回数付き） */
+    TrendingTag: {
+      /**
+       * Format: uuid
+       * @description タグID
+       * @example 123e4567-e89b-12d3-a456-426614174000
+       */
+      id: string
+      /**
+       * @description タグ名
+       * @example Go
+       */
+      name: string
+      /**
+       * @description 集計期間内での出現回数（エントリー数）
+       * @example 42
+       */
+      occurrence_count: number
+      /**
+       * @description このタグに紐づく総エントリー数
+       * @example 1234
+       */
+      entry_count: number
+    }
+    /** @description トレンドタグ一覧レスポンス */
+    TrendingTagsResponse: {
+      /** @description トレンドタグ一覧 */
+      tags: components['schemas']['TrendingTag'][]
+      /**
+       * @description 集計対象時間
+       * @example 24
+       */
+      hours: number
+      /**
+       * @description 該当タグ総数
+       * @example 50
+       */
+      total: number
+    }
+    /** @description クリックされたタグ（クリック数付き） */
+    ClickedTag: {
+      /**
+       * Format: uuid
+       * @description タグID
+       * @example 123e4567-e89b-12d3-a456-426614174000
+       */
+      id: string
+      /**
+       * @description タグ名
+       * @example Go
+       */
+      name: string
+      /**
+       * @description 集計期間内でのクリック数
+       * @example 156
+       */
+      click_count: number
+      /**
+       * @description このタグに紐づく総エントリー数
+       * @example 1234
+       */
+      entry_count: number
+    }
+    /** @description クリックされたタグ一覧レスポンス */
+    ClickedTagsResponse: {
+      /** @description クリックされたタグ一覧 */
+      tags: components['schemas']['ClickedTag'][]
+      /**
+       * @description 集計対象日数
+       * @example 7
+       */
+      days: number
+      /**
+       * @description 該当タグ総数
+       * @example 30
+       */
+      total: number
+    }
+    /** @description 日別エントリー数 */
+    ArchiveItem: {
+      /**
+       * Format: date
+       * @description 日付（YYYY-MM-DD形式）
+       * @example 2025-01-05
+       */
+      date: string
+      /**
+       * @description その日のエントリー件数
+       * @example 1234
+       */
+      count: number
+    }
+    /** @description 日別エントリー数一覧レスポンス */
+    ArchiveResponse: {
+      /** @description 日別エントリー数一覧（日付降順） */
+      items: components['schemas']['ArchiveItem'][]
+    }
+    /** @description ランキングエントリー */
+    RankingEntry: {
+      /**
+       * @description 順位
+       * @example 1
+       */
+      rank: number
+      entry: components['schemas']['Entry']
+    }
+    /** @description ランキングレスポンス */
+    RankingResponse: {
+      /**
+       * @description ランキング期間種別
+       * @example monthly
+       * @enum {string}
+       */
+      period_type: 'yearly' | 'monthly' | 'weekly'
+      /**
+       * @description 対象年
+       * @example 2025
+       */
+      year: number
+      /**
+       * @description 対象月（月次・週次ランキング時のみ）
+       * @example 12
+       */
+      month?: number | null
+      /**
+       * @description 対象週（週次ランキング時のみ、ISO週番号）
+       * @example 1
+       */
+      week?: number | null
+      /** @description ランキングエントリー一覧 */
+      entries: components['schemas']['RankingEntry'][]
+      /**
+       * @description 対象期間の総エントリー数
+       * @example 10000
+       */
+      total: number
+    }
+    /** @description 検索結果レスポンス */
+    SearchResponse: {
+      /**
+       * @description 検索キーワード
+       * @example Go言語
+       */
+      query: string
+      /** @description 検索結果のエントリー一覧 */
+      entries: components['schemas']['Entry'][]
+      /**
+       * @description 検索結果の総件数
+       * @example 123
+       */
+      total: number
+      /**
+       * @description 1ページあたりの件数
+       * @example 25
+       */
+      limit: number
+      /**
+       * @description オフセット
+       * @example 0
+       */
+      offset: number
+    }
+    /** @description クリック計測リクエスト */
+    ClickMetricsRequest: {
+      /**
+       * Format: uuid
+       * @description エントリーID
+       * @example 550e8400-e29b-41d4-a716-446655440000
+       */
+      entry_id: string
+      /**
+       * @description リファラーURL（オプション）
+       * @example https://hateblog.example.com/entries/new
+       */
+      referrer?: string | null
+      /**
+       * @description ユーザーエージェント（オプション）
+       * @example Mozilla/5.0...
+       */
+      user_agent?: string | null
+    }
+    /** @description メトリクス記録レスポンス */
+    MetricsResponse: {
+      /**
+       * @description 成功フラグ
+       * @example true
+       */
+      success: boolean
+      /**
+       * @description メッセージ
+       * @example Click recorded successfully
+       */
+      message: string
+    }
+    /** @description APIキー発行リクエスト */
+    CreateApiKeyRequest: {
+      /**
+       * @description キーの名前（オプション、将来の管理用）
+       * @example Frontend App Key
+       */
+      name?: string | null
+      /**
+       * @description キーの説明（オプション）
+       * @example 本番環境のフロントエンドアプリ用
+       */
+      description?: string | null
+    }
+    /** @description APIキー発行レスポンス */
+    ApiKeyResponse: {
+      /**
+       * Format: uuid
+       * @description APIキーID
+       * @example 9f8e7d6c-5b4a-3c2d-1e0f-123456789abc
+       */
+      id: string
+      /**
+       * @description 生成されたAPIキー（この1回のみ表示）
+       * @example hb_live_1234567890abcdef1234567890abcdef
+       */
+      key: string
+      /**
+       * @description キーの名前
+       * @example Frontend App Key
+       */
+      name?: string | null
+      /**
+       * @description キーの説明
+       * @example 本番環境のフロントエンドアプリ用
+       */
+      description?: string | null
+      /**
+       * Format: date-time
+       * @description 作成日時
+       * @example 2025-01-05T10:00:00Z
+       */
+      created_at: string
+    }
+    /** @description ヘルスチェックレスポンス */
+    HealthResponse: {
+      /**
+       * @description ステータス
+       * @example healthy
+       * @enum {string}
+       */
+      status: 'healthy' | 'unhealthy'
+      /**
+       * Format: date-time
+       * @description チェック実行日時
+       * @example 2025-01-05T10:00:00Z
+       */
+      timestamp: string
+      /** @description データベース接続状態 */
+      database?: {
+        /**
+         * @description 接続可否
+         * @example true
+         */
+        connected?: boolean
+        /**
+         * Format: float
+         * @description レスポンスタイム（ミリ秒）
+         * @example 5.2
+         */
+        response_time_ms?: number
+      }
+    }
+    /** @description エラーレスポンス */
+    ErrorResponse: {
+      /**
+       * @description エラーコード
+       * @example VALIDATION_ERROR
+       */
+      error: string
+      /**
+       * @description エラーメッセージ
+       * @example Invalid parameter: date format must be YYYYMMDD
+       */
+      message: string
+      /**
+       * @description 詳細情報（オプション）
+       * @example {
+       *       "field": "date",
+       *       "value": "20251301",
+       *       "constraint": "month must be 1-12"
+       *     }
+       */
+      details?: {
+        [key: string]: unknown
+      } | null
+    }
+  }
+  responses: {
+    /** @description 認証エラー - APIキーまたはAPIキーIDが無効または未提供 */
+    UnauthorizedError: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        /**
+         * @example {
+         *       "error": "UNAUTHORIZED",
+         *       "message": "Missing API key or key ID"
+         *     }
+         */
+        'application/json': components['schemas']['ErrorResponse']
+      }
+    }
+  }
+  parameters: never
+  requestBodies: never
+  headers: {
+    /** @description キャッシュ判定（HIT/MISS） */
+    CacheStatus: 'HIT' | 'MISS'
+  }
+  pathItems: never
 }
-export type $defs = Record<string, never>;
+export type $defs = Record<string, never>
 export interface operations {
-    getNewEntries: {
-        parameters: {
-            query: {
-                /** @description 取得対象日付（YYYYMMDD形式） */
-                date: string;
-                /** @description 最低ブックマーク件数（5/10/50/100/500/1000など） */
-                min_users?: number;
-                /** @description 取得件数 */
-                limit?: number;
-                /** @description オフセット（ページネーション用） */
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成功 */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EntryListResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getHotEntries: {
-        parameters: {
-            query: {
-                /** @description 取得対象日付（YYYYMMDD形式） */
-                date: string;
-                /** @description 最低ブックマーク件数（5/10/50/100/500/1000など） */
-                min_users?: number;
-                /** @description 取得件数 */
-                limit?: number;
-                /** @description オフセット（ページネーション用） */
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成功 */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EntryListResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getArchive: {
-        parameters: {
-            query?: {
-                /** @description 最低ブックマーク件数フィルタ（5, 10, 50, 100, 500, 1000） */
-                min_users?: 5 | 10 | 50 | 100 | 500 | 1000;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成功 */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ArchiveResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getYearlyRanking: {
-        parameters: {
-            query: {
-                /** @description 対象年（YYYY形式） */
-                year: number;
-                /** @description 取得件数 */
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成功 */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RankingResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getMonthlyRanking: {
-        parameters: {
-            query: {
-                /** @description 対象年（YYYY形式） */
-                year: number;
-                /** @description 対象月（MM形式、1-12） */
-                month: number;
-                /** @description 取得件数 */
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成功 */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RankingResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getWeeklyRanking: {
-        parameters: {
-            query: {
-                /** @description 対象年（YYYY形式） */
-                year: number;
-                /** @description 対象週（1-53、ISO週番号） */
-                week: number;
-                /** @description 取得件数 */
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成功 */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RankingResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getEntriesByTag: {
-        parameters: {
-            query?: {
-                /** @description 最低ブックマーク件数（5/10/50/100/500/1000など） */
-                min_users?: number;
-                /** @description 並び順（new=新着, hot=人気） */
-                sort?: "new" | "hot";
-                /** @description 取得件数 */
-                limit?: number;
-                /** @description オフセット（ページネーション用） */
-                offset?: number;
-            };
-            header?: never;
-            path: {
-                /** @description タグ名 */
-                tag: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成功 */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EntryListResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            /** @description タグが見つかりません */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getTrendingTags: {
-        parameters: {
-            query?: {
-                /** @description 集計対象時間（デフォルト 24時間） */
-                hours?: 6 | 12 | 24 | 48;
-                /** @description 対象エントリーの最低ブックマーク件数 */
-                min_users?: number;
-                /** @description 取得件数 */
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成功 */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TrendingTagsResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getClickedTags: {
-        parameters: {
-            query?: {
-                /** @description 集計対象日数（デフォルト 7日間） */
-                days?: 1 | 7 | 30;
-                /** @description 取得件数 */
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成功 */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ClickedTagsResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    searchEntries: {
-        parameters: {
-            query: {
-                /** @description 検索キーワード */
-                q: string;
-                /** @description 最低ブックマーク件数フィルタ */
-                min_users?: number;
-                /** @description 並び順（new=新着, hot=人気） */
-                sort?: "new" | "hot";
-                /** @description 取得件数 */
-                limit?: number;
-                /** @description オフセット（ページネーション用） */
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成功 */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SearchResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    recordClick: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ClickMetricsRequest"];
-            };
-        };
-        responses: {
-            /** @description 記録成功 */
-            201: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MetricsResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getFavicon: {
-        parameters: {
-            query: {
-                /** @description Faviconを取得するドメイン名 */
-                domain: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成功（画像を返す） */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "image/png": string;
-                    "image/x-icon": string;
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 短時間の同一ドメイン連続取得による抑止 */
-            425: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    createApiKey: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateApiKeyRequest"];
-            };
-        };
-        responses: {
-            /** @description APIキー発行成功 */
-            201: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiKeyResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description サーバーエラー */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    healthCheck: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 正常 */
-            200: {
-                headers: {
-                    "X-Cache": components["headers"]["CacheStatus"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HealthResponse"];
-                };
-            };
-            /** @description バリデーションエラー */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description サービス利用不可 */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HealthResponse"];
-                };
-            };
-        };
-    };
+  getNewEntries: {
+    parameters: {
+      query: {
+        /** @description 取得対象日付（YYYYMMDD形式） */
+        date: string
+        /** @description 最低ブックマーク件数（5/10/50/100/500/1000など） */
+        min_users?: number
+        /** @description 取得件数 */
+        limit?: number
+        /** @description オフセット（ページネーション用） */
+        offset?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EntryListResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      401: components['responses']['UnauthorizedError']
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getHotEntries: {
+    parameters: {
+      query: {
+        /** @description 取得対象日付（YYYYMMDD形式） */
+        date: string
+        /** @description 最低ブックマーク件数（5/10/50/100/500/1000など） */
+        min_users?: number
+        /** @description 取得件数 */
+        limit?: number
+        /** @description オフセット（ページネーション用） */
+        offset?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EntryListResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      401: components['responses']['UnauthorizedError']
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getArchive: {
+    parameters: {
+      query?: {
+        /** @description 最低ブックマーク件数フィルタ（5, 10, 50, 100, 500, 1000） */
+        min_users?: 5 | 10 | 50 | 100 | 500 | 1000
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ArchiveResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      401: components['responses']['UnauthorizedError']
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getYearlyRanking: {
+    parameters: {
+      query: {
+        /** @description 対象年（YYYY形式） */
+        year: number
+        /** @description 取得件数 */
+        limit?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RankingResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      401: components['responses']['UnauthorizedError']
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getMonthlyRanking: {
+    parameters: {
+      query: {
+        /** @description 対象年（YYYY形式） */
+        year: number
+        /** @description 対象月（MM形式、1-12） */
+        month: number
+        /** @description 取得件数 */
+        limit?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RankingResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      401: components['responses']['UnauthorizedError']
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getWeeklyRanking: {
+    parameters: {
+      query: {
+        /** @description 対象年（YYYY形式） */
+        year: number
+        /** @description 対象週（1-53、ISO週番号） */
+        week: number
+        /** @description 取得件数 */
+        limit?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RankingResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      401: components['responses']['UnauthorizedError']
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getEntriesByTag: {
+    parameters: {
+      query?: {
+        /** @description 最低ブックマーク件数（5/10/50/100/500/1000など） */
+        min_users?: number
+        /** @description 並び順（new=新着, hot=人気） */
+        sort?: 'new' | 'hot'
+        /** @description 取得件数 */
+        limit?: number
+        /** @description オフセット（ページネーション用） */
+        offset?: number
+      }
+      header?: never
+      path: {
+        /** @description タグ名 */
+        tag: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EntryListResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      401: components['responses']['UnauthorizedError']
+      /** @description タグが見つかりません */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getTrendingTags: {
+    parameters: {
+      query?: {
+        /** @description 集計対象時間（デフォルト 24時間） */
+        hours?: 6 | 12 | 24 | 48
+        /** @description 対象エントリーの最低ブックマーク件数 */
+        min_users?: number
+        /** @description 取得件数 */
+        limit?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TrendingTagsResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      401: components['responses']['UnauthorizedError']
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getClickedTags: {
+    parameters: {
+      query?: {
+        /** @description 集計対象日数（デフォルト 7日間） */
+        days?: 1 | 7 | 30
+        /** @description 取得件数 */
+        limit?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ClickedTagsResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      401: components['responses']['UnauthorizedError']
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  searchEntries: {
+    parameters: {
+      query: {
+        /** @description 検索キーワード */
+        q: string
+        /** @description 最低ブックマーク件数フィルタ */
+        min_users?: number
+        /** @description 並び順（new=新着, hot=人気） */
+        sort?: 'new' | 'hot'
+        /** @description 取得件数 */
+        limit?: number
+        /** @description オフセット（ページネーション用） */
+        offset?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SearchResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      401: components['responses']['UnauthorizedError']
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  recordClick: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ClickMetricsRequest']
+      }
+    }
+    responses: {
+      /** @description 記録成功 */
+      201: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MetricsResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      401: components['responses']['UnauthorizedError']
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getFavicon: {
+    parameters: {
+      query: {
+        /** @description Faviconを取得するドメイン名 */
+        domain: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 成功（画像を返す） */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'image/png': string
+          'image/x-icon': string
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description 短時間の同一ドメイン連続取得による抑止 */
+      425: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createApiKey: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateApiKeyRequest']
+      }
+    }
+    responses: {
+      /** @description APIキー発行成功 */
+      201: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ApiKeyResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description サーバーエラー */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  healthCheck: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description 正常 */
+      200: {
+        headers: {
+          'X-Cache': components['headers']['CacheStatus']
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HealthResponse']
+        }
+      }
+      /** @description バリデーションエラー */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description サービス利用不可 */
+      503: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HealthResponse']
+        }
+      }
+    }
+  }
 }

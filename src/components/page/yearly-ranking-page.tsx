@@ -126,10 +126,7 @@ export function YearlyRankingPage({ title, year, prev, next }: YearlyRankingPage
 
         {/* Entry Count */}
         {!isLoading && !hasMore && allEntries.length > 0 && (
-          <EntryCount
-            count={data?.total ?? allEntries.length}
-            className="mt-8 text-center"
-          />
+          <EntryCount count={data?.total ?? allEntries.length} className="mt-8 text-center" />
         )}
 
         {/* No results */}

@@ -127,10 +127,7 @@ export function MonthlyRankingPage({ title, year, month, prev, next }: MonthlyRa
 
         {/* Entry Count */}
         {!isLoading && !hasMore && allEntries.length > 0 && (
-          <EntryCount
-            count={data?.total ?? allEntries.length}
-            className="mt-8 text-center"
-          />
+          <EntryCount count={data?.total ?? allEntries.length} className="mt-8 text-center" />
         )}
 
         {/* No results */}

@@ -3,11 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import { EntryDate } from '@/lib/entry-date'
 import { getCachedFaviconUrl } from '@/lib/favicon-cache'
-import {
-  sidebarQueryOptions,
-  type SidebarEntry,
-  type SidebarTag,
-} from '@/usecases/fetch-sidebar'
+import { sidebarQueryOptions, type SidebarEntry, type SidebarTag } from '@/usecases/fetch-sidebar'
 import { SidebarCard } from './sidebar-card'
 
 function SidebarEntrySkeleton() {
@@ -149,9 +145,7 @@ function NewEntriesSection() {
       {data && (
         <>
           <EntryList entries={data.entries} />
-          {data.entries.length > 0 && (
-            <MoreLink to="/entries/$date/new" params={{ date: today }} />
-          )}
+          {data.entries.length > 0 && <MoreLink to="/entries/$date/new" params={{ date: today }} />}
         </>
       )}
     </SidebarCard>

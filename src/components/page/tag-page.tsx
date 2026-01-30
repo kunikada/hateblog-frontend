@@ -23,10 +23,7 @@ export function TagPage({ tag }: TagPageProps) {
 
   const entriesPerPage = config.pagination.entriesPerPage
 
-  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
-    'minUsers',
-    5,
-  )
+  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>('minUsers', 5)
   const [sortType, setSortType] = useState<SortType>('new')
   const [displayedCount, setDisplayedCount] = useState(entriesPerPage)
   const [isLoadingMore, setIsLoadingMore] = useState(false)

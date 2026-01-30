@@ -100,7 +100,9 @@ async function fetchYearlyRanking(params: FetchYearlyRankingParams): Promise<Yea
   return convertYearlyResponse(response)
 }
 
-async function fetchMonthlyRanking(params: FetchMonthlyRankingParams): Promise<MonthlyRankingResult> {
+async function fetchMonthlyRanking(
+  params: FetchMonthlyRankingParams,
+): Promise<MonthlyRankingResult> {
   console.debug('[fetchMonthlyRanking] Calling repository', params)
   const response = await rankingsRepository.getMonthlyRanking(params)
   console.debug('[fetchMonthlyRanking] Response received', {
@@ -125,9 +127,12 @@ export const rankingsQueryOptions = {
 
   keys: {
     all: ['rankings'] as const,
-    yearly: (params: FetchYearlyRankingParams) => [...rankingsQueryOptions.keys.all, 'yearly', params] as const,
-    monthly: (params: FetchMonthlyRankingParams) => [...rankingsQueryOptions.keys.all, 'monthly', params] as const,
-    weekly: (params: FetchWeeklyRankingParams) => [...rankingsQueryOptions.keys.all, 'weekly', params] as const,
+    yearly: (params: FetchYearlyRankingParams) =>
+      [...rankingsQueryOptions.keys.all, 'yearly', params] as const,
+    monthly: (params: FetchMonthlyRankingParams) =>
+      [...rankingsQueryOptions.keys.all, 'monthly', params] as const,
+    weekly: (params: FetchWeeklyRankingParams) =>
+      [...rankingsQueryOptions.keys.all, 'weekly', params] as const,
   },
 
   yearly: (params: FetchYearlyRankingParams) => ({

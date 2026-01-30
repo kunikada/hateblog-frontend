@@ -40,10 +40,7 @@ function saveToViewHistory(entry: Entry): void {
     const newItem: ViewHistoryItem = { ...entry, viewedAt: now }
     filtered.unshift(newItem)
 
-    localStorage.setItem(
-      VIEW_HISTORY_KEY,
-      JSON.stringify(filtered.slice(0, VIEW_HISTORY_MAX_SIZE)),
-    )
+    localStorage.setItem(VIEW_HISTORY_KEY, JSON.stringify(filtered.slice(0, VIEW_HISTORY_MAX_SIZE)))
   } catch (error) {
     console.debug('Failed to save view history:', error)
   }

@@ -23,10 +23,7 @@ export function SearchPage({ query }: SearchPageProps) {
 
   const entriesPerPage = config.pagination.entriesPerPage
 
-  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
-    'minUsers',
-    5,
-  )
+  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>('minUsers', 5)
   const [sortType, setSortType] = useState<SortType>('popular')
   const [displayedCount, setDisplayedCount] = useState(entriesPerPage)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
@@ -154,11 +151,9 @@ export function SearchPage({ query }: SearchPageProps) {
                 該当するエントリーがありません
               </div>
             ) : (
-              <>
-                {displayedEntries.map((entry) => (
-                  <EntryCard key={entry.id} entry={entry} onTitleClick={handleEntryClick} />
-                ))}
-              </>
+              displayedEntries.map((entry) => (
+                <EntryCard key={entry.id} entry={entry} onTitleClick={handleEntryClick} />
+              ))
             )}
           </div>
         )}

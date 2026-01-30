@@ -127,10 +127,7 @@ export function WeeklyRankingPage({ title, year, week, prev, next }: WeeklyRanki
 
         {/* Entry Count */}
         {!isLoading && !hasMore && allEntries.length > 0 && (
-          <EntryCount
-            count={data?.total ?? allEntries.length}
-            className="mt-8 text-center"
-          />
+          <EntryCount count={data?.total ?? allEntries.length} className="mt-8 text-center" />
         )}
 
         {/* No results */}
