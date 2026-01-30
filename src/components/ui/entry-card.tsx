@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import type { Entry } from '@/repositories/entries'
 
 const TAG_MIN_SCORE = 27
-const TAG_MAX_COUNT = 5
+const TAG_MAX_COUNT = 6
 
 function isValidTagLength(name: string): boolean {
   const isAlphanumeric = /^[a-zA-Z0-9]+$/.test(name)

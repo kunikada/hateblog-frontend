@@ -3,6 +3,9 @@ import { YearlyRankingPage } from '@/components/page/yearly-ranking-page'
 import { EntryDate } from '@/lib/entry-date'
 
 export const Route = createFileRoute('/rankings/$year/')({
+  head: ({ params }) => ({
+    meta: [{ title: `はてブ・オブ・ザ・イヤー ${params.year} | はてブログ` }],
+  }),
   component: YearlyRankings,
 })
 

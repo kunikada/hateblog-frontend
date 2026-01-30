@@ -3,6 +3,19 @@ import { WeeklyRankingPage } from '@/components/page/weekly-ranking-page'
 import { EntryDate } from '@/lib/entry-date'
 
 export const Route = createFileRoute('/rankings/$year/week/$week')({
+  head: ({ params }) => {
+    const currentYear = Number.parseInt(params.year, 10)
+    const currentWeek = Number.parseInt(params.week, 10)
+    const weekStart = EntryDate.fromISOWeek(currentYear, currentWeek)
+    const weekEnd = weekStart.addDays(6)
+    return {
+      meta: [
+        {
+          title: `${currentYear}年${formatDate(weekStart)}～${formatDate(weekEnd)}のランキング | はてブログ`,
+        },
+      ],
+    }
+  },
   component: WeeklyRankings,
 })
 

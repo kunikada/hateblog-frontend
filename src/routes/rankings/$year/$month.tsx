@@ -4,6 +4,18 @@ import { MonthlyRankingPage } from '@/components/page/monthly-ranking-page'
 import { EntryDate } from '@/lib/entry-date'
 
 export const Route = createFileRoute('/rankings/$year/$month')({
+  head: ({ params }) => {
+    const currentYear = Number.parseInt(params.year, 10)
+    const currentMonth = Number.parseInt(params.month, 10)
+    const currentDate = EntryDate.fromYearMonthDay(currentYear, currentMonth, 1)
+    return {
+      meta: [
+        {
+          title: `${format(currentDate.toDate(), 'yyyy年M月')}のランキング | はてブログ`,
+        },
+      ],
+    }
+  },
   component: MonthlyRankings,
 })
 

@@ -6,6 +6,12 @@ type SearchParams = {
 }
 
 export const Route = createFileRoute('/search')({
+  head: ({ match }) => {
+    const keyword = match.search.q?.trim()
+    return {
+      meta: [{ title: keyword ? `${keyword}の検索結果 | はてブログ` : '検索 | はてブログ' }],
+    }
+  },
   component: Search,
   validateSearch: (search: Record<string, unknown>): SearchParams => {
     return {
