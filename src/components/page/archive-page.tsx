@@ -74,6 +74,7 @@ export function ArchivePage() {
   )
 
   const archives = data?.years ?? []
+  const firstOpenMonth = archives[0]?.months?.[0]?.month
 
   const handleThresholdChange = (threshold: number | null) => {
     setSelectedThreshold(threshold)
@@ -130,7 +131,13 @@ export function ArchivePage() {
                   </RankingLinkButton>
                 </div>
 
-                <Accordion type="multiple" className="w-full">
+                <Accordion
+                  type="multiple"
+                  className="w-full"
+                  defaultValue={
+                    yearData.year === archives[0]?.year && firstOpenMonth ? [firstOpenMonth] : []
+                  }
+                >
                   {yearData.months.map((monthData) => {
                     const monthDate = EntryDate.fromYYYY_MM_DD(`${monthData.month}-01`)
                     const monthLabel = format(monthDate.toDate(), 'M月', { locale: ja })
@@ -187,7 +194,7 @@ export function ArchivePage() {
                           )}
 
                           {/* 日別エントリー */}
-                          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 pt-2">
+                          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-7 gap-2 pt-2">
                             {monthData.days.map((dayData) => {
                               const date = EntryDate.fromYYYY_MM_DD(dayData.date)
                               const dayNum = format(date.toDate(), 'd日', { locale: ja })
