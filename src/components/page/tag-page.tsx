@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
-import { EntryCount } from '@/components/ui/entry-count'
 import { EntryCard } from '@/components/ui/entry-card'
 import { EntrySortToggle } from '@/components/ui/entry-sort-toggle'
 import { SkeletonList } from '@/components/ui/skeleton-list'
@@ -36,7 +35,7 @@ export function TagPage({ tag }: TagPageProps) {
 
   const queryParams = {
     tag,
-    minUsers: selectedThreshold ?? undefined,
+    minUsers: 5,
     sort: sortType,
   }
   console.debug('[TagPage] Query params', queryParams)
@@ -45,7 +44,9 @@ export function TagPage({ tag }: TagPageProps) {
 
   console.debug('[TagPage] Query state', { isLoading, hasData: !!data, error })
 
-  const allEntries = data?.entries ?? []
+  const allEntries = (data?.entries ?? []).filter(
+    (entry) => selectedThreshold === null || entry.bookmarkCount >= selectedThreshold,
+  )
   const displayedEntries = allEntries.slice(0, displayedCount)
   const hasMore = displayedCount < allEntries.length
 
@@ -135,11 +136,6 @@ export function TagPage({ tag }: TagPageProps) {
             onThresholdChange={handleThresholdChange}
           />
         </div>
-
-        {/* Entry Count */}
-        {!isLoading && (data?.total ?? 0) > 0 && (
-          <EntryCount count={data?.total ?? 0} className="mb-4" />
-        )}
 
         {/* Loading State */}
         {isLoading && <SkeletonList count={5} />}

@@ -4,19 +4,19 @@ import { Trash2 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
-import { EntryCount } from '@/components/ui/entry-count'
-import { EntryCard } from '@/components/ui/entry-card'
-import { SkeletonList } from '@/components/ui/skeleton-list'
 import { Button } from '@/components/ui/button'
+import { EntryCard } from '@/components/ui/entry-card'
+import { EntryCount } from '@/components/ui/entry-count'
+import { SkeletonList } from '@/components/ui/skeleton-list'
 import { config } from '@/lib/config'
 import { EntryDate } from '@/lib/entry-date'
 import type { Entry } from '@/repositories/entries'
 import {
-  type ViewHistoryItem,
   clearViewHistory,
   getViewHistory,
   recordEntryClick,
   removeViewHistoryItem,
+  type ViewHistoryItem,
 } from '@/usecases/entry-click'
 
 type DateGroup = {
@@ -126,21 +126,17 @@ export function HistoryPage() {
 
         {/* Entry Count */}
         {totalEntries > 0 && (
-          <EntryCount count={totalEntries} suffix="件の履歴" className="mb-4" />
+          <EntryCount count={totalEntries} suffix="件のエントリー" className="mb-4" />
         )}
 
         {/* Entry List */}
         {totalEntries === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            閲覧履歴はありません
-          </div>
+          <div className="text-center py-12 text-muted-foreground">閲覧履歴はありません</div>
         ) : (
           <>
             {dateGroups.map((group) => (
               <div key={group.date} className="mb-6">
-                <h3 className="text-sm font-medium text-muted-foreground mb-3">
-                  {group.label}
-                </h3>
+                <h3 className="text-sm font-medium text-muted-foreground mb-3">{group.label}</h3>
                 <div className="space-y-4">
                   {group.entries.map((entry) => (
                     <EntryCard

@@ -130,6 +130,10 @@ type GetTagEntriesParams = {
 type GetTagEntriesResponse =
   paths['/tags/entries/{tag}']['get']['responses']['200']['content']['application/json']
 
+type SearchEntriesParams = paths['/search']['get']['parameters']['query']
+type SearchEntriesResponse =
+  paths['/search']['get']['responses']['200']['content']['application/json']
+
 export const api = {
   entries: {
     getNew: (params: GetNewEntriesParams): Promise<GetNewEntriesResponse> => {
@@ -193,6 +197,17 @@ export const api = {
       return request(`/tags/entries/${encodeURIComponent(params.tag)}${query ? `?${query}` : ''}`)
     },
   },
+  search: {
+    entries: (params: SearchEntriesParams): Promise<SearchEntriesResponse> => {
+      const searchParams = new URLSearchParams()
+      searchParams.set('q', params.q)
+      if (params.min_users !== undefined) searchParams.set('min_users', String(params.min_users))
+      if (params.sort !== undefined) searchParams.set('sort', params.sort)
+      if (params.limit !== undefined) searchParams.set('limit', String(params.limit))
+      if (params.offset !== undefined) searchParams.set('offset', String(params.offset))
+      return request(`/search?${searchParams}`)
+    },
+  },
   rankings: {
     getYearly: (params: GetYearlyRankingParams): Promise<GetYearlyRankingResponse> => {
       const searchParams = new URLSearchParams()
@@ -236,4 +251,6 @@ export type {
   GetYearlyRankingResponse,
   RecordClickBody,
   RecordClickResponse,
+  SearchEntriesParams,
+  SearchEntriesResponse,
 }

@@ -4,8 +4,8 @@ import { FilterBar } from '@/components/layout/filter-bar'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
-import { EntryCount } from '@/components/ui/entry-count'
 import { EntryCard } from '@/components/ui/entry-card'
+import { EntryCount } from '@/components/ui/entry-count'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { config } from '@/lib/config'
@@ -42,7 +42,7 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
   const queryOptions = routeType === 'new' ? entriesQueryOptions.new : entriesQueryOptions.hot
   const queryParams = {
     date: entryDate.toYYYYMMDD(),
-    minUsers: selectedThreshold ?? undefined,
+    minUsers: 5,
   }
   console.debug('[EntriesPage] Query params', queryParams)
 
@@ -54,7 +54,9 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
     return `/entries/${entryDate.toYYYYMMDD()}/${routeType}`
   }
 
-  const allEntries = data?.entries ?? []
+  const allEntries = (data?.entries ?? []).filter(
+    (entry) => selectedThreshold === null || entry.bookmarkCount >= selectedThreshold,
+  )
   const displayedEntries = allEntries.slice(0, displayedCount)
   const hasMore = displayedCount < allEntries.length
 
@@ -145,8 +147,8 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
         </div>
 
         {/* Entry Count */}
-        {!isLoading && (data?.total ?? 0) > 0 && (
-          <EntryCount count={data?.total ?? 0} className="mb-4" />
+        {!isLoading && allEntries.length > 0 && (
+          <EntryCount count={allEntries.length} className="mb-4" />
         )}
 
         {/* Loading State */}
