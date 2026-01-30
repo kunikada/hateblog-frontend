@@ -66,8 +66,7 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
 
   const handleEntryClick = (entry: Entry) => {
     recordEntryClick({
-      entryId: entry.id,
-      entryUrl: entry.url,
+      entry,
       referrer: window.location.href,
       userAgent: navigator.userAgent,
     })

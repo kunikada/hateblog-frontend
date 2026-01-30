@@ -48,8 +48,7 @@ export function WeeklyRankingPage({ title, year, week, prev, next }: WeeklyRanki
 
   const handleEntryClick = (entry: Entry | RankingEntry) => {
     recordEntryClick({
-      entryId: entry.id,
-      entryUrl: entry.url,
+      entry,
       referrer: window.location.href,
       userAgent: navigator.userAgent,
     })

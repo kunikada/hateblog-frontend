@@ -28,7 +28,8 @@
       "Bash(grep:*)",
       "Bash(mv:*)",
       "Bash(pnpm msw:*)",
-      "Bash(pnpm exec tsc:*)"
+      "Bash(pnpm exec tsc:*)",
+      "Bash(npx tsr:*)"
     ],
     "deny": [],
     "ask": []

@@ -147,24 +147,23 @@ export function ArchivePage() {
 
                   return (
                     <AccordionItem key={monthData.month} value={monthData.month}>
-                      <AccordionTrigger className="hover:no-underline">
-                        <div className="flex justify-between w-full pr-4">
+                      <div className="flex items-center">
+                        <AccordionTrigger className="hover:no-underline flex-1">
                           <span className="font-medium">
                             {monthLabel}
                             <span className="ml-2 text-sm font-normal text-muted-foreground">
                               （{monthData.totalEntries.toLocaleString()}件）
                             </span>
                           </span>
-                          <RankingLinkButton
-                            to="/rankings/$year/$month"
-                            params={{ year, month }}
-                            onClick={(e) => e.stopPropagation()}
-                            className="h-7 px-2 text-xs"
-                          >
-                            月間ランキング
-                          </RankingLinkButton>
-                        </div>
-                      </AccordionTrigger>
+                        </AccordionTrigger>
+                        <RankingLinkButton
+                          to="/rankings/$year/$month"
+                          params={{ year, month }}
+                          className="h-7 px-2 text-xs mr-4"
+                        >
+                          月間ランキング
+                        </RankingLinkButton>
+                      </div>
                       <AccordionContent>
                         {/* 週間ランキングリンク */}
                         {weeks.filter((w) => w.totalEntries > 0).length > 0 && (

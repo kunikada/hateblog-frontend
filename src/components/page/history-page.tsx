@@ -1,193 +1,167 @@
 import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { FilterBar } from '@/components/layout/filter-bar'
-import { Navigation } from '@/components/layout/navigation'
+import { Trash2 } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCount } from '@/components/ui/entry-count'
 import { EntryCard } from '@/components/ui/entry-card'
-import { useLocalStorage } from '@/hooks/use-local-storage'
-import { filterEntriesByBookmarkCount } from '@/mocks/entries'
+import { SkeletonList } from '@/components/ui/skeleton-list'
+import { Button } from '@/components/ui/button'
+import { config } from '@/lib/config'
+import { EntryDate } from '@/lib/entry-date'
 import type { Entry } from '@/repositories/entries'
+import {
+  type ViewHistoryItem,
+  clearViewHistory,
+  getViewHistory,
+  recordEntryClick,
+  removeViewHistoryItem,
+} from '@/usecases/entry-click'
 
-export type HistoryEntry = Entry & {
-  viewedAt: string
-}
-
-type HistoryPageProps = {
+type DateGroup = {
   date: string
-  entries: HistoryEntry[]
+  label: string
+  entries: ViewHistoryItem[]
 }
 
-export function HistoryPage({ date, entries }: HistoryPageProps) {
-  const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>(
-    'minUsers',
-    5,
-  )
+function groupByDate(entries: ViewHistoryItem[]): DateGroup[] {
+  const groups = new Map<string, ViewHistoryItem[]>()
 
-  // Parse the date parameter
-  const parsedDate = new Date(date)
+  for (const entry of entries) {
+    const dateKey = EntryDate.fromTimestamp(entry.viewedAt).toYYYY_MM_DD()
+    const existing = groups.get(dateKey)
+    if (existing) {
+      existing.push(entry)
+    } else {
+      groups.set(dateKey, [entry])
+    }
+  }
 
-  // Calculate previous and next dates
-  const previousDay = new Date(parsedDate)
-  previousDay.setDate(previousDay.getDate() - 1)
+  return Array.from(groups.entries())
+    .sort(([a], [b]) => b.localeCompare(a))
+    .map(([dateKey, items]) => ({
+      date: dateKey,
+      label: format(EntryDate.fromYYYY_MM_DD(dateKey).toDate(), 'yyyy年M月d日（E）', {
+        locale: ja,
+      }),
+      entries: items,
+    }))
+}
 
-  const nextDay = new Date(parsedDate)
-  nextDay.setDate(nextDay.getDate() + 1)
+export function HistoryPage() {
+  const entriesPerPage = config.pagination.entriesPerPage
+  const [historyItems, setHistoryItems] = useState<ViewHistoryItem[]>(() => getViewHistory())
+  const [displayedCount, setDisplayedCount] = useState(entriesPerPage)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const loadMoreRef = useRef<HTMLDivElement>(null)
 
-  const isToday = format(parsedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
+  const allItems = historyItems
+  const displayedItems = allItems.slice(0, displayedCount)
+  const hasMore = displayedCount < allItems.length
+  const totalEntries = allItems.length
 
-  const formatDateForUrl = (date: Date) => format(date, 'yyyyMMdd')
+  const dateGroups = useMemo(() => groupByDate(displayedItems), [displayedItems])
 
-  // Filter entries for the selected date
-  const filterByDate = (entries: HistoryEntry[], targetDate: Date): HistoryEntry[] => {
-    const targetDateStr = format(targetDate, 'yyyy-MM-dd')
-    return entries.filter((entry) => {
-      const entryDateStr = format(new Date(entry.viewedAt), 'yyyy-MM-dd')
-      return entryDateStr === targetDateStr
+  const handleEntryClick = (entry: Entry) => {
+    recordEntryClick({
+      entry,
+      referrer: window.location.href,
+      userAgent: navigator.userAgent,
     })
   }
 
-  const dateFilteredEntries = filterByDate(entries, parsedDate)
-  const filteredEntries = filterEntriesByBookmarkCount(dateFilteredEntries, selectedThreshold)
-  const [displayedEntries, setDisplayedEntries] = useState<HistoryEntry[]>([])
-  const [hasMore, setHasMore] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
-  const loadMoreRef = useRef<HTMLDivElement>(null)
+  const handleDelete = (entry: Entry) => {
+    const updated = removeViewHistoryItem(entry.url)
+    setHistoryItems(updated)
+  }
 
-  const totalEntries = filteredEntries.length
+  const handleClearAll = () => {
+    clearViewHistory()
+    setHistoryItems([])
+  }
 
-  // Load more entries
-  const loadMore = useCallback(() => {
-    if (isLoading) return
-
-    setIsLoading(true)
-    setTimeout(() => {
-      const currentLength = displayedEntries.length
-      const nextEntries = filteredEntries.slice(currentLength, currentLength + 10)
-
-      if (nextEntries.length === 0) {
-        setHasMore(false)
-      } else {
-        setDisplayedEntries((prev) => [...prev, ...nextEntries])
-      }
-      setIsLoading(false)
-    }, 500)
-  }, [isLoading, displayedEntries.length, filteredEntries])
-
-  // Intersection Observer for infinite scroll
+  // Infinite scroll
   useEffect(() => {
+    if (!loadMoreRef.current || !hasMore) return
+
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading) {
-          loadMore()
+        if (entries[0].isIntersecting && !isLoadingMore) {
+          setIsLoadingMore(true)
+          setTimeout(() => {
+            setDisplayedCount((prev) => prev + entriesPerPage)
+            setIsLoadingMore(false)
+          }, 500)
         }
       },
       { threshold: 0.1 },
     )
 
-    const currentRef = loadMoreRef.current
-    if (currentRef) {
-      observer.observe(currentRef)
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef)
-      }
-    }
-  }, [hasMore, isLoading, loadMore])
-
-  // Reset entries when date or filteredEntries changes
-  useEffect(() => {
-    setDisplayedEntries(filteredEntries.slice(0, 10))
-    setHasMore(filteredEntries.length > 10)
-  }, [filteredEntries])
-
-  const handleThresholdChange = (threshold: number | null) => {
-    setSelectedThreshold(threshold)
-    setDisplayedEntries(filteredEntries.slice(0, 10))
-    setHasMore(filteredEntries.length > 10)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+    observer.observe(loadMoreRef.current)
+    return () => observer.disconnect()
+  }, [hasMore, isLoadingMore, entriesPerPage])
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Main Column */}
       <div className="flex-1">
-        {/* Page Title and Navigation */}
+        {/* Page Title */}
         <div className="mb-6">
-          <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
-            <h2 className="text-2xl font-bold">
-              {format(parsedDate, 'yyyy年M月d日', { locale: ja })}の閲覧履歴
-            </h2>
-            <div className="ml-auto">
-              <Navigation
-                prev={{
-                  label: format(previousDay, 'yyyy年M月d日', { locale: ja }),
-                  path: `/history/${formatDateForUrl(previousDay)}`,
-                }}
-                next={{
-                  label: format(nextDay, 'yyyy年M月d日', { locale: ja }),
-                  path: `/history/${formatDateForUrl(nextDay)}`,
-                  disabled: isToday,
-                }}
-              />
-            </div>
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <h2 className="text-2xl font-bold">閲覧履歴</h2>
+            {totalEntries > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-destructive hover:text-destructive"
+                onClick={handleClearAll}
+              >
+                <Trash2 className="h-4 w-4 mr-1" />
+                すべて削除する
+              </Button>
+            )}
           </div>
-
-          {/* Filter Bar */}
-          <FilterBar
-            selectedThreshold={selectedThreshold}
-            onThresholdChange={handleThresholdChange}
-          />
         </div>
 
         {/* Entry Count */}
-        <EntryCount count={totalEntries} suffix="件の履歴" className="mb-4" />
+        {totalEntries > 0 && (
+          <EntryCount count={totalEntries} suffix="件の履歴" className="mb-4" />
+        )}
 
         {/* Entry List */}
-        <div className="space-y-4">
-          {filteredEntries.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              この日の閲覧履歴はありません
-            </div>
-          ) : (
-            <>
-              {displayedEntries.map((entry) => (
-                <EntryCard key={entry.id} entry={entry} />
-              ))}
-
-              {/* Loading Skeleton */}
-              {isLoading && (
+        {totalEntries === 0 ? (
+          <div className="text-center py-12 text-muted-foreground">
+            閲覧履歴はありません
+          </div>
+        ) : (
+          <>
+            {dateGroups.map((group) => (
+              <div key={group.date} className="mb-6">
+                <h3 className="text-sm font-medium text-muted-foreground mb-3">
+                  {group.label}
+                </h3>
                 <div className="space-y-4">
-                  {[...Array(3)].map((_, i) => (
-                    <div
-                      key={`skeleton-${i}`}
-                      className="bg-card rounded-lg border p-4 animate-pulse"
-                    >
-                      <div className="h-6 bg-muted rounded w-3/4 mb-2" />
-                      <div className="h-4 bg-muted rounded w-1/4 mb-4" />
-                      <div className="h-4 bg-muted rounded w-full mb-2" />
-                      <div className="h-4 bg-muted rounded w-2/3" />
-                    </div>
+                  {group.entries.map((entry) => (
+                    <EntryCard
+                      key={`${entry.id}-${entry.viewedAt}`}
+                      entry={entry}
+                      onTitleClick={handleEntryClick}
+                      onDelete={handleDelete}
+                    />
                   ))}
                 </div>
-              )}
+              </div>
+            ))}
 
-              {/* Infinite Scroll Trigger */}
-              {hasMore && <div ref={loadMoreRef} className="h-10" />}
-
-              {/* End of List */}
-              {!hasMore && displayedEntries.length > 0 && (
-                <div className="text-center py-8 text-sm text-muted-foreground">
-                  すべての履歴を表示しました
-                </div>
-              )}
-            </>
-          )}
-        </div>
+            {/* Load more trigger */}
+            {hasMore && (
+              <div ref={loadMoreRef} className="mt-8">
+                {isLoadingMore && <SkeletonList count={3} />}
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* Sidebar */}

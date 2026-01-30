@@ -63,8 +63,7 @@ export function TagPage({ tag }: TagPageProps) {
 
   const handleEntryClick = (entry: Entry) => {
     recordEntryClick({
-      entryId: entry.id,
-      entryUrl: entry.url,
+      entry,
       referrer: window.location.href,
       userAgent: navigator.userAgent,
     })

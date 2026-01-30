@@ -48,8 +48,7 @@ export function SearchPage({ query, entries }: SearchPageProps) {
 
   const handleEntryClick = (entry: Entry) => {
     recordEntryClick({
-      entryId: entry.id,
-      entryUrl: entry.url,
+      entry,
       referrer: window.location.href,
       userAgent: navigator.userAgent,
     })

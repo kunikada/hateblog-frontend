@@ -1,4 +1,4 @@
-import { Calendar, ExternalLink, Share2, Link as LinkIcon, Check } from 'lucide-react'
+import { Calendar, ExternalLink, Share2, Link as LinkIcon, Check, Trash2 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import { EntryDate } from '@/lib/entry-date'
@@ -27,9 +27,10 @@ function getHatenaBookmarkUrl(url: string): string {
 type EntryCardProps = {
   entry: Entry
   onTitleClick?: (entry: Entry) => void
+  onDelete?: (entry: Entry) => void
 }
 
-export function EntryCard({ entry, onTitleClick }: EntryCardProps) {
+export function EntryCard({ entry, onTitleClick, onDelete }: EntryCardProps) {
   const formattedDate = EntryDate.fromTimestamp(entry.timestamp).toSlashSeparated()
 
   const [copied, setCopied] = useState(false)
@@ -140,7 +141,7 @@ export function EntryCard({ entry, onTitleClick }: EntryCardProps) {
   return (
     <article
       ref={cardRef}
-      className="group rounded-lg border bg-card p-3 hover:shadow-md transition-shadow"
+      className="group relative rounded-lg border bg-card p-3 hover:shadow-md transition-shadow"
     >
       <div className="flex flex-col gap-2">
         {/* Title with Favicon */}
@@ -216,8 +217,9 @@ export function EntryCard({ entry, onTitleClick }: EntryCardProps) {
             </span>
           </div>
 
+          <div className="flex items-center gap-1 -my-1">
           {/* Share - PC: hover popover, Mobile: native share */}
-          <div className="relative group/share -my-1">
+          <div className="relative group/share">
             <Button
               variant="ghost"
               size="sm"
@@ -260,6 +262,18 @@ export function EntryCard({ entry, onTitleClick }: EntryCardProps) {
                 </button>
               </div>
             </div>
+          </div>
+          {/* Delete */}
+          {onDelete && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+              onClick={() => onDelete(entry)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
           </div>
         </div>
       </div>

@@ -1,11 +1,15 @@
 import { metricsRepository } from '@/infra/repositories/metrics'
+import type { Entry } from '@/repositories/entries'
 
 const VIEW_HISTORY_KEY = 'viewHistory'
-const VIEW_HISTORY_MAX_SIZE = 100
+const VIEW_HISTORY_MAX_SIZE = 1000
+
+export type ViewHistoryItem = Entry & {
+  viewedAt: string
+}
 
 export type EntryClickParams = {
-  entryId: string
-  entryUrl: string
+  entry: Entry
   referrer: string
   userAgent: string
 }
@@ -14,7 +18,7 @@ export async function recordEntryClick(params: EntryClickParams): Promise<void> 
   // Record click to API (fire and forget, don't block on failure)
   metricsRepository
     .recordClick({
-      entry_id: params.entryId,
+      entry_id: params.entry.id,
       referrer: params.referrer,
       user_agent: params.userAgent,
     })
@@ -23,28 +27,51 @@ export async function recordEntryClick(params: EntryClickParams): Promise<void> 
     })
 
   // Save to view history in localStorage
-  saveToViewHistory(params.entryId)
+  saveToViewHistory(params.entry)
 }
 
-function saveToViewHistory(entryId: string): void {
+function saveToViewHistory(entry: Entry): void {
   try {
-    const viewHistory = JSON.parse(localStorage.getItem(VIEW_HISTORY_KEY) || '[]') as string[]
-    if (!viewHistory.includes(entryId)) {
-      viewHistory.unshift(entryId)
-      localStorage.setItem(
-        VIEW_HISTORY_KEY,
-        JSON.stringify(viewHistory.slice(0, VIEW_HISTORY_MAX_SIZE)),
-      )
-    }
+    const viewHistory = getViewHistory()
+    const now = new Date().toISOString()
+
+    // 同一URLは閲覧日時を更新
+    const filtered = viewHistory.filter((item) => item.url !== entry.url)
+    const newItem: ViewHistoryItem = { ...entry, viewedAt: now }
+    filtered.unshift(newItem)
+
+    localStorage.setItem(
+      VIEW_HISTORY_KEY,
+      JSON.stringify(filtered.slice(0, VIEW_HISTORY_MAX_SIZE)),
+    )
   } catch (error) {
     console.debug('Failed to save view history:', error)
   }
 }
 
-export function getViewHistory(): string[] {
+export function getViewHistory(): ViewHistoryItem[] {
   try {
-    return JSON.parse(localStorage.getItem(VIEW_HISTORY_KEY) || '[]') as string[]
+    return JSON.parse(localStorage.getItem(VIEW_HISTORY_KEY) || '[]') as ViewHistoryItem[]
   } catch {
     return []
+  }
+}
+
+export function removeViewHistoryItem(url: string): ViewHistoryItem[] {
+  try {
+    const viewHistory = getViewHistory()
+    const updated = viewHistory.filter((item) => item.url !== url)
+    localStorage.setItem(VIEW_HISTORY_KEY, JSON.stringify(updated))
+    return updated
+  } catch {
+    return []
+  }
+}
+
+export function clearViewHistory(): void {
+  try {
+    localStorage.removeItem(VIEW_HISTORY_KEY)
+  } catch (error) {
+    console.debug('Failed to clear view history:', error)
   }
 }
