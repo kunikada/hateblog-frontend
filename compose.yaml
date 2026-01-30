@@ -1,0 +1,9 @@
+name: hateblog-frontend
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hateblog-frontend:latest
+    restart: unless-stopped
