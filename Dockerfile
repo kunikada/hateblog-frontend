@@ -17,6 +17,7 @@ WORKDIR /usr/share/nginx/html
 # Clean default assets and copy build output
 RUN rm -rf ./*
 COPY --from=build /app/dist ./
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
