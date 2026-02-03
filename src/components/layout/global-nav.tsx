@@ -23,7 +23,7 @@ export function GlobalNav() {
             <Link
               to="/entries/$date/hot"
               params={{ date: todayParam }}
-              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              activeProps={{ className: activeClass, onClick: (e: React.MouseEvent) => e.preventDefault() }}
               inactiveProps={{ className: inactiveClass }}
             >
               本日の人気順
@@ -33,7 +33,7 @@ export function GlobalNav() {
             <Link
               to="/entries/$date/new"
               params={{ date: todayParam }}
-              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              activeProps={{ className: activeClass, onClick: (e: React.MouseEvent) => e.preventDefault() }}
               inactiveProps={{ className: inactiveClass }}
             >
               本日の新着順
@@ -42,7 +42,7 @@ export function GlobalNav() {
           <li>
             <Link
               to="/archive"
-              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              activeProps={{ className: activeClass, onClick: (e: React.MouseEvent) => e.preventDefault() }}
               inactiveProps={{ className: inactiveClass }}
             >
               アーカイブ
@@ -52,7 +52,7 @@ export function GlobalNav() {
             <Link
               to="/rankings/$year/week/$week"
               params={{ year: lastWeekYear.toString(), week: lastWeekNumber.toString() }}
-              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              activeProps={{ className: activeClass, onClick: (e: React.MouseEvent) => e.preventDefault() }}
               inactiveProps={{ className: inactiveClass }}
             >
               先週のランキング
@@ -62,7 +62,7 @@ export function GlobalNav() {
             <Link
               to="/rankings/$year/$month"
               params={{ year: currentYear, month: currentMonth }}
-              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              activeProps={{ className: activeClass, onClick: (e: React.MouseEvent) => e.preventDefault() }}
               inactiveProps={{ className: inactiveClass }}
             >
               今月のランキング
@@ -71,7 +71,7 @@ export function GlobalNav() {
           <li>
             <Link
               to="/history"
-              activeProps={{ className: activeClass, onClick: (e) => e.preventDefault() }}
+              activeProps={{ className: activeClass, onClick: (e: React.MouseEvent) => e.preventDefault() }}
               inactiveProps={{ className: inactiveClass }}
             >
               閲覧履歴
