@@ -9,7 +9,7 @@ export const mockEntries: Entry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 1234,
     timestamp: new Date().toISOString(),
-    tags: ['React', 'JavaScript', 'Web開発'],
+    tags: [{ name: 'React', score: 1.0 }, { name: 'JavaScript', score: 0.8 }, { name: 'Web開発', score: 0.6 }],
     excerpt:
       'React 19で導入されるServer Componentsについて詳しく解説します。従来のクライアントサイドレンダリングとの違いや、パフォーマンス向上のメカニズムを理解しましょう。',
   },
@@ -21,7 +21,7 @@ export const mockEntries: Entry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 987,
     timestamp: new Date(Date.now() - 3600000).toISOString(),
-    tags: ['TypeScript', 'プログラミング', '型安全'],
+    tags: [{ name: 'TypeScript', score: 1.0 }, { name: 'プログラミング', score: 0.8 }, { name: '型安全', score: 0.6 }],
     excerpt:
       'TypeScriptの型システムを最大限に活用するための実践的なテクニックを紹介します。Utility Typesの活用法から、高度な型推論まで幅広くカバーします。',
   },
@@ -33,7 +33,7 @@ export const mockEntries: Entry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 856,
     timestamp: new Date(Date.now() - 7200000).toISOString(),
-    tags: ['Next.js', 'React', 'フロントエンド'],
+    tags: [{ name: 'Next.js', score: 1.0 }, { name: 'React', score: 0.8 }, { name: 'フロントエンド', score: 0.6 }],
     excerpt:
       'Next.js 13で導入されたApp Routerを使った実践的なWebアプリケーション開発について解説します。ファイルベースのルーティングから、レイアウトの活用まで。',
   },
@@ -45,7 +45,7 @@ export const mockEntries: Entry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 654,
     timestamp: new Date(Date.now() - 10800000).toISOString(),
-    tags: ['TailwindCSS', 'CSS', 'デザインシステム'],
+    tags: [{ name: 'TailwindCSS', score: 1.0 }, { name: 'CSS', score: 0.8 }, { name: 'デザインシステム', score: 0.6 }],
     excerpt:
       'TailwindCSSを使ったプロジェクトで保守性を高めるためのベストプラクティスを紹介します。コンポーネント化の手法やカスタマイズのポイントを解説。',
   },
@@ -57,7 +57,7 @@ export const mockEntries: Entry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 543,
     timestamp: new Date(Date.now() - 14400000).toISOString(),
-    tags: ['Vite', 'ビルドツール', '開発環境'],
+    tags: [{ name: 'Vite', score: 1.0 }, { name: 'ビルドツール', score: 0.8 }, { name: '開発環境', score: 0.6 }],
     excerpt:
       'Viteを使った高速な開発環境の構築方法を解説します。Hot Module Replacementの仕組みから、プロダクションビルドの最適化まで。',
   },
@@ -69,7 +69,7 @@ export const mockEntries: Entry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 432,
     timestamp: new Date(Date.now() - 18000000).toISOString(),
-    tags: ['TanStack Query', 'データフェッチ', '状態管理'],
+    tags: [{ name: 'TanStack Query', score: 1.0 }, { name: 'データフェッチ', score: 0.8 }, { name: '状態管理', score: 0.6 }],
     excerpt:
       'TanStack Query（旧React Query）を使った効率的なデータフェッチングとキャッシング戦略について解説します。サーバーステートの管理をシンプルに。',
   },
@@ -81,7 +81,7 @@ export const mockEntries: Entry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 321,
     timestamp: new Date(Date.now() - 21600000).toISOString(),
-    tags: ['shadcn/ui', 'UIコンポーネント', 'デザイン'],
+    tags: [{ name: 'shadcn/ui', score: 1.0 }, { name: 'UIコンポーネント', score: 0.8 }, { name: 'デザイン', score: 0.6 }],
     excerpt:
       'shadcn/uiを使った美しく機能的なUIコンポーネントの構築方法を紹介します。カスタマイズ可能で、アクセシビリティにも配慮した設計。',
   },
@@ -93,7 +93,7 @@ export const mockEntries: Entry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 234,
     timestamp: new Date(Date.now() - 25200000).toISOString(),
-    tags: ['Biome', 'リンター', 'フォーマッター'],
+    tags: [{ name: 'Biome', score: 1.0 }, { name: 'リンター', score: 0.8 }, { name: 'フォーマッター', score: 0.6 }],
     excerpt:
       'Biomeによるコードリンティングとフォーマッティングのベストプラクティスを解説します。高速で統一されたコード品質管理を実現。',
   },
@@ -105,7 +105,7 @@ export const mockEntries: Entry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 198,
     timestamp: new Date(Date.now() - 28800000).toISOString(),
-    tags: ['TanStack Router', 'ルーティング', '型安全'],
+    tags: [{ name: 'TanStack Router', score: 1.0 }, { name: 'ルーティング', score: 0.8 }, { name: '型安全', score: 0.6 }],
     excerpt:
       'TanStack Routerを使った型安全なルーティングの実装方法を紹介します。ファイルベースのルーティングと完全な型推論を活用。',
   },
@@ -117,7 +117,7 @@ export const mockEntries: Entry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 156,
     timestamp: new Date(Date.now() - 32400000).toISOString(),
-    tags: ['Vitest', 'テスト', 'ユニットテスト'],
+    tags: [{ name: 'Vitest', score: 1.0 }, { name: 'テスト', score: 0.8 }, { name: 'ユニットテスト', score: 0.6 }],
     excerpt:
       'Vitestを使ったユニットテストの書き方と、テスト駆動開発のベストプラクティスを解説します。Viteとの統合で高速なテスト実行を実現。',
   },

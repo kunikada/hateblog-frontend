@@ -14,7 +14,7 @@ export const mockYearlyRankings: RankingEntry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 5678,
     timestamp: '2024-12-15T00:00:00.000Z',
-    tags: ['技術トレンド', '2024年', '総まとめ'],
+    tags: [{ name: '技術トレンド', score: 1.0 }, { name: '2024年', score: 0.8 }, { name: '総まとめ', score: 0.6 }],
     excerpt:
       '2024年のテクノロジー業界を振り返り、最も注目された技術トレンドを総括します。AIの進化、Webフレームワークの革新、そして新しい開発ツールまで。',
   },
@@ -27,7 +27,7 @@ export const mockYearlyRankings: RankingEntry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 4321,
     timestamp: '2024-11-20T00:00:00.000Z',
-    tags: ['LLM', 'AI', '機械学習'],
+    tags: [{ name: 'LLM', score: 1.0 }, { name: 'AI', score: 0.8 }, { name: '機械学習', score: 0.6 }],
     excerpt:
       'ChatGPTやClaude、Geminiなどの大規模言語モデルを実務で活用するための実践的なテクニックとベストプラクティスを紹介します。',
   },
@@ -40,7 +40,7 @@ export const mockYearlyRankings: RankingEntry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 3456,
     timestamp: '2024-10-05T00:00:00.000Z',
-    tags: ['パフォーマンス', '最適化', 'Web開発'],
+    tags: [{ name: 'パフォーマンス', score: 1.0 }, { name: '最適化', score: 0.8 }, { name: 'Web開発', score: 0.6 }],
     excerpt:
       'ページ速度を劇的に改善するための実践的なテクニックを解説します。Core Web Vitalsの最適化から、バンドルサイズの削減まで。',
   },
@@ -53,7 +53,7 @@ export const mockYearlyRankings: RankingEntry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 2987,
     timestamp: '2024-09-18T00:00:00.000Z',
-    tags: ['Docker', 'Kubernetes', 'DevOps'],
+    tags: [{ name: 'Docker', score: 1.0 }, { name: 'Kubernetes', score: 0.8 }, { name: 'DevOps', score: 0.6 }],
     excerpt:
       'DockerとKubernetesを使ったコンテナベースの開発・デプロイ環境の構築方法を基礎から解説します。',
   },
@@ -66,7 +66,7 @@ export const mockYearlyRankings: RankingEntry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 2543,
     timestamp: '2024-08-22T00:00:00.000Z',
-    tags: ['GraphQL', 'API', 'バックエンド'],
+    tags: [{ name: 'GraphQL', score: 1.0 }, { name: 'API', score: 0.8 }, { name: 'バックエンド', score: 0.6 }],
     excerpt:
       'GraphQLを使った柔軟で効率的なAPI設計のベストプラクティスを紹介します。RESTとの比較や、実装のコツを解説。',
   },
@@ -79,7 +79,7 @@ export const mockYearlyRankings: RankingEntry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 2198,
     timestamp: '2024-07-14T00:00:00.000Z',
-    tags: ['Rust', 'システムプログラミング', 'パフォーマンス'],
+    tags: [{ name: 'Rust', score: 1.0 }, { name: 'システムプログラミング', score: 0.8 }, { name: 'パフォーマンス', score: 0.6 }],
   },
   {
     id: 'r7',
@@ -90,7 +90,7 @@ export const mockYearlyRankings: RankingEntry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 1876,
     timestamp: '2024-06-30T00:00:00.000Z',
-    tags: ['GitHub Actions', 'CI/CD', '自動化'],
+    tags: [{ name: 'GitHub Actions', score: 1.0 }, { name: 'CI/CD', score: 0.8 }, { name: '自動化', score: 0.6 }],
   },
   {
     id: 'r8',
@@ -101,7 +101,7 @@ export const mockYearlyRankings: RankingEntry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 1654,
     timestamp: '2024-05-25T00:00:00.000Z',
-    tags: ['AWS', 'Serverless', 'Lambda'],
+    tags: [{ name: 'AWS', score: 1.0 }, { name: 'Serverless', score: 0.8 }, { name: 'Lambda', score: 0.6 }],
   },
   {
     id: 'r9',
@@ -112,7 +112,7 @@ export const mockYearlyRankings: RankingEntry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 1432,
     timestamp: '2024-04-18T00:00:00.000Z',
-    tags: ['PostgreSQL', 'MySQL', 'データベース'],
+    tags: [{ name: 'PostgreSQL', score: 1.0 }, { name: 'MySQL', score: 0.8 }, { name: 'データベース', score: 0.6 }],
   },
   {
     id: 'r10',
@@ -123,7 +123,7 @@ export const mockYearlyRankings: RankingEntry[] = [
     favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=32',
     bookmarkCount: 1287,
     timestamp: '2024-03-12T00:00:00.000Z',
-    tags: ['セキュリティ', 'Webアプリ', 'ベストプラクティス'],
+    tags: [{ name: 'セキュリティ', score: 1.0 }, { name: 'Webアプリ', score: 0.8 }, { name: 'ベストプラクティス', score: 0.6 }],
   },
 ]
 
