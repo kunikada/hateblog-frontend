@@ -1,5 +1,5 @@
 import TagManager from 'react-gtm-module'
-import { config } from './config'
+import { config } from '@/lib/config'
 
 export function initializeGtm(): void {
   if (!config.gtm.id) return
