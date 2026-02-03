@@ -35,12 +35,7 @@ type FilterChangeEvent = {
   filter_value: number
 }
 
-type GtmEvent =
-  | PageViewEvent
-  | SelectContentEvent
-  | ShareEvent
-  | SearchEvent
-  | FilterChangeEvent
+type GtmEvent = PageViewEvent | SelectContentEvent | ShareEvent | SearchEvent | FilterChangeEvent
 
 export function pushEvent(data: GtmEvent): void {
   if (!config.gtm.id) return
