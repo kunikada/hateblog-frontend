@@ -4,6 +4,9 @@ export const config = {
     key: import.meta.env.VITE_API_KEY || '',
     keyId: import.meta.env.VITE_API_KEY_ID || '',
   },
+  gtm: {
+    id: import.meta.env.VITE_GTM_ID || '',
+  },
   msw: {
     enabled: import.meta.env.DEV && import.meta.env.VITE_ENABLE_MSW === 'true',
   },

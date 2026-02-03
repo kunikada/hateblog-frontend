@@ -29,7 +29,8 @@
       "Bash(mv:*)",
       "Bash(pnpm msw:*)",
       "Bash(pnpm exec tsc:*)",
-      "Bash(npx tsr:*)"
+      "Bash(npx tsr:*)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []
