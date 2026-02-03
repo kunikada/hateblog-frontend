@@ -3,6 +3,7 @@ import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { config } from '@/lib/config'
+import { initializeGtm, pushEvent } from '@/lib/gtm'
 import { ThemeProvider } from '@/components/theme-provider'
 import { routeTree } from './routeTree.gen'
 import './index.css'
@@ -22,9 +23,13 @@ const router = createRouter({
   routeTree,
 })
 
-// Log route changes
+// Initialize GTM
+initializeGtm()
+
+// Log route changes and send page_view event
 router.subscribe('onLoad', (event) => {
   console.debug('[Router] Route loaded:', event.toLocation.pathname)
+  pushEvent({ event: 'page_view', page_path: event.toLocation.pathname })
 })
 
 // Register the router instance for type safety
