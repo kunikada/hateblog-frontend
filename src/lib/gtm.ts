@@ -1,5 +1,5 @@
 import TagManager from 'react-gtm-module'
-import { config } from './config'
+import { config } from '@/lib/config'
 
 export function initializeGtm(): void {
   if (!config.gtm.id) return
@@ -14,7 +14,7 @@ type PageViewEvent = {
 type SelectContentEvent = {
   event: 'select_content'
   content_type: 'entry'
-  entry_id: number
+  entry_id: string
   entry_title: string
   entry_url: string
 }
@@ -22,7 +22,7 @@ type SelectContentEvent = {
 type ShareEvent = {
   event: 'share'
   method: string
-  entry_id: number
+  entry_id: string
 }
 
 type SearchEvent = {
