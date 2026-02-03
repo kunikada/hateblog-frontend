@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+/* PC 環境で hover media 判定が false になるケースを吸収する */
+@custom-variant hover (&:hover);
 
 @theme {
   /* ========================================
