@@ -1,5 +1,7 @@
-import { Link } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { EntryDate } from '@/lib/entry-date'
+import { archiveQueryOptions } from '@/usecases/fetch-archive'
 
 const baseClass = 'px-3 py-1.5 rounded-md min-w-35 text-center inline-block'
 const activeClass = `${baseClass} bg-hatebu-500 text-white cursor-default`
@@ -15,6 +17,11 @@ export function GlobalNav() {
   const currentYear = today.getYear()
   const currentMonth = today.getMonth()
 
+  const currentPath = useRouterState({ select: (s) => s.location.pathname })
+  const { data: archiveData } = useQuery(archiveQueryOptions.get({ minUsers: 5 }))
+  const isTopPageWithTodayData =
+    currentPath === '/' && archiveData?.latestDate === today.toYYYY_MM_DD()
+
   return (
     <nav className="bg-card shadow-md sticky top-0 z-40">
       <div className="container mx-auto py-2 px-4 md:px-6">
@@ -27,7 +34,12 @@ export function GlobalNav() {
                 className: activeClass,
                 onClick: (e: React.MouseEvent) => e.preventDefault(),
               }}
-              inactiveProps={{ className: inactiveClass }}
+              inactiveProps={{
+                className: isTopPageWithTodayData ? activeClass : inactiveClass,
+              }}
+              {...(isTopPageWithTodayData && {
+                onClick: (e: React.MouseEvent) => e.preventDefault(),
+              })}
             >
               本日の人気順
             </Link>
