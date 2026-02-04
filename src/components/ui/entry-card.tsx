@@ -189,7 +189,7 @@ export function EntryCard({ entry, onTitleClick, onDelete }: EntryCardProps) {
                   <Link key={tag.name} to="/tags/$tag" params={{ tag: tag.name }}>
                     <Badge
                       variant="secondary"
-                      className="text-xs transition-colors hover:bg-hatebu-500 hover:text-white"
+                      className="text-xs border border-border transition-colors hover:bg-hatebu-500 hover:text-white hover:border-transparent"
                     >
                       {tag.name}
                     </Badge>

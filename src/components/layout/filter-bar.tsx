@@ -26,7 +26,7 @@ export function FilterBar({ selectedThreshold, onThresholdChange }: FilterBarPro
             className={
               selectedThreshold === threshold
                 ? 'min-w-28 bg-hatebu-500 text-white hover:bg-hatebu-600 disabled:opacity-100 disabled:cursor-default'
-                : 'min-w-28 text-gray-600 border-gray-300'
+                : 'min-w-28 bg-card text-gray-600 border-gray-300'
             }
           >
             {threshold}+ users
