@@ -21,6 +21,7 @@ const queryClient = new QueryClient({
 // Create a new router instance
 const router = createRouter({
   routeTree,
+  scrollRestoration: true,
 })
 
 // Initialize GTM
