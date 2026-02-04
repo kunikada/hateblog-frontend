@@ -63,7 +63,8 @@ function saveToViewHistory(entry: Entry): void {
 
 export function getViewHistory(): ViewHistoryItem[] {
   try {
-    return JSON.parse(localStorage.getItem(VIEW_HISTORY_KEY) || '[]') as ViewHistoryItem[]
+    const items = JSON.parse(localStorage.getItem(VIEW_HISTORY_KEY) || '[]') as ViewHistoryItem[]
+    return items.filter((item) => typeof item.viewedAt === 'string' && item.viewedAt !== '')
   } catch {
     return []
   }

@@ -139,7 +139,7 @@ export function TagList({ tags, onLinkClick }: { tags: SidebarTag[]; onLinkClick
           key={tag.id}
           to="/tags/$tag"
           params={{ tag: tag.name }}
-          className="px-3 py-1.5 bg-muted rounded-full text-sm hover:bg-hatebu-500 hover:text-white transition-colors"
+          className="px-3 py-1.5 bg-muted border border-border rounded-full text-sm hover:bg-hatebu-500 hover:text-white hover:border-transparent transition-colors"
           onClick={onLinkClick}
         >
           {tag.name}

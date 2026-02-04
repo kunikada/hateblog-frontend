@@ -5,7 +5,7 @@ import { archiveQueryOptions } from '@/usecases/fetch-archive'
 
 const baseClass = 'px-3 py-1.5 rounded-md min-w-35 text-center inline-block'
 const activeClass = `${baseClass} bg-hatebu-500 text-white cursor-default`
-const inactiveClass = `${baseClass} text-gray-600 hover:text-gray-900 hover:bg-muted`
+const inactiveClass = `${baseClass} bg-card text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-muted`
 
 export function GlobalNav() {
   const today = EntryDate.today()
