@@ -3,7 +3,6 @@ import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCard } from '@/components/ui/entry-card'
-import { EntryCount } from '@/components/ui/entry-count'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll'
 import { config } from '@/lib/config'
@@ -99,11 +98,6 @@ export function WeeklyRankingPage({ title, year, week, prev, next }: WeeklyRanki
           <div ref={loadMoreRef} className="mt-8">
             {isLoadingMore && <SkeletonList count={3} />}
           </div>
-        )}
-
-        {/* Entry Count */}
-        {!isLoading && !hasMore && allEntries.length > 0 && (
-          <EntryCount count={data?.total ?? allEntries.length} className="mt-8 text-center" />
         )}
 
         {/* No results */}
