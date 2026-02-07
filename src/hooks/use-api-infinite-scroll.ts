@@ -2,14 +2,14 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import type { RankingEntry } from '@/usecases/fetch-rankings'
 
-type RankingQueryFn = (params: { pageParam?: number }) => Promise<{
-  entries: RankingEntry[]
+type InfiniteScrollQueryFn<TEntry> = (params: { pageParam?: number }) => Promise<{
+  entries: TEntry[]
   total: number
 }>
 
-type UseRankingInfiniteScrollOptions = {
+type UseApiInfiniteScrollOptions<TEntry> = {
   queryKey: readonly unknown[]
-  queryFn: RankingQueryFn
+  queryFn: InfiniteScrollQueryFn<TEntry>
   perPage: number
   apiLimit: number
   resetDeps: unknown[]
@@ -17,8 +17,8 @@ type UseRankingInfiniteScrollOptions = {
   staleTime?: number
 }
 
-type UseRankingInfiniteScrollReturn = {
-  displayedEntries: RankingEntry[]
+type UseApiInfiniteScrollReturn<TEntry> = {
+  displayedEntries: TEntry[]
   isLoading: boolean
   isLoadingMore: boolean
   hasMore: boolean
@@ -29,7 +29,7 @@ type UseRankingInfiniteScrollReturn = {
 const DEFAULT_API_LIMIT = 100
 const DEFAULT_LOADING_DELAY_MS = 500
 
-export function useRankingInfiniteScroll({
+export function useApiInfiniteScroll<TEntry = RankingEntry>({
   queryKey,
   queryFn,
   perPage,
@@ -37,7 +37,7 @@ export function useRankingInfiniteScroll({
   resetDeps,
   loadingDelayMs = DEFAULT_LOADING_DELAY_MS,
   staleTime,
-}: UseRankingInfiniteScrollOptions): UseRankingInfiniteScrollReturn {
+}: UseApiInfiniteScrollOptions<TEntry>): UseApiInfiniteScrollReturn<TEntry> {
   const [displayedCount, setDisplayedCount] = useState(perPage)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
@@ -74,7 +74,7 @@ export function useRankingInfiniteScroll({
 
     const remainingItems = totalFetched - displayedCount
     if (remainingItems <= perPage && remainingItems > 0) {
-      console.debug('[useRankingInfiniteScroll] Auto-fetching next page', {
+      console.debug('[useApiInfiniteScroll] Auto-fetching next page', {
         totalFetched,
         displayedCount,
         remainingItems,
@@ -94,7 +94,7 @@ export function useRankingInfiniteScroll({
           setTimeout(() => {
             setDisplayedCount((prev) => {
               const next = prev + perPage
-              console.debug('[useRankingInfiniteScroll] Incrementing displayed count', {
+              console.debug('[useApiInfiniteScroll] Incrementing displayed count', {
                 prev,
                 next,
                 totalFetched,

@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
@@ -6,12 +5,13 @@ import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCard } from '@/components/ui/entry-card'
 import { EntrySortToggle } from '@/components/ui/entry-sort-toggle'
 import { SkeletonList } from '@/components/ui/skeleton-list'
-import { useInfiniteScroll } from '@/hooks/use-infinite-scroll'
+import { useApiInfiniteScroll } from '@/hooks/use-api-infinite-scroll'
 import { useLocalStorage } from '@/hooks/use-local-storage'
+import { tagsRepository } from '@/infra/repositories/tags'
 import { config } from '@/lib/config'
+import { convertApiEntry } from '@/lib/entry-mapper'
 import type { Entry } from '@/repositories/entries'
 import { recordEntryClick } from '@/usecases/entry-click'
-import { tagEntriesQueryOptions } from '@/usecases/fetch-tag-entries'
 
 type TagPageProps = {
   tag: string
@@ -25,29 +25,38 @@ export function TagPage({ tag }: TagPageProps) {
   const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>('minUsers:v1', 5)
   const [sortType, setSortType] = useState<SortType>('new')
 
-  const queryParams = {
-    tag,
-    minUsers: 5,
-    sort: sortType,
-  }
-  console.debug('[TagPage] Query params', queryParams)
-
-  const { data, isLoading, error } = useQuery(tagEntriesQueryOptions.entries(queryParams))
-
-  console.debug('[TagPage] Query state', { isLoading, hasData: !!data, error })
-
-  const allEntries = (data?.entries ?? []).filter(
-    (entry) => selectedThreshold === null || entry.bookmarkCount >= selectedThreshold,
-  )
-
-  const { displayedCount, isLoadingMore, loadMoreRef } = useInfiniteScroll({
-    totalCount: allEntries.length,
-    perPage: config.pagination.entriesPerPage,
-    resetDeps: [tag, selectedThreshold, sortType],
-  })
-
-  const displayedEntries = allEntries.slice(0, displayedCount)
-  const hasMore = displayedCount < allEntries.length
+  const { displayedEntries, isLoading, isLoadingMore, hasMore, error, loadMoreRef } =
+    useApiInfiniteScroll<Entry>({
+      queryKey: ['tagEntries', tag, selectedThreshold ?? 5, sortType],
+      queryFn: async ({ pageParam = 0 }) => {
+        console.debug('[TagPage] Fetching entries', {
+          tag,
+          minUsers: selectedThreshold ?? 5,
+          sort: sortType,
+          limit: 100,
+          offset: pageParam,
+        })
+        const result = await tagsRepository.getEntries({
+          tag,
+          minUsers: selectedThreshold ?? 5,
+          sort: sortType,
+          limit: 100,
+          offset: pageParam,
+        })
+        console.debug('[TagPage] Fetched entries', {
+          total: result.total,
+          count: result.entries.length,
+        })
+        return {
+          entries: result.entries.map(convertApiEntry),
+          total: result.total,
+        }
+      },
+      perPage: config.pagination.entriesPerPage,
+      apiLimit: 100,
+      resetDeps: [tag, selectedThreshold, sortType],
+      staleTime: 1000 * 60 * 5,
+    })
 
   const handleThresholdChange = (threshold: number | null) => {
     setSelectedThreshold(threshold)
@@ -129,7 +138,7 @@ export function TagPage({ tag }: TagPageProps) {
         )}
 
         {/* No results */}
-        {!isLoading && allEntries.length === 0 && (
+        {!isLoading && displayedEntries.length === 0 && (
           <div className="mt-8 text-center text-sm text-muted-foreground">
             該当するエントリーがありません
           </div>

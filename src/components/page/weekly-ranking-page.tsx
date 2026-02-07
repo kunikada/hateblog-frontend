@@ -3,7 +3,7 @@ import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCard } from '@/components/ui/entry-card'
 import { SkeletonList } from '@/components/ui/skeleton-list'
-import { useRankingInfiniteScroll } from '@/hooks/use-ranking-infinite-scroll'
+import { useApiInfiniteScroll } from '@/hooks/use-api-infinite-scroll'
 import { rankingsRepository } from '@/infra/repositories/rankings'
 import { config } from '@/lib/config'
 import { convertApiEntry } from '@/lib/entry-mapper'
@@ -33,7 +33,7 @@ export function WeeklyRankingPage({ title, year, week, prev, next }: WeeklyRanki
   console.debug('[WeeklyRankingPage] Component mounted', { title, year, week })
 
   const { displayedEntries, isLoading, isLoadingMore, hasMore, error, loadMoreRef } =
-    useRankingInfiniteScroll({
+    useApiInfiniteScroll({
       queryKey: rankingsQueryOptions.keys.weekly({ year, week, limit: WEEKLY_RANKING_LIMIT }),
       queryFn: async ({ pageParam = 0 }) => {
         const result = await rankingsRepository.getWeeklyRanking({
