@@ -7,18 +7,21 @@ export type ApiRankingEntry = components['schemas']['RankingEntry']
 export type GetYearlyRankingParams = {
   year: number
   limit?: number
+  offset?: number
 }
 
 export type GetMonthlyRankingParams = {
   year: number
   month: number
   limit?: number
+  offset?: number
 }
 
 export type GetWeeklyRankingParams = {
   year: number
   week: number
   limit?: number
+  offset?: number
 }
 
 export interface RankingsRepository {

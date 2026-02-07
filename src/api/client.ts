@@ -213,6 +213,7 @@ export const api = {
       const searchParams = new URLSearchParams()
       searchParams.set('year', String(params.year))
       if (params.limit !== undefined) searchParams.set('limit', String(params.limit))
+      if (params.offset !== undefined) searchParams.set('offset', String(params.offset))
       return request(`/rankings/yearly?${searchParams}`)
     },
     getMonthly: (params: GetMonthlyRankingParams): Promise<GetMonthlyRankingResponse> => {
@@ -220,6 +221,7 @@ export const api = {
       searchParams.set('year', String(params.year))
       searchParams.set('month', String(params.month))
       if (params.limit !== undefined) searchParams.set('limit', String(params.limit))
+      if (params.offset !== undefined) searchParams.set('offset', String(params.offset))
       return request(`/rankings/monthly?${searchParams}`)
     },
     getWeekly: (params: GetWeeklyRankingParams): Promise<GetWeeklyRankingResponse> => {
@@ -227,6 +229,7 @@ export const api = {
       searchParams.set('year', String(params.year))
       searchParams.set('week', String(params.week))
       if (params.limit !== undefined) searchParams.set('limit', String(params.limit))
+      if (params.offset !== undefined) searchParams.set('offset', String(params.offset))
       return request(`/rankings/weekly?${searchParams}`)
     },
   },

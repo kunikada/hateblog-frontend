@@ -32,7 +32,9 @@
       "Bash(npx tsr:*)",
       "WebFetch(domain:github.com)",
       "Bash(pnpm vite build:*)",
-      "Bash(pnpm tsr:*)"
+      "Bash(pnpm tsr:*)",
+      "Bash(pnpm openapi:generate:*)",
+      "Bash(pnpm routes:generate:*)"
     ],
     "deny": [],
     "ask": []
