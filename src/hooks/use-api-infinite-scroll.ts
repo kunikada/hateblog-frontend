@@ -73,15 +73,26 @@ export function useApiInfiniteScroll<TEntry = RankingEntry>({
     if (!hasMoreToFetch || isFetchingNextPage) return
 
     const remainingItems = totalFetched - displayedCount
-    if (remainingItems <= perPage && remainingItems > 0) {
+    // Only fetch next page if we've displayed at least apiLimit items
+    // and remaining items are low
+    if (displayedCount >= apiLimit && remainingItems <= perPage && remainingItems > 0) {
       console.debug('[useApiInfiniteScroll] Auto-fetching next page', {
         totalFetched,
         displayedCount,
         remainingItems,
+        apiLimit,
       })
       fetchNextPage()
     }
-  }, [displayedCount, totalFetched, hasMoreToFetch, isFetchingNextPage, fetchNextPage, perPage])
+  }, [
+    displayedCount,
+    totalFetched,
+    hasMoreToFetch,
+    isFetchingNextPage,
+    fetchNextPage,
+    perPage,
+    apiLimit,
+  ])
 
   // Infinite scroll observer for incrementing displayed count
   useEffect(() => {
