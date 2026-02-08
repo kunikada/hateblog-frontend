@@ -1,12 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
 import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCard } from '@/components/ui/entry-card'
-import { EntryCount } from '@/components/ui/entry-count'
 import { SkeletonList } from '@/components/ui/skeleton-list'
-import { useInfiniteScroll } from '@/hooks/use-infinite-scroll'
+import { useApiInfiniteScroll } from '@/hooks/use-api-infinite-scroll'
+import { rankingsRepository } from '@/infra/repositories/rankings'
 import { config } from '@/lib/config'
+import { convertApiEntry } from '@/lib/entry-mapper'
 import type { Entry } from '@/repositories/entries'
 import { recordEntryClick } from '@/usecases/entry-click'
 import { type RankingEntry, rankingsQueryOptions } from '@/usecases/fetch-rankings'
@@ -27,25 +27,34 @@ type WeeklyRankingPageProps = {
   }
 }
 
-const WEEKLY_RANKING_LIMIT = 1000
+const WEEKLY_RANKING_LIMIT = 100
 
 export function WeeklyRankingPage({ title, year, week, prev, next }: WeeklyRankingPageProps) {
   console.debug('[WeeklyRankingPage] Component mounted', { title, year, week })
 
-  const { data, isLoading, error } = useQuery(
-    rankingsQueryOptions.weekly({ year, week, limit: WEEKLY_RANKING_LIMIT }),
-  )
-
-  const allEntries = data?.entries ?? []
-
-  const { displayedCount, isLoadingMore, loadMoreRef } = useInfiniteScroll({
-    totalCount: allEntries.length,
-    perPage: config.pagination.entriesPerPage,
-    resetDeps: [year, week],
-  })
-
-  const displayedEntries = allEntries.slice(0, displayedCount)
-  const hasMore = displayedCount < allEntries.length
+  const { displayedEntries, isLoading, isLoadingMore, hasMore, error, loadMoreRef } =
+    useApiInfiniteScroll({
+      queryKey: rankingsQueryOptions.keys.weekly({ year, week, limit: WEEKLY_RANKING_LIMIT }),
+      queryFn: async ({ pageParam = 0 }) => {
+        const result = await rankingsRepository.getWeeklyRanking({
+          year,
+          week,
+          limit: WEEKLY_RANKING_LIMIT,
+          offset: pageParam,
+        })
+        return {
+          entries: result.entries.map((apiEntry) => ({
+            ...convertApiEntry(apiEntry.entry),
+            rank: apiEntry.rank,
+          })),
+          total: result.total,
+        }
+      },
+      perPage: config.pagination.entriesPerPage,
+      apiLimit: WEEKLY_RANKING_LIMIT,
+      resetDeps: [year, week],
+      staleTime: rankingsQueryOptions.staleTime,
+    })
 
   const handleEntryClick = (entry: Entry | RankingEntry) => {
     recordEntryClick({
@@ -101,13 +110,8 @@ export function WeeklyRankingPage({ title, year, week, prev, next }: WeeklyRanki
           </div>
         )}
 
-        {/* Entry Count */}
-        {!isLoading && !hasMore && allEntries.length > 0 && (
-          <EntryCount count={data?.total ?? allEntries.length} className="mt-8 text-center" />
-        )}
-
         {/* No results */}
-        {!isLoading && allEntries.length === 0 && (
+        {!isLoading && displayedEntries.length === 0 && (
           <div className="mt-8 text-center text-sm text-muted-foreground">
             該当するエントリーがありません
           </div>

@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
@@ -6,12 +5,13 @@ import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCard } from '@/components/ui/entry-card'
 import { EntrySortToggle } from '@/components/ui/entry-sort-toggle'
 import { SkeletonList } from '@/components/ui/skeleton-list'
-import { useInfiniteScroll } from '@/hooks/use-infinite-scroll'
+import { useApiInfiniteScroll } from '@/hooks/use-api-infinite-scroll'
 import { useLocalStorage } from '@/hooks/use-local-storage'
+import { searchRepository } from '@/infra/repositories/search'
 import { config } from '@/lib/config'
+import { convertApiEntry } from '@/lib/entry-mapper'
 import type { Entry } from '@/repositories/entries'
 import { recordEntryClick } from '@/usecases/entry-click'
-import { searchEntriesQueryOptions } from '@/usecases/search-entries'
 
 type SearchPageProps = {
   query?: string
@@ -25,29 +25,38 @@ export function SearchPage({ query }: SearchPageProps) {
   const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>('minUsers:v1', 5)
   const [sortType, setSortType] = useState<SortType>('popular')
 
-  const queryParams = {
-    q: query ?? '',
-    minUsers: 5,
-    sort: (sortType === 'new' ? 'new' : 'hot') as 'new' | 'hot',
-  }
-  console.debug('[SearchPage] Query params', queryParams)
-
-  const { data, isLoading, error } = useQuery(searchEntriesQueryOptions.entries(queryParams))
-
-  console.debug('[SearchPage] Query state', { isLoading, hasData: !!data, error })
-
-  const allEntries = (data?.entries ?? []).filter(
-    (entry) => selectedThreshold === null || entry.bookmarkCount >= selectedThreshold,
-  )
-
-  const { displayedCount, isLoadingMore, loadMoreRef } = useInfiniteScroll({
-    totalCount: allEntries.length,
-    perPage: config.pagination.entriesPerPage,
-    resetDeps: [query, selectedThreshold, sortType],
-  })
-
-  const displayedEntries = allEntries.slice(0, displayedCount)
-  const hasMore = displayedCount < allEntries.length
+  const { displayedEntries, isLoading, isLoadingMore, hasMore, error, loadMoreRef } =
+    useApiInfiniteScroll<Entry>({
+      queryKey: ['searchEntries', query, selectedThreshold ?? 5, sortType],
+      queryFn: async ({ pageParam = 0 }) => {
+        console.debug('[SearchPage] Fetching entries', {
+          query,
+          minUsers: selectedThreshold ?? 5,
+          sort: sortType === 'new' ? 'new' : 'hot',
+          limit: 100,
+          offset: pageParam,
+        })
+        const result = await searchRepository.searchEntries({
+          q: query ?? '',
+          minUsers: selectedThreshold ?? 5,
+          sort: sortType === 'new' ? 'new' : 'hot',
+          limit: 100,
+          offset: pageParam,
+        })
+        console.debug('[SearchPage] Fetched entries', {
+          total: result.total,
+          count: result.entries.length,
+        })
+        return {
+          entries: result.entries.map(convertApiEntry),
+          total: result.total,
+        }
+      },
+      perPage: config.pagination.entriesPerPage,
+      apiLimit: 100,
+      resetDeps: [query, selectedThreshold, sortType],
+      staleTime: 1000 * 60 * 5,
+    })
 
   const handleThresholdChange = (threshold: number | null) => {
     setSelectedThreshold(threshold)

@@ -50,8 +50,5 @@
       ]
     }
   },
-  "remoteUser": "node",
-  "remoteEnv": {
-    "SSH_AUTH_SOCK": "${localEnv:SSH_AUTH_SOCK}"
-  }
+  "remoteUser": "node"
 }

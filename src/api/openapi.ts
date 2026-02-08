@@ -13,7 +13,7 @@ export interface paths {
     }
     /**
      * 新着順エントリー一覧取得
-     * @description 指定日付のエントリーを新着順（posted_at DESC）で取得します。
+     * @description 指定日付のエントリーを新着順（created_at DESC）で取得します。
      *     ブックマーク件数での閾値フィルタリングが可能です。
      */
     get: operations['getNewEntries']
@@ -34,7 +34,7 @@ export interface paths {
     }
     /**
      * 人気順エントリー一覧取得
-     * @description 指定日付のエントリーを人気順（bookmark_count DESC, posted_at DESC）で取得します。
+     * @description 指定日付のエントリーを人気順（bookmark_count DESC, created_at DESC）で取得します。
      *     ブックマーク件数での閾値フィルタリングが可能です。
      */
     get: operations['getHotEntries']
@@ -555,6 +555,16 @@ export interface components {
        * @example 10000
        */
       total: number
+      /**
+       * @description 1ページあたりの件数
+       * @example 100
+       */
+      limit: number
+      /**
+       * @description オフセット
+       * @example 0
+       */
+      offset: number
     }
     /** @description 検索結果レスポンス */
     SearchResponse: {
@@ -885,6 +895,8 @@ export interface operations {
         year: number
         /** @description 取得件数 */
         limit?: number
+        /** @description オフセット（ページネーション用） */
+        offset?: number
       }
       header?: never
       path?: never
@@ -932,6 +944,8 @@ export interface operations {
         month: number
         /** @description 取得件数 */
         limit?: number
+        /** @description オフセット（ページネーション用） */
+        offset?: number
       }
       header?: never
       path?: never
@@ -979,6 +993,8 @@ export interface operations {
         week: number
         /** @description 取得件数 */
         limit?: number
+        /** @description オフセット（ページネーション用） */
+        offset?: number
       }
       header?: never
       path?: never

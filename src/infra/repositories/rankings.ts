@@ -14,6 +14,7 @@ export function createRankingsRepository(): RankingsRepository {
       const result = await api.rankings.getYearly({
         year: params.year,
         limit: params.limit,
+        offset: params.offset,
       })
       console.debug('[RankingsRepository] getYearlyRanking result', result)
       return result
@@ -24,6 +25,7 @@ export function createRankingsRepository(): RankingsRepository {
         year: params.year,
         month: params.month,
         limit: params.limit,
+        offset: params.offset,
       })
       console.debug('[RankingsRepository] getMonthlyRanking result', result)
       return result
@@ -34,6 +36,7 @@ export function createRankingsRepository(): RankingsRepository {
         year: params.year,
         week: params.week,
         limit: params.limit,
+        offset: params.offset,
       })
       console.debug('[RankingsRepository] getWeeklyRanking result', result)
       return result

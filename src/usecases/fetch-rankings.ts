@@ -10,18 +10,21 @@ export type RankingEntry = Entry & {
 export type FetchYearlyRankingParams = {
   year: number
   limit?: number
+  offset?: number
 }
 
 export type FetchMonthlyRankingParams = {
   year: number
   month: number
   limit?: number
+  offset?: number
 }
 
 export type FetchWeeklyRankingParams = {
   year: number
   week: number
   limit?: number
+  offset?: number
 }
 
 export type YearlyRankingResult = {
