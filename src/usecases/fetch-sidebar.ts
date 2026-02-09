@@ -2,8 +2,10 @@ import { entriesRepository } from '@/infra/repositories/entries'
 import { tagsRepository } from '@/infra/repositories/tags'
 import { EntryDate } from '@/lib/entry-date'
 import { getFaviconUrl } from '@/lib/entry-mapper'
+import { aggregateTagsFromViewHistory } from '@/lib/tag-aggregator'
 import type { ApiEntry, EntryListResponse } from '@/repositories/entries'
-import type { ClickedTagsResponse, TrendingTagsResponse } from '@/repositories/tags'
+import type { TrendingTagsResponse } from '@/repositories/tags'
+import { getViewHistory } from '@/usecases/entry-click'
 
 export type SidebarEntry = {
   id: string
@@ -55,14 +57,6 @@ function convertTrendingTags(response: TrendingTagsResponse): SidebarTag[] {
     id: tag.id,
     name: tag.name,
     count: tag.occurrence_count,
-  }))
-}
-
-function convertClickedTags(response: ClickedTagsResponse): SidebarTag[] {
-  return response.tags.map((tag) => ({
-    id: tag.id,
-    name: tag.name,
-    count: tag.click_count,
   }))
 }
 
@@ -145,13 +139,19 @@ async function fetchTrendingTags(): Promise<SidebarTrendingTagsResult> {
 }
 
 async function fetchClickedTags(): Promise<SidebarClickedTagsResult> {
-  console.debug('[fetchSidebarClickedTags] Fetching')
-  const response = await tagsRepository.getClickedTags({
-    days: 30,
-    limit: SIDEBAR_TAGS_API_LIMIT,
-  })
+  console.debug('[fetchSidebarClickedTags] Fetching from view history')
+
+  const viewHistory = getViewHistory()
+  const aggregatedTags = aggregateTagsFromViewHistory(viewHistory, SIDEBAR_TAGS_API_LIMIT)
+
+  const tags: SidebarTag[] = aggregatedTags.map((tag) => ({
+    id: tag.name, // タグ名をIDとして使用（リンク生成にはnameを使用）
+    name: tag.name,
+    count: tag.count,
+  }))
+
   return {
-    tags: filterSidebarTags(convertClickedTags(response)),
+    tags: filterSidebarTags(tags),
   }
 }
 

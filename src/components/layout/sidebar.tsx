@@ -60,6 +60,11 @@ function YearAgoEntriesSection() {
 function ClickedTagsSection() {
   const { data, isLoading } = useQuery(sidebarQueryOptions.clickedTags())
 
+  // タグが0件の場合はカード自体を非表示
+  if (!isLoading && data?.tags.length === 0) {
+    return null
+  }
+
   return (
     <SidebarCard title="注目のタグ">
       {isLoading && <SidebarTagsSkeleton />}

@@ -78,6 +78,11 @@ function YearAgoEntriesSection({ onLinkClick }: { onLinkClick: () => void }) {
 function ClickedTagsSection({ onLinkClick }: { onLinkClick: () => void }) {
   const { data, isLoading } = useQuery(sidebarQueryOptions.clickedTags())
 
+  // タグが0件の場合はセクション自体を非表示
+  if (!isLoading && data?.tags.length === 0) {
+    return null
+  }
+
   return (
     <div>
       <SectionTitle>注目のタグ</SectionTitle>
