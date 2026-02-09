@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { Link, useRouterState } from '@tanstack/react-router'
+import { Link, useMatches, useRouterState } from '@tanstack/react-router'
 import { EntryDate } from '@/lib/entry-date'
 import { archiveQueryOptions } from '@/usecases/fetch-archive'
 
@@ -18,7 +18,17 @@ export function GlobalNav() {
   const currentMonth = today.getMonth()
 
   const currentPath = useRouterState({ select: (s) => s.location.pathname })
-  const { data: archiveData } = useQuery(archiveQueryOptions.get({ minUsers: 5 }))
+  const matches = useMatches()
+
+  // 404ページの場合はAPIリクエストをスキップ
+  // useMatchesの結果が空配列の場合は404ページと判定
+  const is404 =
+    matches.length === 0 || matches.some((m) => m.routeId === '__root__' && m.status === 'notFound')
+
+  const { data: archiveData } = useQuery({
+    ...archiveQueryOptions.get({ minUsers: 5 }),
+    enabled: !is404,
+  })
   const isTopPageWithTodayData =
     currentPath === '/' && archiveData?.latestDate === today.toYYYY_MM_DD()
 

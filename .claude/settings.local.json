@@ -34,7 +34,8 @@
       "Bash(pnpm vite build:*)",
       "Bash(pnpm tsr:*)",
       "Bash(pnpm openapi:generate:*)",
-      "Bash(pnpm routes:generate:*)"
+      "Bash(pnpm routes:generate:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []
