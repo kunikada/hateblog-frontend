@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, useRouterState } from '@tanstack/react-router'
 import { EntryDate } from '@/lib/entry-date'
-import { useIs404 } from '@/lib/is-404-context'
 import { archiveQueryOptions } from '@/usecases/fetch-archive'
 
 const baseClass = 'px-3 py-1.5 rounded-md min-w-35 text-center inline-block'
@@ -19,7 +18,13 @@ export function GlobalNav() {
   const currentMonth = today.getMonth()
 
   const currentPath = useRouterState({ select: (s) => s.location.pathname })
-  const is404Page = useIs404()
+  const is404Page = useRouterState({
+    select: (s) =>
+      s.statusCode === 404 ||
+      s.matches.some((match) => match.status === 'notFound' || !!match.globalNotFound),
+  })
+
+  console.debug('[GlobalNav] is404Page:', is404Page)
 
   const { data: archiveData } = useQuery({
     ...archiveQueryOptions.get({ minUsers: 5 }),
