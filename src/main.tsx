@@ -4,6 +4,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { config } from '@/lib/config'
 import { initializeGtm, pushEvent } from '@/lib/gtm'
+import { Is404Provider } from '@/lib/is-404-context'
 import { ThemeProvider } from '@/components/theme-provider'
 import { routeTree } from './routeTree.gen'
 import './index.css'
@@ -55,11 +56,13 @@ enableMocking().then(() => {
     const root = createRoot(rootElement)
     root.render(
       <StrictMode>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider defaultTheme="system" storageKey="hateblog-ui-theme">
-            <RouterProvider router={router} />
-          </ThemeProvider>
-        </QueryClientProvider>
+        <Is404Provider>
+          <QueryClientProvider client={queryClient}>
+            <ThemeProvider defaultTheme="system" storageKey="hateblog-ui-theme">
+              <RouterProvider router={router} />
+            </ThemeProvider>
+          </QueryClientProvider>
+        </Is404Provider>
       </StrictMode>,
     )
   }
