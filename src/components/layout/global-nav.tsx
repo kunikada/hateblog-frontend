@@ -18,7 +18,18 @@ export function GlobalNav() {
   const currentMonth = today.getMonth()
 
   const currentPath = useRouterState({ select: (s) => s.location.pathname })
-  const { data: archiveData } = useQuery(archiveQueryOptions.get({ minUsers: 5 }))
+  const is404Page = useRouterState({
+    select: (s) =>
+      s.statusCode === 404 ||
+      s.matches.some((match) => match.status === 'notFound' || !!match.globalNotFound),
+  })
+
+  console.debug('[GlobalNav] is404Page:', is404Page)
+
+  const { data: archiveData } = useQuery({
+    ...archiveQueryOptions.get({ minUsers: 5 }),
+    enabled: !is404Page,
+  })
   const isTopPageWithTodayData =
     currentPath === '/' && archiveData?.latestDate === today.toYYYY_MM_DD()
 
