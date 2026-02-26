@@ -56,7 +56,10 @@
         "bradlc.vscode-tailwindcss",
         "biomejs.biome",
         "ms-vscode.vscode-json",
-        "christian-kohler.path-intellisense"
+        "christian-kohler.path-intellisense",
+        "Anthropic.claude-code",
+        "openai.chatgpt",
+        "google.gemini-cli-vscode-ide-companion"
       ]
     }
   },
