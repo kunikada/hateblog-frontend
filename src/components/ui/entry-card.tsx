@@ -7,12 +7,15 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { Entry } from '@/repositories/entries'
 
-const TAG_MIN_SCORE = 27
+const TAG_MIN_SCORE = 60
 const TAG_MAX_COUNT = 6
+const TAG_MAX_WORDS = 3
 
 function isValidTagLength(name: string): boolean {
-  const isAlphanumeric = /^[a-zA-Z0-9]+$/.test(name)
-  return isAlphanumeric ? name.length >= 3 : name.length >= 2
+  const words = name.split(' ')
+  if (words.length > TAG_MAX_WORDS) return false
+  const isAlphanumeric = /^[a-zA-Z0-9 ]+$/.test(name)
+  return isAlphanumeric ? name.replace(/ /g, '').length >= 3 : name.length >= 2
 }
 
 function getHatenaBookmarkUrl(url: string): string {
