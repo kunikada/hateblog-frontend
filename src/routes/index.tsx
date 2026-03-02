@@ -6,6 +6,9 @@ import { SkeletonList } from '@/components/ui/skeleton-list'
 import { archiveQueryOptions } from '@/usecases/fetch-archive'
 
 export const Route = createFileRoute('/')({
+  head: () => ({
+    meta: [{ name: 'robots', content: 'index,follow' }],
+  }),
   component: Index,
 })
 
