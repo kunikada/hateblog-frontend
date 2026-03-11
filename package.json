@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
     "deps:interactive": "pnpm up -i --latest",
     "openapi:lint": "redocly lint openapi.yaml",
-    "openapi:generate": "openapi-typescript openapi.yaml -o src/api/openapi.ts"
+    "openapi:generate": "openapi-typescript openapi.yaml -o src/api/openapi.ts",
+    "prerender:top": "tsx scripts/prerender-top.ts"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
