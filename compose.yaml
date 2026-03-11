@@ -17,19 +17,6 @@ services:
     command: sh -c "corepack enable && pnpm install --frozen-lockfile && rm -f dist/index.top.html && pnpm build && pnpm prerender:top"
     restart: "no"
 
-  prerender:
-    image: mcr.microsoft.com/devcontainers/typescript-node:24-bookworm
-    working_dir: /app
-    volumes:
-      - .:/app
-      - dist:/app/dist
-      - node_modules:/app/node_modules
-    env_file:
-      - .env
-    command: sh -c "corepack enable && pnpm install --frozen-lockfile && pnpm prerender:top"
-    profiles:
-      - prerender
-
   web:
     image: nginx:1.28-alpine
     volumes:

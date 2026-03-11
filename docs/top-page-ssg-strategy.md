@@ -114,8 +114,7 @@ scripts/
     fetch-top-data.ts       # 生成用データ取得
     render-top-page.ts      # トップページHTML組み立て
 docker compose services
-  node                      # build / prerender 実行用（初回起動時）
-  prerender                 # prerender:top のみ実行（cron用）
+  node                      # build / prerender 実行用（初回起動・アプリ更新時）
   web                       # 共有volume配信用（nginx）
 ```
 
@@ -175,15 +174,15 @@ main()
 ### ホストcron実行イメージ
 
 ```cron
-*/10 * * * * cd /path/to/app && docker compose run --rm prerender >> /var/log/prerender.log 2>&1
+*/10 * * * * cd /path/to/app && docker compose run --rm node sh -c "corepack enable && pnpm prerender:top" >> /var/log/prerender.log 2>&1
 ```
 
 ### コンテナ構成
 
 - `web` コンテナは共有volumeを `/usr/share/nginx/html` に mount して配信する
 - `node` コンテナは共有volumeを `/app/dist` に mount して `pnpm build` と `pnpm prerender:top` を実行後に終了する
-- `prerender` コンテナは `node` と同じ共有volumeを使い `pnpm prerender:top` のみ実行する（cron用）
-- `node_modules` は名前付きvolumeで共有し、`prerender` 実行時の `pnpm install` を高速化する
+- 定期更新は `docker compose run --rm node` でコマンドを上書きして実行する（別サービスとして定義しない）
+- `node_modules` は名前付きvolumeで共有し、`pnpm install` を省略できる
 - 配信対象ファイルはイメージに焼き込まず、共有volume上の成果物をそのまま配信する
 
 ### 運用フロー
@@ -194,7 +193,7 @@ main()
    - `web` コンテナは `node` の完了後に起動し、共有volume上の `dist` を配信する
 
 2. 定期更新
-   - ホストcronから `docker compose run --rm prerender` を実行する
+   - ホストcronから `docker compose run --rm node sh -c "corepack enable && pnpm prerender:top"` を実行する
    - 更新対象は共有volume上の `index.top.html` のみ
    - `web` の再起動は不要
 
@@ -240,7 +239,7 @@ main()
    - 必要に応じて初回ちらつきを抑制する
 
 6. ホスト側cron実行手順を整理する
-   - SPA本体ビルドとは別タイミングで `docker compose run --rm prerender` を実行する
+   - SPA本体ビルドとは別タイミングで `docker compose run --rm node pnpm prerender:top` を実行する
    - `build` と `prerender:top` が同時に走らないようにする
 
 ## 将来的な拡張
