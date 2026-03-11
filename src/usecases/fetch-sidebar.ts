@@ -1,19 +1,11 @@
 import { entriesRepository } from '@/infra/repositories/entries'
 import { tagsRepository } from '@/infra/repositories/tags'
 import { EntryDate } from '@/lib/entry-date'
-import { getFaviconUrl } from '@/lib/entry-mapper'
+import { convertApiEntry } from '@/lib/entry-mapper'
 import { aggregateTagsFromViewHistory } from '@/lib/tag-aggregator'
-import type { ApiEntry, EntryListResponse } from '@/repositories/entries'
+import type { Entry, EntryListResponse } from '@/repositories/entries'
 import type { TrendingTagsResponse } from '@/repositories/tags'
 import { getViewHistory } from '@/usecases/entry-click'
-
-export type SidebarEntry = {
-  id: string
-  title: string
-  url: string
-  bookmarkCount: number
-  favicon: string
-}
 
 export type SidebarTag = {
   id: string
@@ -22,11 +14,11 @@ export type SidebarTag = {
 }
 
 export type SidebarNewEntriesResult = {
-  entries: SidebarEntry[]
+  entries: Entry[]
 }
 
 export type SidebarYearAgoEntriesResult = {
-  entries: SidebarEntry[]
+  entries: Entry[]
   date: string
 }
 
@@ -38,18 +30,8 @@ export type SidebarClickedTagsResult = {
   tags: SidebarTag[]
 }
 
-function convertApiEntryToSidebarEntry(apiEntry: ApiEntry): SidebarEntry {
-  return {
-    id: apiEntry.id,
-    title: apiEntry.title,
-    url: apiEntry.url,
-    bookmarkCount: apiEntry.bookmark_count,
-    favicon: getFaviconUrl(apiEntry),
-  }
-}
-
-function convertEntryListResponse(response: EntryListResponse): SidebarEntry[] {
-  return response.entries.map(convertApiEntryToSidebarEntry)
+function convertEntryListResponse(response: EntryListResponse): Entry[] {
+  return response.entries.map(convertApiEntry)
 }
 
 function convertTrendingTags(response: TrendingTagsResponse): SidebarTag[] {
