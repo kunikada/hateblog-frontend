@@ -158,6 +158,7 @@ export function EntryCard({ entry, onTitleClick, onDelete }: EntryCardProps) {
             rel="noopener noreferrer"
             className="hover:text-hatebu-500 transition-colors flex items-start gap-2"
             onClick={() => onTitleClick?.(entry)}
+            onAuxClick={(e) => e.button === 1 && onTitleClick?.(entry)}
           >
             {faviconUrl ? (
               <img

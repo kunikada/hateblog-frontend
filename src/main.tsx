@@ -51,7 +51,7 @@ async function enableMocking() {
 
 enableMocking().then(() => {
   const rootElement = document.getElementById('root')
-  if (rootElement && !rootElement.innerHTML) {
+  if (rootElement) {
     const root = createRoot(rootElement)
     root.render(
       <StrictMode>

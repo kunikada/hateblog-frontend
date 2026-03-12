@@ -1,9 +1,30 @@
 name: hateblog-frontend
 
+volumes:
+  dist:
+  node_modules:
+
 services:
+  node:
+    image: mcr.microsoft.com/devcontainers/typescript-node:24-bookworm
+    working_dir: /app
+    volumes:
+      - .:/app
+      - dist:/app/dist
+      - node_modules:/app/node_modules
+    env_file:
+      - .env
+    command: sh -c "corepack enable && pnpm install --frozen-lockfile && rm -f dist/index.top.html && pnpm build && pnpm prerender:top"
+    restart: "no"
+
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: hateblog-frontend:latest
+    image: nginx:1.28-alpine
+    volumes:
+      - dist:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "80:80"
     restart: unless-stopped
+    depends_on:
+      node:
+        condition: service_completed_successfully

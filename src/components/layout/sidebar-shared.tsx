@@ -1,9 +1,10 @@
 import { Link } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import { getCachedFaviconUrl } from '@/lib/favicon-cache'
-import type { SidebarEntry, SidebarTag } from '@/usecases/fetch-sidebar'
+import type { Entry } from '@/repositories/entries'
+import type { SidebarTag } from '@/usecases/fetch-sidebar'
 
-export function SidebarEntrySkeleton() {
+export function EntrySkeleton() {
   return (
     <div className="animate-pulse space-y-3">
       {Array.from({ length: 5 }).map((_, i) => (
@@ -95,10 +96,12 @@ export function MoreLink({
 
 export function EntryList({
   entries,
-  onLinkClick,
+  onEntryClick,
+  onEntryAuxClick,
 }: {
-  entries: SidebarEntry[]
-  onLinkClick?: () => void
+  entries: Entry[]
+  onEntryClick?: (entry: Entry) => void
+  onEntryAuxClick?: (entry: Entry) => void
 }) {
   if (entries.length === 0) {
     return <p className="text-sm text-muted-foreground">エントリーがありません</p>
@@ -113,7 +116,8 @@ export function EntryList({
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm hover:text-hatebu-500 line-clamp-2 flex items-start gap-2"
-            onClick={onLinkClick}
+            onClick={() => onEntryClick?.(entry)}
+            onAuxClick={(e) => e.button === 1 && (onEntryAuxClick ?? onEntryClick)?.(entry)}
           >
             <EntryFavicon src={entry.favicon} />
             <span className="flex-1">{entry.title}</span>

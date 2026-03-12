@@ -1,14 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { EntryDate } from '@/lib/entry-date'
+import type { Entry } from '@/repositories/entries'
+import { recordEntryClick } from '@/usecases/entry-click'
 import { sidebarQueryOptions } from '@/usecases/fetch-sidebar'
-import {
-  EntryList,
-  MoreLink,
-  SidebarEntrySkeleton,
-  SidebarTagsSkeleton,
-  TagList,
-} from './sidebar-shared'
+import { EntryList, MoreLink, EntrySkeleton, SidebarTagsSkeleton, TagList } from './sidebar-shared'
 
 type MobileSidebarProps = {
   open: boolean
@@ -23,13 +19,25 @@ function NewEntriesSection({ onLinkClick }: { onLinkClick: () => void }) {
   const today = EntryDate.today().toYYYYMMDD()
   const { data, isLoading } = useQuery(sidebarQueryOptions.newEntries(today))
 
+  const handleEntryClick = (entry: Entry) => {
+    onLinkClick()
+    recordEntryClick({ entry, referrer: window.location.href, userAgent: navigator.userAgent })
+  }
+  const handleEntryAuxClick = (entry: Entry) => {
+    recordEntryClick({ entry, referrer: window.location.href, userAgent: navigator.userAgent })
+  }
+
   return (
     <div className="pb-6 border-b">
       <SectionTitle>新着エントリー</SectionTitle>
-      {isLoading && <SidebarEntrySkeleton />}
+      {isLoading && <EntrySkeleton />}
       {data && (
         <>
-          <EntryList entries={data.entries} onLinkClick={onLinkClick} />
+          <EntryList
+            entries={data.entries}
+            onEntryClick={handleEntryClick}
+            onEntryAuxClick={handleEntryAuxClick}
+          />
           {data.entries.length > 0 && (
             <MoreLink to="/entries/$date/new" params={{ date: today }} onClick={onLinkClick} />
           )}
@@ -55,13 +63,25 @@ function YearAgoEntriesSection({ onLinkClick }: { onLinkClick: () => void }) {
   const yearAgoDate = EntryDate.today().subtractYears(1).toYYYYMMDD()
   const { data, isLoading } = useQuery(sidebarQueryOptions.yearAgoEntries())
 
+  const handleEntryClick = (entry: Entry) => {
+    onLinkClick()
+    recordEntryClick({ entry, referrer: window.location.href, userAgent: navigator.userAgent })
+  }
+  const handleEntryAuxClick = (entry: Entry) => {
+    recordEntryClick({ entry, referrer: window.location.href, userAgent: navigator.userAgent })
+  }
+
   return (
     <div className="pb-6 border-b">
       <SectionTitle>1年前の人気エントリー</SectionTitle>
-      {isLoading && <SidebarEntrySkeleton />}
+      {isLoading && <EntrySkeleton />}
       {data && (
         <>
-          <EntryList entries={data.entries} onLinkClick={onLinkClick} />
+          <EntryList
+            entries={data.entries}
+            onEntryClick={handleEntryClick}
+            onEntryAuxClick={handleEntryAuxClick}
+          />
           {data.entries.length > 0 && (
             <MoreLink
               to="/entries/$date/hot"

@@ -1,14 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
 import { EntryDate } from '@/lib/entry-date'
 import { sidebarQueryOptions } from '@/usecases/fetch-sidebar'
+import type { Entry } from '@/repositories/entries'
+import { recordEntryClick } from '@/usecases/entry-click'
 import { SidebarCard } from './sidebar-card'
-import {
-  EntryList,
-  MoreLink,
-  SidebarEntrySkeleton,
-  SidebarTagsSkeleton,
-  TagList,
-} from './sidebar-shared'
+import { EntryList, EntrySkeleton, MoreLink, SidebarTagsSkeleton, TagList } from './sidebar-shared'
+
+function handleSidebarEntryClick(entry: Entry) {
+  recordEntryClick({
+    entry,
+    referrer: window.location.href,
+    userAgent: navigator.userAgent,
+  })
+}
 
 function NewEntriesSection() {
   const today = EntryDate.today().toYYYYMMDD()
@@ -16,10 +20,10 @@ function NewEntriesSection() {
 
   return (
     <SidebarCard title="新着エントリー">
-      {isLoading && <SidebarEntrySkeleton />}
+      {isLoading && <EntrySkeleton />}
       {data && (
         <>
-          <EntryList entries={data.entries} />
+          <EntryList entries={data.entries} onEntryClick={handleSidebarEntryClick} />
           {data.entries.length > 0 && <MoreLink to="/entries/$date/new" params={{ date: today }} />}
         </>
       )}
@@ -44,10 +48,10 @@ function YearAgoEntriesSection() {
 
   return (
     <SidebarCard title="1年前の人気エントリー">
-      {isLoading && <SidebarEntrySkeleton />}
+      {isLoading && <EntrySkeleton />}
       {data && (
         <>
-          <EntryList entries={data.entries} />
+          <EntryList entries={data.entries} onEntryClick={handleSidebarEntryClick} />
           {data.entries.length > 0 && (
             <MoreLink to="/entries/$date/hot" params={{ date: yearAgoDate }} />
           )}
