@@ -1,0 +1,19 @@
+# サプライチェーン攻撃対策
+# 公開から 7 日未満のバージョンは解決しない（分単位）
+minimumReleaseAge: 10080
+# 以前より信頼性の低い公開方法（provenance なし等）に変わったバージョンを拒否する
+trustPolicy: no-downgrade
+# 推移的依存で Git / tarball URL など registry 以外の取得元を禁止する
+blockExoticSubdeps: true
+# 未承認の install スクリプトを持つ依存があればインストールを失敗させる
+strictDepBuilds: true
+# install スクリプトを実行しない（ビルド不要で動作確認済み）
+allowBuilds:
+  '@swc/core': false
+  core-js: false
+  esbuild: false
+  msw: false
+  protobufjs: false
+permissions:
+  '@tanstack/react-router':
+    skills: true

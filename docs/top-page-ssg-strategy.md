@@ -174,7 +174,7 @@ main()
 ### ホストcron実行イメージ
 
 ```cron
-*/10 * * * * cd /path/to/app && docker compose run --rm node sh -c "corepack enable && pnpm prerender:top" >> /var/log/prerender.log 2>&1
+*/10 * * * * cd /path/to/app && docker compose run --rm node pnpm prerender:top >> /var/log/prerender.log 2>&1
 ```
 
 ### コンテナ構成
@@ -193,7 +193,7 @@ main()
    - `web` コンテナは `node` の完了後に起動し、共有volume上の `dist` を配信する
 
 2. 定期更新
-   - ホストcronから `docker compose run --rm node sh -c "corepack enable && pnpm prerender:top"` を実行する
+   - ホストcronから `docker compose run --rm node pnpm prerender:top` を実行する
    - 更新対象は共有volume上の `index.top.html` のみ
    - `web` の再起動は不要
 

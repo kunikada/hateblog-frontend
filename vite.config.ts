@@ -11,16 +11,16 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), TanStackRouterVite(), tailwindcss()],
     build: {
-      rollupOptions: {
+      rolldownOptions: {
         input: {
-          main: path.resolve(__dirname, 'index.html'),
-          notFound: path.resolve(__dirname, '404.html'),
+          main: path.resolve(import.meta.dirname, 'index.html'),
+          notFound: path.resolve(import.meta.dirname, '404.html'),
         },
       },
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'),
+        '@': path.resolve(import.meta.dirname, './src'),
       },
     },
     server: {

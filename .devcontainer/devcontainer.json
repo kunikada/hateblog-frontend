@@ -1,7 +1,7 @@
 {
   "name": "hateblog-frontend",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:24-bookworm",
-  "postCreateCommand": "sudo corepack enable pnpm && pnpm install",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:26-bookworm",
+  "postCreateCommand": "pnpm install",
   "mounts": [
     "source=${env:SSH_AUTH_SOCK},target=/ssh-agent,type=bind,consistency=cached",
     "source=hateblog-frontend-home-node,target=/home/node,type=volume"  ],
@@ -48,15 +48,8 @@
         }
       },
       "extensions": [
-        "ms-vscode.vscode-typescript-next",
-        "bradlc.vscode-tailwindcss",
-        "biomejs.biome",
-        "ms-vscode.vscode-json",
-        "christian-kohler.path-intellisense",
         "Anthropic.claude-code",
-        "openai.chatgpt",
-        "google.gemini-cli-vscode-ide-companion"
-      ]
+        "openai.chatgpt"      ]
     }
   },
   "remoteUser": "node"

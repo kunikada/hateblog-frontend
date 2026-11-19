@@ -28,7 +28,7 @@ All responses must be in Japanese
 # Architecture
 
 - **`Runtime`**: TypeScript / pnpm
-- **`Build`**: Vite v7
+- **`Build`**: Vite v8
 - **`UI`**: React v19 / Tailwind CSS v4 / shadcn/ui
 - **`Infrastructure`**: TanStack Router / TanStack Query
 - **`API`**: openapi-typescript

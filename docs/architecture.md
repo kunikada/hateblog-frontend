@@ -1,4 +1,3 @@
-- **API 型生成**：openapi-typescript で OpenAPI スキーマから TypeScript 型を生成。生成された `src/api/openapi.ts` を利用して、通信処理を `api/clients` 配下で実装する。
 # hateblog フロントエンドアーキテクチャ
 
 ## 技術スタック概要
@@ -6,7 +5,7 @@
 - **ルーティング**：TanStack Router。リスト／詳細／タブ切替をルート単位でモデル化し、ロード時のデータ依存を `loader` で宣言する。
 - **データフェッチ**：TanStack Query。API 応答のキャッシュ・再検証・並列フェッチを抽象化し、履歴などブラウザローカルデータとは責務を分離する。
 - **UI/デザイン**：Tailwind CSS をユーティリティ層、shadcn/ui をアクセシブルな基礎コンポーネント層として共存させる。ダークモードは `class` トグルで切替。
-- **API 型生成**：OpenAPI Generator (`@openapitools/openapi-generator-cli`) で TypeScript クライアントと型を生成し、通信処理を `api/clients` 配下へ集約する。
+- **API 型生成**：@hey-api/openapi-ts（next 版）で TypeScript の型・SDK・fetch クライアントを生成し、APIキー付与やエラー変換は `src/api/client.ts` に集約する。
 - **Lint/Format**：Biome を唯一の統合ツールとして採用し、`biome.json` でルールを集中管理する。
 - **テスト**：Vitest + `@testing-library/react` を基本構成とし、TanStack Query のキャッシュ層はモックサーバーか MSW を利用して検証する。
 
@@ -18,7 +17,7 @@
 
 ## データ / API レイヤー
 - localStorage 履歴は `historyStore` モジュールに集約し、永続化フォーマット変更時のマイグレーションを `version` 付きで扱う。
-- `openapi.yaml` から `pnpm openapi:generate` で `src/api/openapi.ts` を更新。生成された型定義を用いて、`src/api/clients/*Client.ts` 内でクエリキーやモデル変換を記述する。
+- `openapi.yaml` から `pnpm openapi:generate`（設定は `openapi-ts.config.ts`）で `src/api/generated/` を更新。生成された SDK を `src/api/client.ts` でラップし、`src/infra/repositories/` から利用する。
 - Tailwind の `@layer components` でレイアウト系ユーティリティ（カードグリッド、レスポンシブガターなど）を定義し、shadcn/ui の Button / Tabs / Dialog などを再エクスポートしてデザインシステムを単一点管理。
 - ダークモードは `ThemeProvider` が `data-theme` をルートに設定。モバイルではナビをシート表示、デスクトップでは水平タブを維持し、同じコンポーネントで振る舞いを制御する。
 - アイコンやタグチップなど繰り返し要素は `ui/entry-card/*` として分割し、アクセシビリティ対応（`aria-label` など）を共通化する。

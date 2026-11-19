@@ -28,7 +28,7 @@
 # アーキテクチャ
 
 - **`ランタイム`**: TypeScript / pnpm
-- **`ビルド`**: Vite v7
+- **`ビルド`**: Vite v8
 - **`UI`**: React v19 / Tailwind CSS v4 / shadcn/ui
 - **`インフラ`**: TanStack Router / TanStack Query
 - **`API`**: openapi-typescript

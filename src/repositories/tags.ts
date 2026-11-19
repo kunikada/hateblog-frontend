@@ -1,10 +1,10 @@
-import type { components } from '@/api/openapi'
+import type * as schemas from '@/api/generated'
 
-export type TrendingTag = components['schemas']['TrendingTag']
-export type TrendingTagsResponse = components['schemas']['TrendingTagsResponse']
-export type ClickedTag = components['schemas']['ClickedTag']
-export type ClickedTagsResponse = components['schemas']['ClickedTagsResponse']
-export type EntryListResponse = components['schemas']['EntryListResponse']
+export type TrendingTag = schemas.TrendingTag
+export type TrendingTagsResponse = schemas.TrendingTagsResponse
+export type ClickedTag = schemas.ClickedTag
+export type ClickedTagsResponse = schemas.ClickedTagsResponse
+export type EntryListResponse = schemas.EntryListResponse
 
 export type GetTrendingTagsParams = {
   hours?: 6 | 12 | 24 | 48

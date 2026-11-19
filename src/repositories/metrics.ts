@@ -1,7 +1,7 @@
-import type { components } from '@/api/openapi'
+import type * as schemas from '@/api/generated'
 
-export type ClickMetricsRequest = components['schemas']['ClickMetricsRequest']
-export type MetricsResponse = components['schemas']['MetricsResponse']
+export type ClickMetricsRequest = schemas.ClickMetricsRequest
+export type MetricsResponse = schemas.MetricsResponse
 
 export interface MetricsRepository {
   recordClick(request: ClickMetricsRequest): Promise<MetricsResponse>

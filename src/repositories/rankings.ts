@@ -1,8 +1,8 @@
-import type { components } from '@/api/openapi'
+import type * as schemas from '@/api/generated'
 
 // API Response types
-export type RankingResponse = components['schemas']['RankingResponse']
-export type ApiRankingEntry = components['schemas']['RankingEntry']
+export type RankingResponse = schemas.RankingResponse
+export type ApiRankingEntry = schemas.RankingEntry
 
 export type GetYearlyRankingParams = {
   year: number

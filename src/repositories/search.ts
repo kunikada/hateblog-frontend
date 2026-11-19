@@ -1,6 +1,6 @@
-import type { components } from '@/api/openapi'
+import type * as schemas from '@/api/generated'
 
-export type SearchResponse = components['schemas']['SearchResponse']
+export type SearchResponse = schemas.SearchResponse
 
 export type SearchEntriesParams = {
   q: string
