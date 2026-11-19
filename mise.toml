@@ -1,0 +1,9 @@
+[settings]
+# サプライチェーン攻撃対策（pnpm-workspace.yaml の minimumReleaseAge と揃える）
+minimum_release_age = "7d"
+
+[tools]
+# devcontainer / compose / CI と同じメジャーに揃える
+node = "26"
+# 実際の版は package.json の packageManager に自動で切り替わる
+pnpm = "12"

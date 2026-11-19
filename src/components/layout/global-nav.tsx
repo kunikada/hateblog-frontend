@@ -19,9 +19,7 @@ export function GlobalNav() {
 
   const currentPath = useRouterState({ select: (s) => s.location.pathname })
   const is404Page = useRouterState({
-    select: (s) =>
-      s.statusCode === 404 ||
-      s.matches.some((match) => match.status === 'notFound' || !!match.globalNotFound),
+    select: (s) => s.matches.some((match) => match.status === 'notFound' || !!match._notFound),
   })
 
   console.debug('[GlobalNav] is404Page:', is404Page)

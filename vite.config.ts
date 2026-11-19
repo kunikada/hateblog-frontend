@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), TanStackRouterVite(), tailwindcss()],
     build: {
-      rollupOptions: {
+      rolldownOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
           notFound: path.resolve(__dirname, '404.html'),
