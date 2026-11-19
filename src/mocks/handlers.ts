@@ -1,12 +1,12 @@
 import { http, HttpResponse, delay } from 'msw'
-import type { components } from '@/api/openapi'
+import type * as schemas from '@/api/generated'
 
-type Entry = components['schemas']['Entry']
-type EntryListResponse = components['schemas']['EntryListResponse']
-type MetricsResponse = components['schemas']['MetricsResponse']
-type ApiKeyResponse = components['schemas']['ApiKeyResponse']
-type TrendingTagsResponse = components['schemas']['TrendingTagsResponse']
-type ClickedTagsResponse = components['schemas']['ClickedTagsResponse']
+type Entry = schemas.Entry
+type EntryListResponse = schemas.EntryListResponse
+type MetricsResponse = schemas.MetricsResponse
+type ApiKeyResponse = schemas.ApiKeyResponse
+type TrendingTagsResponse = schemas.TrendingTagsResponse
+type ClickedTagsResponse = schemas.ClickedTagsResponse
 
 function generateMockEntry(index: number, date: string): Entry {
   const domains = ['example.com', 'qiita.com', 'zenn.dev', 'note.com', 'dev.to']

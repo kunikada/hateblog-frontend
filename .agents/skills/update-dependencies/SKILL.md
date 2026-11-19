@@ -24,7 +24,7 @@ AGENTS.md の作業ルール（事前確認・format/lint/test を実行せず�
 | MSW ワーカー | `public/mockServiceWorker.js` | `PACKAGE_VERSION`（msw 本体と一致させる） |
 | pnpm 設定 | `pnpm-workspace.yaml` | `allowBuilds`（install スクリプトの許可/拒否マップ） |
 | ルートツリー | `src/routeTree.gen.ts` | TanStack Router 更新時に再生成 |
-| OpenAPI 型 | `src/api/openapi.ts` | openapi-typescript 更新時に再生成 |
+| OpenAPI 型・SDK | `src/api/generated/` | @hey-api/openapi-ts 更新時に再生成（next タグを使用） |
 
 上記以外にバージョン記述が増えていないか、作業開始時に確認する:
 
@@ -141,7 +141,7 @@ gh actions-lock
 | `@biomejs/biome` 更新 | `pnpm exec biome migrate --write` で `biome.json` の `$schema` 等を更新 |
 | `msw` 更新 | `pnpm exec msw init public --save` で `public/mockServiceWorker.js` を再生成 |
 | TanStack Router 系更新 | `pnpm exec tsr generate` で `src/routeTree.gen.ts` を再生成 |
-| `openapi-typescript` 更新 | `pnpm openapi:generate` で `src/api/openapi.ts` を再生成 |
+| `@hey-api/openapi-ts` 更新 | `pnpm openapi:generate` で `src/api/generated/` を再生成 |
 
 生成物に想定外の差分が大量に出た場合は、作業を止めてユーザーに確認する。
 

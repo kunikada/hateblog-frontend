@@ -1,11 +1,12 @@
 ---
 name: run-checks
-description: hateblog-frontend で CI（.github/workflows/ci.yml）と同等のチェック（サプライチェーン検証・lint・format・型チェック・テスト・ビルド）をローカルで一通り実行し、結果を報告する。「CI と同じチェックをして」「一通りチェック」「プッシュ前に確認」等の依頼時に使用する。
+description: hateblog-frontend で format を適用したうえで、CI（.github/workflows/ci.yml）と同等のチェック（サプライチェーン検証・lint・型チェック・テスト・ビルド）をローカルで一通り実行し、結果を報告する。「CI と同じチェックをして」「一通りチェック」「プッシュ前に確認」等の依頼時に使用する。
 ---
 
 # CI 相当のローカルチェック
 
 `.github/workflows/ci.yml` の各ジョブと同じ内容をローカルで実行し、結果をまとめて報告する。
+format はチェックではなく、問答無用で `--write` 適用する。
 AGENTS.md の「実装後に format/lint/test を実行しない」ルールは、このスキルが明示的に依頼された場合に限り適用しない。
 
 ## 前提
@@ -21,8 +22,8 @@ AGENTS.md の「実装後に format/lint/test を実行しない」ルールは�
 | supply-chain | `pnpm audit --audit-level high` | |
 | （共通） | `pnpm install --frozen-lockfile` | lockfile と package.json の不一致を検出 |
 | lint-and-typecheck | `pnpm tsr generate` | `src/routeTree.gen.ts` を再生成 |
+| （ローカルのみ） | `pnpm format` | `biome format --write .` で書き換える。CI には無い。lint より前に実行する |
 | lint-and-typecheck | `pnpm lint` | |
-| lint-and-typecheck | `pnpm exec biome format .` | CI は `--write` 付きだが、ここでは書き換えずに差分検出のみ行う |
 | lint-and-typecheck | `pnpm typecheck` | |
 | test | `pnpm test` | |
 | build | `pnpm build` | `dist/` が更新される |
@@ -32,14 +33,13 @@ AGENTS.md の「実装後に format/lint/test を実行しない」ルールは�
 1. `git status --short` で作業開始時の状態を記録する（チェックによる差分と区別するため）
 2. 上表の順にコマンドを実行する
    - **1 つ失敗しても止めずに最後まで実行する**（ただし `pnpm install` が失敗した場合は以降が無意味なため中断して報告）
-   - 互いに独立したチェック（lint / format / typecheck / test）は並列実行してよい。build は最後に単独で実行する
+   - `pnpm format` は書き換えを伴うため単独で実行し、完了後に lint / typecheck / test を並列実行してよい。build は最後に単独で実行する
    - ネットワーク不通・`gh` 未認証などで実行できないものは「未実行」として理由を記録する
-3. `git status --short` を再確認し、チェックによって生じた差分（`src/routeTree.gen.ts` など）を記録する
+3. `git status --short` を再確認し、format やチェックによって生じた差分（整形されたファイル、`src/routeTree.gen.ts` など）を記録する
 
 ## 失敗時の扱い
 
-- **コードの修正は行わない。** 失敗内容（ファイル・行・エラーメッセージの要点）を報告し、修正するか確認する
-- `biome format` の差分は `pnpm format` で自動修正できる旨を添える（実行はしない）
+- **format 以外のコードの修正は行わない。** 失敗内容（ファイル・行・エラーメッセージの要点）を報告し、修正するか確認する
 - `pnpm audit` で脆弱性が出た場合は、対象パッケージ・深刻度・修正版の有無を報告する（依存更新は `update-dependencies` スキルの範囲）
 - `gh actions-lock --verify` が失敗した場合は `--relock` / `--accept-moved` を実行せず報告する
 - `tsr generate` で `src/routeTree.gen.ts` に差分が出た場合は、コミット漏れの可能性として報告する
@@ -55,15 +55,15 @@ AGENTS.md の「実装後に format/lint/test を実行しない」ルールは�
 | pnpm audit | ❌ | high 1 件（xxx） |
 | install (frozen) | ✅ | |
 | tsr generate | ✅ | 差分なし |
+| format | ✅ | 2 ファイル整形 |
 | lint | ⚠️ | warning 3 件 |
-| format | ✅ | |
 | typecheck | ✅ | |
 | test | ✅ | 42 passed |
 | build | ✅ | |
 ```
 
 - 失敗・警告の詳細（ファイル:行、エラー要点）
-- チェックによって生じたファイル差分
+- format で整形されたファイル、およびチェックによって生じたファイル差分
 - 未実行のチェックとその理由
 - 作業中に見つけた別の問題（あれば）
 

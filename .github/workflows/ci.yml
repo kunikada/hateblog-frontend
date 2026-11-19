@@ -55,9 +55,6 @@ jobs:
       - name: Run Biome lint
         run: pnpm run lint
 
-      - name: Run Biome format
-        run: pnpm run format
-
       - name: Type check
         run: pnpm run typecheck
 

@@ -1,8 +1,8 @@
-import type { components } from '@/api/openapi'
+import type * as schemas from '@/api/generated'
 
 // API Response types
-export type ApiEntry = components['schemas']['Entry']
-export type EntryListResponse = components['schemas']['EntryListResponse']
+export type ApiEntry = schemas.Entry
+export type EntryListResponse = schemas.EntryListResponse
 
 // Domain types (used throughout the application)
 export type EntryTag = {

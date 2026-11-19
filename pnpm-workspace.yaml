@@ -14,3 +14,6 @@ allowBuilds:
   esbuild: false
   msw: false
   protobufjs: false
+permissions:
+  '@tanstack/react-router':
+    skills: true

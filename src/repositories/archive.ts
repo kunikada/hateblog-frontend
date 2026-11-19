@@ -1,8 +1,8 @@
-import type { components } from '@/api/openapi'
+import type * as schemas from '@/api/generated'
 
 // API Response types
-export type ArchiveItem = components['schemas']['ArchiveItem']
-export type ArchiveResponse = components['schemas']['ArchiveResponse']
+export type ArchiveItem = schemas.ArchiveItem
+export type ArchiveResponse = schemas.ArchiveResponse
 
 export type GetArchiveParams = {
   minUsers?: number
