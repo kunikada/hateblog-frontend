@@ -5,8 +5,10 @@ import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCard } from '@/components/ui/entry-card'
 import { EntryCount } from '@/components/ui/entry-count'
+import { EntryEmptyMessage } from '@/components/ui/entry-empty-message'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll'
+import { useKeywordFilter } from '@/hooks/use-keyword-filter'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { config } from '@/lib/config'
 import { EntryDate } from '@/lib/entry-date'
@@ -24,6 +26,7 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
   console.debug('[EntriesPage] Component mounted', { date, title, routeType })
 
   const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>('minUsers:v1', 5)
+  const keywordFilter = useKeywordFilter()
 
   const entryDate = EntryDate.fromUrlParam(date)
   const previousDay = entryDate.previousDay()
@@ -45,14 +48,16 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
     return `/entries/${entryDate.toYYYYMMDD()}/${routeType}`
   }
 
-  const allEntries = (data?.entries ?? []).filter(
-    (entry) => selectedThreshold === null || entry.bookmarkCount >= selectedThreshold,
+  const allEntries = keywordFilter.filter(
+    (data?.entries ?? []).filter(
+      (entry) => selectedThreshold === null || entry.bookmarkCount >= selectedThreshold,
+    ),
   )
 
   const { displayedCount, isLoadingMore, loadMoreRef } = useInfiniteScroll({
     totalCount: allEntries.length,
     perPage: config.pagination.entriesPerPage,
-    resetDeps: [date, selectedThreshold],
+    resetDeps: [date, selectedThreshold, keywordFilter.query],
   })
 
   const displayedEntries = allEntries.slice(0, displayedCount)
@@ -113,6 +118,7 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
           <FilterBar
             selectedThreshold={selectedThreshold}
             onThresholdChange={handleThresholdChange}
+            keyword={keywordFilter.inputProps}
           />
         </div>
 
@@ -144,9 +150,10 @@ export function EntriesPage({ date, title, routeType }: EntriesPageProps) {
 
         {/* No results */}
         {!isLoading && allEntries.length === 0 && (
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            該当するエントリーがありません
-          </div>
+          <EntryEmptyMessage
+            isKeywordFiltered={keywordFilter.query !== null}
+            className="mt-8 text-center text-sm"
+          />
         )}
       </div>
 
