@@ -2,6 +2,7 @@ import { Navigation } from '@/components/layout/navigation'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCard } from '@/components/ui/entry-card'
+import { EntryEmptyMessage } from '@/components/ui/entry-empty-message'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { useApiInfiniteScroll } from '@/hooks/use-api-infinite-scroll'
 import { rankingsRepository } from '@/infra/repositories/rankings'
@@ -112,9 +113,7 @@ export function MonthlyRankingPage({ title, year, month, prev, next }: MonthlyRa
 
         {/* No results */}
         {!isLoading && displayedEntries.length === 0 && (
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            該当するエントリーがありません
-          </div>
+          <EntryEmptyMessage className="mt-8 text-center text-sm" />
         )}
       </div>
 

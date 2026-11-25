@@ -3,9 +3,12 @@ import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCard } from '@/components/ui/entry-card'
+import { EntryEmptyMessage } from '@/components/ui/entry-empty-message'
 import { EntrySortToggle } from '@/components/ui/entry-sort-toggle'
+import { FetchMoreButton } from '@/components/ui/fetch-more-button'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { useApiInfiniteScroll } from '@/hooks/use-api-infinite-scroll'
+import { useKeywordFilter } from '@/hooks/use-keyword-filter'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { searchRepository } from '@/infra/repositories/search'
 import { config } from '@/lib/config'
@@ -25,7 +28,21 @@ export function SearchPage({ query }: SearchPageProps) {
   const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>('minUsers:v1', 5)
   const [sortType, setSortType] = useState<SortType>('popular')
 
-  const { displayedEntries, isLoading, isLoadingMore, hasMore, error, loadMoreRef } =
+  const keywordFilter = useKeywordFilter()
+  const isKeywordFiltered = keywordFilter.query !== null
+
+  const {
+    displayedEntries,
+    isLoading,
+    isLoadingMore,
+    hasMore,
+    error,
+    loadMoreRef,
+    canFetchMore,
+    isFetchingMore,
+    fetchMoreError,
+    fetchMore,
+  } =
     useApiInfiniteScroll<Entry>({
       queryKey: ['searchEntries', query, selectedThreshold ?? 5, sortType],
       queryFn: async ({ pageParam = 0 }) => {
@@ -54,8 +71,10 @@ export function SearchPage({ query }: SearchPageProps) {
       },
       perPage: config.pagination.entriesPerPage,
       apiLimit: 100,
-      resetDeps: [query, selectedThreshold, sortType],
+      resetDeps: [query, selectedThreshold, sortType, keywordFilter.query],
       staleTime: 1000 * 60 * 5,
+      filterEntries: keywordFilter.filter,
+      isFiltered: isKeywordFiltered,
     })
 
   const handleThresholdChange = (threshold: number | null) => {
@@ -114,6 +133,7 @@ export function SearchPage({ query }: SearchPageProps) {
             <FilterBar
               selectedThreshold={selectedThreshold}
               onThresholdChange={handleThresholdChange}
+              keyword={keywordFilter.inputProps}
             />
           </div>
         )}
@@ -129,9 +149,11 @@ export function SearchPage({ query }: SearchPageProps) {
                 検索キーワードを入力してください
               </div>
             ) : displayedEntries.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                該当するエントリーがありません
-              </div>
+              <EntryEmptyMessage
+                isKeywordFiltered={isKeywordFiltered}
+                hasUnfetched={canFetchMore}
+                className="text-center py-12"
+              />
             ) : (
               <ul className="space-y-4">
                 {displayedEntries.map((entry) => (
@@ -149,6 +171,11 @@ export function SearchPage({ query }: SearchPageProps) {
           <div ref={loadMoreRef} className="mt-8">
             {isLoadingMore && <SkeletonList count={3} />}
           </div>
+        )}
+
+        {/* Manual fetch (keyword filter / retry after fetch error) */}
+        {query && !isLoading && canFetchMore && (
+          <FetchMoreButton onClick={fetchMore} isFetching={isFetchingMore} error={fetchMoreError} />
         )}
       </div>
 

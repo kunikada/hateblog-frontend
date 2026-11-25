@@ -3,9 +3,12 @@ import { FilterBar } from '@/components/layout/filter-bar'
 import { ScrollToTopButton } from '@/components/layout/scroll-to-top-button'
 import { Sidebar } from '@/components/layout/sidebar'
 import { EntryCard } from '@/components/ui/entry-card'
+import { EntryEmptyMessage } from '@/components/ui/entry-empty-message'
 import { EntrySortToggle } from '@/components/ui/entry-sort-toggle'
+import { FetchMoreButton } from '@/components/ui/fetch-more-button'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { useApiInfiniteScroll } from '@/hooks/use-api-infinite-scroll'
+import { useKeywordFilter } from '@/hooks/use-keyword-filter'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { tagsRepository } from '@/infra/repositories/tags'
 import { config } from '@/lib/config'
@@ -25,7 +28,21 @@ export function TagPage({ tag }: TagPageProps) {
   const [selectedThreshold, setSelectedThreshold] = useLocalStorage<number | null>('minUsers:v1', 5)
   const [sortType, setSortType] = useState<SortType>('new')
 
-  const { displayedEntries, isLoading, isLoadingMore, hasMore, error, loadMoreRef } =
+  const keywordFilter = useKeywordFilter()
+  const isKeywordFiltered = keywordFilter.query !== null
+
+  const {
+    displayedEntries,
+    isLoading,
+    isLoadingMore,
+    hasMore,
+    error,
+    loadMoreRef,
+    canFetchMore,
+    isFetchingMore,
+    fetchMoreError,
+    fetchMore,
+  } =
     useApiInfiniteScroll<Entry>({
       queryKey: ['tagEntries', tag, selectedThreshold ?? 5, sortType],
       queryFn: async ({ pageParam = 0 }) => {
@@ -54,8 +71,10 @@ export function TagPage({ tag }: TagPageProps) {
       },
       perPage: config.pagination.entriesPerPage,
       apiLimit: 100,
-      resetDeps: [tag, selectedThreshold, sortType],
+      resetDeps: [tag, selectedThreshold, sortType, keywordFilter.query],
       staleTime: 1000 * 60 * 5,
+      filterEntries: keywordFilter.filter,
+      isFiltered: isKeywordFiltered,
     })
 
   const handleThresholdChange = (threshold: number | null) => {
@@ -113,6 +132,7 @@ export function TagPage({ tag }: TagPageProps) {
           <FilterBar
             selectedThreshold={selectedThreshold}
             onThresholdChange={handleThresholdChange}
+            keyword={keywordFilter.inputProps}
           />
         </div>
 
@@ -137,11 +157,19 @@ export function TagPage({ tag }: TagPageProps) {
           </div>
         )}
 
+
+        {/* Manual fetch (keyword filter / retry after fetch error) */}
+        {!isLoading && canFetchMore && (
+          <FetchMoreButton onClick={fetchMore} isFetching={isFetchingMore} error={fetchMoreError} />
+        )}
+
         {/* No results */}
         {!isLoading && displayedEntries.length === 0 && (
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            該当するエントリーがありません
-          </div>
+          <EntryEmptyMessage
+            isKeywordFiltered={isKeywordFiltered}
+            hasUnfetched={canFetchMore}
+            className="mt-8 text-center text-sm"
+          />
         )}
       </div>
 
